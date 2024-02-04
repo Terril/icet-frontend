@@ -1,6 +1,12 @@
 # icet
 
-A new Flutter project.
+A Flutter project.
+
+# To Run
+- Download the Flutter sdk
+- If on mac set the SDK in your .bash_profile
+- Go to the root folder of the app i.e., icet
+- Use the command `flutter run -d chrome` to run the app on Chrom browser
 
 ## Getting Started
 

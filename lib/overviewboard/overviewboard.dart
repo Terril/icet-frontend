@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 
 import 'overviewboard_controller.dart';
 
 class OverviewboardView extends GetView<OverviewboardController> {
-  const OverviewboardView({super.key});
+   OverviewboardView({super.key});
 
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -13,6 +15,8 @@ class OverviewboardView extends GetView<OverviewboardController> {
   void onClickCustomizableTable() {
     print("search button clicked");
   }
+
+   double widthSize = (Get.width / 6);
 
   // const Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
   // Text("Stock watchlist",
@@ -28,13 +32,13 @@ class OverviewboardView extends GetView<OverviewboardController> {
 
   List<Widget> _getTitleWidget() {
     return [
-      _getTitleItemWidget('ASSET', 100),
-      _getTitleItemWidget('INTEREST LEVEL', 150),
-      _getTitleItemWidget('PRODUCTS RATING', 150),
-      _getTitleItemWidget('FINANCIALS', 100),
-      _getTitleItemWidget('BUSINESS MODEL', 150),
-      _getTitleItemWidget('MANAGEMENT', 120),
-      _getTitleItemWidget('VALUATION', 100),
+      _getTitleItemWidget('ASSET', widthSize),
+      _getTitleItemWidget('INTEREST LEVEL', widthSize),
+      _getTitleItemWidget('PRODUCTS RATING', widthSize),
+      _getTitleItemWidget('FINANCIALS', widthSize),
+      _getTitleItemWidget('BUSINESS MODEL', widthSize),
+      _getTitleItemWidget('MANAGEMENT', widthSize),
+      _getTitleItemWidget('VALUATION', widthSize),
     ];
   }
 
@@ -49,10 +53,24 @@ class OverviewboardView extends GetView<OverviewboardController> {
     );
   }
 
-
-  static const List<String> stockName = ["Apple", "Google", "Tesla", "Splunk", "Sea", "Arm"];
-  static const List<String> stockNameInfo = ["Apple", "Google", "Tesla", "Splunk", "Sea", "Arm"];
+  static const List<String> stockName = [
+    "Apple",
+    "Google",
+    "Tesla",
+    "Splunk",
+    "Sea",
+    "Arm"
+  ];
+  static const List<String> stockNameInfo = [
+    "Apple",
+    "Google",
+    "Tesla",
+    "Splunk",
+    "Sea",
+    "Arm"
+  ];
   static const List<bool> stockStatus = [true, false, false, true, false, true];
+
   Widget _generateFirstColumnRow(BuildContext context, int index) {
     return Container(
       width: 100,
@@ -64,56 +82,57 @@ class OverviewboardView extends GetView<OverviewboardController> {
   }
 
   Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
+
     return Row(
       children: <Widget>[
         Container(
-          width: 150,
+          width: widthSize,
           height: 52,
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.center,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Icon(
                   stockStatus[index]
                       ? Icons.notifications_off
                       : Icons.notifications_active,
-                  color: stockStatus[index]
-                      ? Colors.red
-                      : Colors.green),
+                  color: stockStatus[index] ? Colors.red : Colors.green),
               Text(stockStatus[index] ? 'Disabled' : 'Active')
             ],
           ),
         ),
         Container(
-          width: 150,
+          width: widthSize,
           height: 52,
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.center,
           child: Text(stockNameInfo[index]),
         ),
         Container(
-          width: 100,
+          width: widthSize,
           height: 52,
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.center,
           child: Text(stockNameInfo[index]),
         ),
         Container(
-          width: 150,
+          width: widthSize,
           height: 52,
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.center,
           child: Text(stockNameInfo[index]),
         ),
         Container(
-          width: 120,
+          width: widthSize,
           height: 52,
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.center,
           child: Text(stockNameInfo[index]),
         ),
         Container(
-          width: 100,
+          width: widthSize,
           height: 52,
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.center,
@@ -140,13 +159,13 @@ class OverviewboardView extends GetView<OverviewboardController> {
         ),
         child: HorizontalDataTable(
           leftHandSideColumnWidth: 100,
-          rightHandSideColumnWidth: 600,
+          rightHandSideColumnWidth: Get.width,
           isFixedHeader: true,
           headerWidgets: _getTitleWidget(),
           isFixedFooter: false,
           leftSideItemBuilder: _generateFirstColumnRow,
           rightSideItemBuilder: _generateRightHandSideColumnRow,
-          itemCount: 7,
+          itemCount: 6,
           rowSeparatorWidget: const Divider(
             color: Colors.black38,
             height: 1.0,
@@ -158,45 +177,9 @@ class OverviewboardView extends GetView<OverviewboardController> {
         ));
   }
 
-// child: ScrollableTableView(
-//   headerBackgroundColor: const Color.fromARGB(249, 250, 251, 255),
-//   headers: [
-//     "ASSET",
-//     "INTEREST LEVEL",
-//     "PRODUCTS RATING",
-//     "FINANCIALS",
-//     "BUSINESS MODEL",
-//     "MANAGEMENT",
-//     "VALUATION",
-//   ].map((label) {
-//     return TableViewHeader(
-//       label: label,
-//       minWidth: 120,
-//     );
-//   }).toList(),
-//   rows: [
-//     ["Apple", "10", "20.00", "XYZ", "ABC", "Ok", "Overvalued"],
-//     ["Tesla", "9", "10.00", "XYZ", "ABC", "Good", "Undervalued"],
-//   ].map((record) {
-//     return TableViewRow(
-//       height: 60,
-//       cells: record.map((value) {
-//         return TableViewCell(
-//           child: Text(value),
-//         );
-//       }).toList(),
-//     );
-//   }).toList(),
-// ));
 
   @override
   Widget build(context) {
-    // Future<Response> response = controller.fetchBoard();
-    // response.then((value) => {
-    //       print('${value.headers}'),
-    //       print('${value.body}'),
-    //       print('${value.request}')
-    //     });
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ice T'),
