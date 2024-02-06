@@ -7,16 +7,16 @@ import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'overviewboard_controller.dart';
 
 class OverviewboardView extends GetView<OverviewboardController> {
-   OverviewboardView({super.key});
+  OverviewboardView({super.key});
 
   static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   void onClickCustomizableTable() {
     print("search button clicked");
   }
 
-   double widthSize = (Get.width / 6);
+  double widthSize = (Get.width / 6);
 
   // const Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
   // Text("Stock watchlist",
@@ -82,7 +82,6 @@ class OverviewboardView extends GetView<OverviewboardController> {
   }
 
   Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
-
     return Row(
       children: <Widget>[
         Container(
@@ -144,46 +143,79 @@ class OverviewboardView extends GetView<OverviewboardController> {
 
   Widget _widgetOptions() {
     return Container(
-        color: const Color(0xffEBF5FF),
-        margin: const EdgeInsets.only(
-          left: 60,
-          top: 0,
-          right: 0,
-          bottom: 0,
-        ),
-        padding: const EdgeInsets.only(
-          left: 24,
-          top: 24,
-          right: 24,
-          bottom: 24,
-        ),
-        child: HorizontalDataTable(
-          leftHandSideColumnWidth: 100,
-          rightHandSideColumnWidth: Get.width,
-          isFixedHeader: true,
-          headerWidgets: _getTitleWidget(),
-          isFixedFooter: false,
-          leftSideItemBuilder: _generateFirstColumnRow,
-          rightSideItemBuilder: _generateRightHandSideColumnRow,
-          itemCount: 6,
-          rowSeparatorWidget: const Divider(
-            color: Colors.black38,
-            height: 1.0,
-            thickness: 0.0,
-          ),
-          leftHandSideColBackgroundColor: const Color(0xFFFFFFFF),
-          rightHandSideColBackgroundColor: const Color(0xFFFFFFFF),
-          itemExtent: 55,
-        ));
+      color: const Color(0xffEBF5FF),
+      margin: const EdgeInsets.only(
+        left: 60,
+        top: 0,
+        right: 0,
+        bottom: 0,
+      ),
+      padding: const EdgeInsets.only(
+        left: 24,
+        top: 24,
+        right: 24,
+        bottom: 24,
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+        const Text(
+        "Stocks watchlist",
+        style: TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold),
+      ),
+      const SizedBox(width: 12.5),
+      IconButton(
+          onPressed: () async {},
+          icon: const Icon(Icons.drive_file_rename_outline)
+      ),
+      const Spacer(),
+      TextButton.icon(onPressed: null,
+          icon: const Icon(Icons.settings_outlined),
+          label: const Text("Customize Table",  style: TextStyle(fontWeight: FontWeight.w600)))
+      ],
+    ) ,
+    const SizedBox(height: 24),
+    Expanded(
+    child: HorizontalDataTable(
+    leftHandSideColumnWidth: 100,
+    rightHandSideColumnWidth: Get.width,
+    isFixedHeader: true,
+    headerWidgets: _getTitleWidget(),
+    isFixedFooter: false,
+    leftSideItemBuilder: _generateFirstColumnRow,
+    rightSideItemBuilder: _generateRightHandSideColumnRow,
+    itemCount: 6,
+    rowSeparatorWidget: const Divider(
+    color: Colors.black38,
+    height: 1.0,
+    thickness: 0.0,
+    ),
+    leftHandSideColBackgroundColor: const Color(0xFFFFFFFF),
+    rightHandSideColBackgroundColor: const Color(0xFFFFFFFF),
+    itemExtent: 55,
+    )
+    )
+    ]
+    )
+    );
   }
-
 
   @override
   Widget build(context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ice T'),
-      ),
+          centerTitle: false,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Image.asset("assets/images/logo.png"),
+              const Text(
+                'Ice T',
+                textAlign: TextAlign.left,
+              ),
+            ],
+          )),
       body: FutureBuilder(
         future: controller.fetchBoard(),
         builder: (context, snapshot) {
@@ -199,9 +231,7 @@ class OverviewboardView extends GetView<OverviewboardController> {
             else {
               print('${snapshot.data?.body}');
               print('${snapshot.data?.request?.headers}');
-              return Center(
-                child: _widgetOptions(),
-              );
+              return Center(child: _widgetOptions());
             }
           }
         },
