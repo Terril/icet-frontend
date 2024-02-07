@@ -6,9 +6,9 @@ import 'overviewboard/overviewboard.dart';
 
 void main() {
   runApp(GetMaterialApp(
-    initialRoute: '/overboard',
+    initialRoute: '/overviewboard',
     getPages: [
-      GetPage(name: '/overboard', page: () => OverviewboardView(), binding: IceTBinding()),
+      GetPage(name: '/overviewboard', page: () => OverviewboardView(), binding: IceTBinding()),
     ],
   ));
 }
