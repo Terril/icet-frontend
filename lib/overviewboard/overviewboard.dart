@@ -264,7 +264,7 @@ class OverviewboardView extends GetView<OverviewboardController> {
               ]),
               onTap: () {
                 // Then close the drawer
-                Navigator.pop(context);
+               Get.back();
               },
             ),
             ListTile(
@@ -275,14 +275,14 @@ class OverviewboardView extends GetView<OverviewboardController> {
               ]),
               onTap: () {
                 // Then close the drawer
-                Navigator.pop(context);
+                Get.back();
               },
             ),
             ListTile(
               title: const Text('School'),
               onTap: () {
                 // Then close the drawer
-                Navigator.pop(context);
+                Get.back();
               },
             ),
           ],
