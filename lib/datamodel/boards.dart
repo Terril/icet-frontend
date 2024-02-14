@@ -1,5 +1,4 @@
 import 'package:icet/datamodel/rows.dart';
-
 import 'columns.dart';
 
 class Boards {
@@ -50,5 +49,20 @@ class Boards {
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     return data;
+  }
+}
+
+class BoardList {
+  final List<Boards> list;
+
+  BoardList({
+    required this.list,
+  });
+
+  factory BoardList.fromJsonToList(List<dynamic> parsedJson) {
+    List<Boards> list = <Boards>[];
+    list = parsedJson.map((i) => Boards.fromJson(i)).toList();
+
+    return BoardList(list: list);
   }
 }

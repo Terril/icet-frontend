@@ -1,9 +1,6 @@
-import 'dart:convert';
-import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:http/http.dart' as http;
 import 'package:icet/provider/overviewboardProvider.dart';
 
 import '../datamodel/boards.dart';
@@ -34,10 +31,10 @@ class OverviewboardController extends GetxController {
     overviewboardProvider = OverviewboardProvider();
   }
 
-  Future<Boards?> fetchBoard() async {
+  Future<List<Boards?>> fetchBoard() async {
     Response response = await overviewboardProvider.getBoard();
-    print("Controller : ${response.body}");
-    Boards responseBoards = Boards.fromJson(response.body[0]);
+    List<Boards> responseBoards = BoardList.fromJsonToList(response.body).list;
+
     return responseBoards;
   }
 

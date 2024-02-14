@@ -32,7 +32,7 @@ class OverviewboardProvider extends GetConnect {
   }
 
   // Get request
-  Future<Response> getBoard() => get('$_baseUrl/api/boards/', headers: {
+  Future<Response<List<dynamic>>> getBoard() => get('$_baseUrl/api/boards/', headers: {
     'Authorization' : 'Token 3372bd9880a5644b51b5f008b39adef82b524973'
   });
 

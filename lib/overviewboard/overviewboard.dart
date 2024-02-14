@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
+import 'package:icet/extension/stringext.dart';
 
-import '../provider/overviewboardProvider.dart';
+import '../datamodel/boards.dart';
 import 'overviewboard_controller.dart';
 
 class OverviewboardView extends GetView<OverviewboardController> {
@@ -160,6 +159,7 @@ class OverviewboardView extends GetView<OverviewboardController> {
   }
 
   Widget _widgetOptions() {
+    String title = filterNull("param.name");
     return Container(
         color: const Color(0xffEBF5FF),
         margin: const EdgeInsets.only(
@@ -178,8 +178,8 @@ class OverviewboardView extends GetView<OverviewboardController> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Text(
-                "Stocks watchlist",
+              Text(
+                title,
                 style: TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold),
               ),
               const SizedBox(width: 12.5),
@@ -240,71 +240,56 @@ class OverviewboardView extends GetView<OverviewboardController> {
             return _widgetOptions();
           } else {
             if (snapshot.hasError) {
-              print('${snapshot.data}');
-              print('${snapshot.stackTrace}');
               return _widgetOptions();
             }
             // return errorView(snapshot);
             else {
-              print('${snapshot.data?.name}');
               return Center(child: _widgetOptions());
             }
           }
         },
       ),
       drawer: Drawer(
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: [
+          child: FutureBuilder(
+        future: controller.fetchBoard(),
+        builder: (context, snapshot) {
+          return Column(children: [
             Padding(
-                padding: const EdgeInsets.all(24),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Image.asset("assets/images/logo.png"),
-                    const Text(
-                      'Ice T',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                          fontSize: 21.0, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                )),
-            ListTile(
-              title: const Row(children: [
-                Icon(Icons.content_paste),
-                SizedBox(width: 12),
-                Text(
-                  'Stock watchlist',
-                )
-              ]),
-              onTap: () {
-                // Then close the drawer
-                Get.back();
-              },
+              padding: const EdgeInsets.all(24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Image.asset("assets/images/logo.png"),
+                  const Text(
+                    'Ice T',
+                    textAlign: TextAlign.left,
+                    style:
+                        TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
             ),
-            ListTile(
-              title: const Row(children: [
-                Icon(Icons.content_paste),
-                SizedBox(width: 12),
-                Text('Crypto watchlist')
-              ]),
-              onTap: () {
-                // Then close the drawer
-                Get.back();
+            Expanded(
+                child: ListView.builder(
+              itemCount: snapshot.data?.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Row(children: [
+                    const Icon(Icons.content_paste),
+                    const SizedBox(width: 12),
+                    Text(filterNull(
+                      snapshot.data?[index]?.name,
+                    ))
+                  ]),
+                  onTap: () {
+                    Get.back();
+                  },
+                );
               },
-            ),
-            ListTile(
-              title: const Text('School'),
-              onTap: () {
-                // Then close the drawer
-                Get.back();
-              },
-            ),
-          ],
-        ),
-      ),
+            ))
+          ]);
+        },
+      )),
     );
   }
 }
