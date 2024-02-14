@@ -4,6 +4,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 
+import '../provider/overviewboardProvider.dart';
 import 'overviewboard_controller.dart';
 
 class OverviewboardView extends GetView<OverviewboardController> {
@@ -11,6 +12,8 @@ class OverviewboardView extends GetView<OverviewboardController> {
 
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
+  String selectedValue = "1";
 
   void onClickCustomizableTable() {
     print("search button clicked");
@@ -107,7 +110,22 @@ class OverviewboardView extends GetView<OverviewboardController> {
           height: 52,
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.center,
-          child: Text(stockNameInfo[index]),
+          child: Obx(() => DropdownButton(
+                underline: const SizedBox(),
+                iconSize: 0.0,
+                onChanged: (newValue) {
+                  controller.setSelected(newValue!);
+                },
+                value: controller.selected.value,
+                items: controller.dropdownItems.map((selectedType) {
+                  return DropdownMenuItem(
+                    value: selectedType,
+                    child: Text(
+                      selectedType,
+                    ),
+                  );
+                }).toList(),
+              )), //([index]),
         ),
         Container(
           width: widthSize,
@@ -228,8 +246,7 @@ class OverviewboardView extends GetView<OverviewboardController> {
             }
             // return errorView(snapshot);
             else {
-              print('${snapshot.data?.body}');
-              print('${snapshot.data?.request?.headers}');
+              print('${snapshot.data?.name}');
               return Center(child: _widgetOptions());
             }
           }
@@ -264,7 +281,7 @@ class OverviewboardView extends GetView<OverviewboardController> {
               ]),
               onTap: () {
                 // Then close the drawer
-               Get.back();
+                Get.back();
               },
             ),
             ListTile(
