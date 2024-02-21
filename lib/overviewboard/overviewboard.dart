@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:icet/extension/stringext.dart';
 
-import '../datamodel/boards.dart';
+import '../const/colors.dart';
 import 'overviewboard_controller.dart';
 
 class OverviewboardView extends GetView<OverviewboardController> {
@@ -161,7 +161,7 @@ class OverviewboardView extends GetView<OverviewboardController> {
   Widget _widgetOptions() {
     String title = filterNull("param.name");
     return Container(
-        color: const Color(0xffEBF5FF),
+        color: colorBlue,
         margin: const EdgeInsets.only(
           left: 60,
           top: 0,
@@ -180,7 +180,7 @@ class OverviewboardView extends GetView<OverviewboardController> {
             children: [
               Text(
                 title,
-                style: TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold),
               ),
               const SizedBox(width: 12.5),
               IconButton(
@@ -210,8 +210,8 @@ class OverviewboardView extends GetView<OverviewboardController> {
               height: 1.0,
               thickness: 0.0,
             ),
-            leftHandSideColBackgroundColor: const Color(0xFFFFFFFF),
-            rightHandSideColBackgroundColor: const Color(0xFFFFFFFF),
+            leftHandSideColBackgroundColor: colorWhite,
+            rightHandSideColBackgroundColor: colorWhite,
             itemExtent: 55,
           ))
         ]));
