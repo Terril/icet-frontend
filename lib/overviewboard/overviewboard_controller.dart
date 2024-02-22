@@ -1,12 +1,12 @@
 
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:icet/provider/overviewboardProvider.dart';
+import 'package:icet/provider/apiServiceProvider.dart';
 
 import '../datamodel/boards.dart';
 
 class OverviewboardController extends GetxController {
-  late OverviewboardProvider overviewboardProvider;
+  late APIServiceProvider overviewboardProvider;
 
   final selected = "1".obs;
 
@@ -28,7 +28,7 @@ class OverviewboardController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    overviewboardProvider = OverviewboardProvider();
+    overviewboardProvider = APIServiceProvider();
   }
 
   Future<List<Boards?>> fetchBoard() async {

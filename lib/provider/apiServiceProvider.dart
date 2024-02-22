@@ -1,12 +1,14 @@
 import 'package:get/get_connect/connect.dart';
 
-import '../datamodel/boards.dart';
+import '../datamodel/token.dart';
 
-class OverviewboardProvider extends GetConnect {
+class APIServiceProvider extends GetConnect {
   final String _baseUrl = "http://127.0.0.1:8000";
+  final String _prod_baseUrl = "https://icet-django.fly.dev";
 
   @override
   void onInit() {
+    super.onInit();
     // All request will pass to jsonEncode so CasesModel.fromJson()
     httpClient.addRequestModifier<dynamic>((request) {
       request.headers['accept'] = 'application/json';
@@ -17,18 +19,20 @@ class OverviewboardProvider extends GetConnect {
 
     //Todo : Need to implement this in future
     httpClient.addAuthenticator<dynamic>((request) async {
+      print(httpClient.baseUrl);
       Map data = <String, String>{};
       data = {
         "username" : "BB",
         "password" : "aaa"
       };
-      final response = await post(_baseUrl, data);
-      final token = response.body['token'];
+      final response = await post('$_baseUrl/api/api-token-auth/', data);
+      final token = Token.fromJson(response.body);
       print(token);
       // Set the header
       request.headers['Authorization'] = "Token $token";
       return request;
     });
+
   }
 
   // Get request
@@ -37,7 +41,7 @@ class OverviewboardProvider extends GetConnect {
   });
 
   // Post request
-  Future<Response> postBoard(Map data) => post(_baseUrl, data);
+  Future<Response> signupUser(Map data) => post('$_baseUrl/api/users/', data);
 
   // Post request with File
 

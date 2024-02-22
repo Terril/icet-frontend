@@ -74,7 +74,9 @@ class SignupView extends GetView<SignupController> {
                           Container(
                               width: txtWidth,
                               margin: const EdgeInsets.only(top: 8),
-                              child: TextField(
+                              child: TextFormField(
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                validator: controller.validateEmail,
                                 decoration: InputDecoration(
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: const BorderSide(
@@ -95,7 +97,9 @@ class SignupView extends GetView<SignupController> {
                           Container(
                               width: txtWidth,
                               margin: const EdgeInsets.only(top: 8),
-                              child: TextField(
+                              child: TextFormField(
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                validator: controller.validatePassword,
                                 obscureText: true,
                                 enableSuggestions: false,
                                 autocorrect: false,
