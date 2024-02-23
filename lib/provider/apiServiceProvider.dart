@@ -25,7 +25,7 @@ class APIServiceProvider extends GetConnect {
         "username" : "BB",
         "password" : "aaa"
       };
-      final response = await post('$_baseUrl/api/api-token-auth/', data);
+      final response = await post('$_prod_baseUrl/api/api-token-auth/', data);
       final token = Token.fromJson(response.body);
       print(token);
       // Set the header
@@ -36,12 +36,12 @@ class APIServiceProvider extends GetConnect {
   }
 
   // Get request
-  Future<Response<List<dynamic>>> getBoard() => get('$_baseUrl/api/boards/', headers: {
+  Future<Response<List<dynamic>>> getBoard() => get('$_prod_baseUrl/api/boards/', headers: {
     'Authorization' : 'Token 3372bd9880a5644b51b5f008b39adef82b524973'
   });
 
   // Post request
-  Future<Response> signupUser(Map data) => post('$_baseUrl/api/users/', data);
+  Future<Response> signupUser(Map data) => post('$_prod_baseUrl/api/users/', data);
 
   // Post request with File
 

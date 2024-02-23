@@ -1,9 +1,19 @@
+import 'dart:collection';
+
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
+import '../datamodel/user.dart';
+import '../extension/stringext.dart';
 import '../provider/apiServiceProvider.dart';
 
 class SignupController extends GetxController {
   late APIServiceProvider provider;
+  late String _pass;
+  late String _email;
+  late String _reinputPass;
+  var _trx;
+  var dataAvailable = false.obs;
 
   @override
   void onInit() {
@@ -20,18 +30,42 @@ class SignupController extends GetxController {
         r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
         r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
     final regex = RegExp(pattern);
-
-    return value!.isNotEmpty && !regex.hasMatch(value)
+    _email = filterNull(value);
+    return filterNull(value).isNotEmpty && !regex.hasMatch(_email)
         ? 'Enter a valid email address'
         : null;
   }
 
   String? validatePassword(String? value) {
-    // String  pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
-    // RegExp regExp =  RegExp(pattern);
-    final regex = RegExp(r"\s");
-    return value!.trim().isNotEmpty && !regex.hasMatch(value)
-        ? 'Enter a password'
+    String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~])';
+    RegExp regex = RegExp(pattern);
+    _pass = filterNull(value);
+    // final regex = RegExp(r"\s");
+    return filterNull(value).isNotEmpty && !regex.hasMatch(_pass)
+        ? 'Password should be a mix of Capital, Small, numbers and \nspecial characters'
         : null;
+  }
+
+  String? validateReInputPassword(String? value) {
+    _reinputPass = filterNull(value);
+    return filterNull(value).isNotEmpty && _pass != value
+        ? 'Password doesn\'t match'
+        : null;
+  }
+
+  void performUserSignUp() async {
+    if (_email.isNotEmpty && _reinputPass.isNotEmpty) {
+      Map<String, String> map = HashMap();
+      map["username"] = _email;
+      map["email"] = _email;
+      map["password"] = _pass;
+      await provider
+          .signupUser(map)
+          .then((response) {
+            if (response != null) _trx = User.fromJson(response.body);
+          })
+          .catchError((err) => print('Error!!!!! : $err'))
+          .whenComplete(() => dataAvailable.value = _trx != null);
+    }
   }
 }
