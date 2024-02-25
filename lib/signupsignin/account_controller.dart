@@ -1,13 +1,12 @@
 import 'dart:collection';
 
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 import '../datamodel/user.dart';
 import '../extension/stringext.dart';
 import '../provider/apiServiceProvider.dart';
 
-class SignupController extends GetxController {
+class AccountController extends GetxController {
   late APIServiceProvider provider;
   late String _pass;
   late String _email;
@@ -64,6 +63,22 @@ class SignupController extends GetxController {
           .then((response) {
             if (response != null) _trx = User.fromJson(response.body);
           })
+          .catchError((err) => print('Error!!!!! : $err'))
+          .whenComplete(() => dataAvailable.value = _trx != null);
+    }
+  }
+
+  void performUserSignIn() async {
+    if (_email.isNotEmpty && _reinputPass.isNotEmpty) {
+      Map<String, String> map = HashMap();
+      map["username"] = _email;
+      map["email"] = _email;
+      map["password"] = _pass;
+      await provider
+          .signupUser(map)
+          .then((response) {
+        if (response != null) _trx = User.fromJson(response.body);
+      })
           .catchError((err) => print('Error!!!!! : $err'))
           .whenComplete(() => dataAvailable.value = _trx != null);
     }

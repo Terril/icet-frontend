@@ -4,15 +4,15 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:get/utils.dart';
 import 'package:icet/overviewboard/overviewboard.dart';
-import 'package:icet/signupsignin/signin.dart';
+import 'package:icet/signupsignin/signup.dart';
 import 'package:icet/signupsignin/account_controller.dart';
 
 import '../const/colors.dart';
 
-class SignupView extends GetView<AccountController> {
-   SignupView({super.key});
+class SigninView extends GetView<AccountController> {
+   SigninView({super.key});
 
-  void _submitCreateAccount() {
+  void _submitForAccountLogin() {
     controller.performUserSignUp();
   }
 
@@ -20,8 +20,8 @@ class SignupView extends GetView<AccountController> {
     Get.to(OverviewboardView());
   }
 
-  void _navigateToSignIn() {
-    Get.to(SigninView());
+  void _navigateToSignUp() {
+    Get.to(SignupView());
   }
 
   @override
@@ -73,7 +73,7 @@ class SignupView extends GetView<AccountController> {
                                           MainAxisAlignment.center,
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
-                                        const Text("Sign up",
+                                        const Text("Sign in",
                                             textAlign: TextAlign.left,
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w600,
@@ -145,40 +145,6 @@ class SignupView extends GetView<AccountController> {
                                                   hintText: '********'),
                                             )),
                                         Container(
-                                          margin:
-                                              const EdgeInsets.only(top: 20),
-                                          child: const Text("Re-input password",
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: colorGrey,
-                                                  fontSize: 14)),
-                                        ),
-                                        Container(
-                                            width: txtWidth,
-                                            margin:
-                                                const EdgeInsets.only(top: 8),
-                                            child: TextFormField(
-                                              autovalidateMode: AutovalidateMode
-                                                  .onUserInteraction,
-                                              validator: controller
-                                                  .validateReInputPassword,
-                                              obscureText: true,
-                                              enableSuggestions: false,
-                                              autocorrect: false,
-                                              decoration: InputDecoration(
-                                                  enabledBorder:
-                                                      OutlineInputBorder(
-                                                    borderSide: const BorderSide(
-                                                        color:
-                                                        colorGreyField),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                  hintText: '********'),
-                                            )),
-                                        Container(
                                             width: txtWidth,
                                             margin: const EdgeInsets.only(
                                                 top: 24.0),
@@ -190,11 +156,11 @@ class SignupView extends GetView<AccountController> {
                                                             8), // <-- Radius
                                                   ),
                                                   backgroundColor:
-                                                      colorBlueButton),
-                                              onPressed: _submitCreateAccount,
+                                                  colorGreyField),
+                                              onPressed: _submitForAccountLogin,
                                               child: const Padding(
                                                 padding: EdgeInsets.all(10.0),
-                                                child: Text('Create account',
+                                                child: Text('Sign in',
                                                     style: TextStyle(
                                                         fontWeight:
                                                             FontWeight.w500,
@@ -211,14 +177,14 @@ class SignupView extends GetView<AccountController> {
                                                   children: <TextSpan>[
                                                     TextSpan(
                                                         text:
-                                                        'Already registered?',
+                                                        'Not registered?',
                                                         style: TextStyle(
                                                             fontWeight:
                                                             FontWeight.w500,
                                                             color: colorGrey,
                                                             fontSize: 14)),
                                                     TextSpan(
-                                                        text: ' Sign in',
+                                                        text: ' Create account',
                                                         style: TextStyle(
                                                             fontWeight:
                                                             FontWeight.w500,
@@ -229,7 +195,7 @@ class SignupView extends GetView<AccountController> {
                                                 ),
                                               )),
                                           onTap: () {
-                                            _navigateToSignIn();
+                                            _navigateToSignUp();
                                           },
                                         ),
                                       ])))))
