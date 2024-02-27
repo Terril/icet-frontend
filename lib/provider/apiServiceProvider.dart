@@ -1,8 +1,9 @@
 import 'package:get/get_connect/connect.dart';
+import 'package:icet/cache/cachemanager.dart';
 
 import '../datamodel/token.dart';
 
-class APIServiceProvider extends GetConnect {
+class APIServiceProvider extends GetConnect with CacheManager {
   final String _baseUrl = "http://127.0.0.1:8000";
   final String _prod_baseUrl = "https://icet-django.fly.dev";
 
@@ -37,11 +38,14 @@ class APIServiceProvider extends GetConnect {
 
   // Get request
   Future<Response<List<dynamic>>> getBoard() => get('$_baseUrl/api/boards/', headers: {
-    'Authorization' : 'Token 3372bd9880a5644b51b5f008b39adef82b524973'
+    'Authorization' : 'Token $getToken'
   });
 
-  // Post request
+  // Post Sign up request
   Future<Response> signupUser(Map data) => post('$_baseUrl/api/users/', data);
+
+  // Post Sign in request
+  Future<Response> signinUser(Map data) => post('$_baseUrl/api/api-token-auth/', data);
 
   // Post request with File
 

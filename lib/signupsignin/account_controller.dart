@@ -2,11 +2,13 @@ import 'dart:collection';
 
 import 'package:get/get.dart';
 
+import '../cache/cachemanager.dart';
+import '../datamodel/token.dart';
 import '../datamodel/user.dart';
 import '../extension/stringext.dart';
 import '../provider/apiServiceProvider.dart';
 
-class AccountController extends GetxController {
+class AccountController extends GetxController with CacheManager {
   late APIServiceProvider provider;
   late String _pass;
   late String _email;
@@ -72,13 +74,15 @@ class AccountController extends GetxController {
     if (_email.isNotEmpty && _reinputPass.isNotEmpty) {
       Map<String, String> map = HashMap();
       map["username"] = _email;
-      map["email"] = _email;
       map["password"] = _pass;
       await provider
-          .signupUser(map)
+          .signinUser(map)
           .then((response) {
-        if (response != null) _trx = User.fromJson(response.body);
-      })
+            if (response != null) {
+              _trx  = Token.fromJson(response.body);
+              saveToken((_trx as Token).token);
+            }
+          })
           .catchError((err) => print('Error!!!!! : $err'))
           .whenComplete(() => dataAvailable.value = _trx != null);
     }
