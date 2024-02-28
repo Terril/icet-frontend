@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../cache/cachemanager.dart';
@@ -15,11 +16,30 @@ class AccountController extends GetxController with CacheManager {
   late String _reinputPass;
   var _trx;
   var dataAvailable = false.obs;
+  TextEditingController textPasswordController = TextEditingController();
+  TextEditingController textEmailController = TextEditingController();
+
+  RxBool enableButton = false.obs;
 
   @override
   void onInit() {
     super.onInit();
     provider = APIServiceProvider();
+    textPasswordController.addListener(() {
+      _checkButtonEnableLogic();
+    });
+
+    textEmailController.addListener(() {
+      _checkButtonEnableLogic();
+    });
+  }
+
+  void _checkButtonEnableLogic() {
+    if (_email.isNotEmpty && _pass.isNotEmpty) {
+      enableButton.value = true;
+    } else {
+      enableButton.value = false;
+    }
   }
 
   String? validateEmail(String? value) {
@@ -86,10 +106,14 @@ class AccountController extends GetxController with CacheManager {
             }
           })
           .catchError((err) => print('Error!!!!! : $err'))
-          .whenComplete(() => {
-            dataAvailable.value = _trx != null,
-            func(false)
-          });
+          .whenComplete(
+              () => {dataAvailable.value = _trx != null, func(false)});
     }
+  }
+
+  @override
+  void onClose() {
+    textPasswordController.dispose();
+    super.onClose();
   }
 }

@@ -32,180 +32,159 @@ class SigninView extends GetView<AccountController> {
     return Scaffold(
         body: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset("assets/images/logo.png"),
-                    const SizedBox(width: 15),
-                    const Text(
-                      'Ice T',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                          fontSize: 36.0, fontWeight: FontWeight.bold),
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset("assets/images/logo.png"),
+            const SizedBox(width: 15),
+            const Text(
+              'Ice T',
+              textAlign: TextAlign.left,
+              style: TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        Container(
+          margin: const EdgeInsets.only(top: 20),
+          child: const Text("Decide Better",
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                  fontWeight: FontWeight.w500, color: colorGrey, fontSize: 20)),
+        ),
+        SingleChildScrollView(
+            child: Container(
+                margin: const EdgeInsets.only(top: 40),
+                child: Card(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  ],
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 20),
-                  child: const Text("Decide Better",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: colorGrey,
-                          fontSize: 20)),
-                ),
-                SingleChildScrollView(
-                    child: Container(
-                        margin: const EdgeInsets.only(top: 40),
-                        child: Card(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Padding(
-                                padding: const EdgeInsets.all(32.0),
-                                child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      const Text("Sign in",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              color: colorGrey,
-                                              fontSize: 20)),
-                                      Container(
-                                        margin:
-                                        const EdgeInsets.only(top: 24),
-                                        child: const Text("Your email",
-                                            textAlign: TextAlign.left,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                color: colorGrey,
-                                                fontSize: 14)),
-                                      ),
-                                      Container(
-                                          width: txtWidth,
-                                          margin:
-                                          const EdgeInsets.only(top: 8),
-                                          child: TextFormField(
-                                            autovalidateMode: AutovalidateMode
-                                                .onUserInteraction,
-                                            validator:
-                                            controller.validateEmail,
-                                            decoration: InputDecoration(
-                                                enabledBorder:
-                                                OutlineInputBorder(
-                                                  borderSide: const BorderSide(
-                                                      color:
-                                                      colorGreyField),
-                                                  borderRadius:
-                                                  BorderRadius.circular(
-                                                      8),
-                                                ),
-                                                hintText: 'name@example.com'),
-                                          )),
-                                      Container(
-                                        margin:
-                                        const EdgeInsets.only(top: 20),
-                                        child: const Text("Password",
-                                            textAlign: TextAlign.left,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                color: colorGrey,
-                                                fontSize: 14)),
-                                      ),
-                                      Container(
-                                          width: txtWidth,
-                                          margin:
-                                          const EdgeInsets.only(top: 8),
-                                          child: TextFormField(
-                                            autovalidateMode: AutovalidateMode
-                                                .onUserInteraction,
-                                            validator:
-                                            controller.validatePassword,
-                                            obscureText: true,
-                                            enableSuggestions: false,
-                                            autocorrect: false,
-                                            decoration: InputDecoration(
-                                                enabledBorder:
-                                                OutlineInputBorder(
-                                                  borderSide: const BorderSide(
-                                                      color:
-                                                      colorGreyField),
-                                                  borderRadius:
-                                                  BorderRadius.circular(
-                                                      8),
-                                                ),
-                                                hintText: '********'),
-                                          )),
-                                      Container(
-                                          width: txtWidth,
-                                          margin: const EdgeInsets.only(
-                                              top: 24.0),
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
+                    child: Padding(
+                        padding: const EdgeInsets.all(32.0),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              const Text("Sign in",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: colorGrey,
+                                      fontSize: 20)),
+                              Container(
+                                margin: const EdgeInsets.only(top: 24),
+                                child: const Text("Your email",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: colorGrey,
+                                        fontSize: 14)),
+                              ),
+                              Container(
+                                  width: txtWidth,
+                                  margin: const EdgeInsets.only(top: 8),
+                                  child: TextFormField(
+                                    controller:
+                                    controller.textEmailController,
+                                    autovalidateMode:
+                                        AutovalidateMode.onUserInteraction,
+                                    validator: controller.validateEmail,
+                                    decoration: InputDecoration(
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                              color: colorGreyField),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        hintText: 'name@example.com'),
+                                  )),
+                              Container(
+                                margin: const EdgeInsets.only(top: 20),
+                                child: const Text("Password",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: colorGrey,
+                                        fontSize: 14)),
+                              ),
+                              Container(
+                                  width: txtWidth,
+                                  margin: const EdgeInsets.only(top: 8),
+                                  child: TextFormField(
+                                    controller:
+                                        controller.textPasswordController,
+                                    autovalidateMode:
+                                        AutovalidateMode.onUserInteraction,
+                                    validator: controller.validatePassword,
+                                    obscureText: true,
+                                    enableSuggestions: false,
+                                    autocorrect: false,
+                                    decoration: InputDecoration(
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                              color: colorGreyField),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        hintText: '********'),
+                                  )),
+                              Container(
+                                  width: txtWidth,
+                                  margin: const EdgeInsets.only(top: 24.0),
+                                  child: Obx(() => ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
                                                   BorderRadius.circular(
                                                       8), // <-- Radius
-                                                ),
-                                                backgroundColor:
-                                                colorGreyField),
-                                            onPressed: _submitForAccountLogin,
-                                            child: const Padding(
-                                              padding: EdgeInsets.all(10.0),
-                                              child: Text('Sign in',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                      FontWeight.w500,
-                                                      color: colorWhite)),
                                             ),
-                                          )),
-                                      InkWell(
-                                        child: Container(
-                                            margin:
-                                            const EdgeInsets.only(top: 16),
-                                            child: RichText(
-                                              textAlign: TextAlign.left,
-                                              text: const TextSpan(
-                                                children: <TextSpan>[
-                                                  TextSpan(
-                                                      text:
-                                                      'Not registered?',
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                          FontWeight.w500,
-                                                          color: colorGrey,
-                                                          fontSize: 14)),
-                                                  TextSpan(
-                                                      text: ' Create account',
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                          FontWeight.w500,
-                                                          color:
-                                                          colorBlueButton,
-                                                          fontSize: 14)),
-                                                ],
-                                              ),
-                                            )),
-                                        onTap: () {
-                                          _navigateToSignUp();
-                                        },
+                                            backgroundColor:  controller.enableButton.value
+                                                ? colorBlueButton
+                                                : colorGreyField),
+                                        onPressed: _submitForAccountLogin,
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(10.0),
+                                          child: Text('Sign in',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  color: colorWhite)),
+                                        ),
+                                      ))),
+                              InkWell(
+                                child: Container(
+                                    margin: const EdgeInsets.only(top: 16),
+                                    child: RichText(
+                                      textAlign: TextAlign.left,
+                                      text: const TextSpan(
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                              text: 'Not registered?',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  color: colorGrey,
+                                                  fontSize: 14)),
+                                          TextSpan(
+                                              text: ' Create account',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  color: colorBlueButton,
+                                                  fontSize: 14)),
+                                        ],
                                       ),
-                                    ])))))
-              ],
-            ))
-    );
+                                    )),
+                                onTap: () {
+                                  _navigateToSignUp();
+                                },
+                              ),
+                            ])))))
+      ],
+    )));
   }
 }
-
 
 // Center(
 // child: Column(
