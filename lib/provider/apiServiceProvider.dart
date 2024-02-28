@@ -1,7 +1,6 @@
 import 'package:get/get_connect/connect.dart';
 import 'package:icet/cache/cachemanager.dart';
 
-import '../datamodel/token.dart';
 
 class APIServiceProvider extends GetConnect with CacheManager {
   final String _baseUrl = "http://127.0.0.1:8000";
@@ -18,34 +17,18 @@ class APIServiceProvider extends GetConnect with CacheManager {
       return request;
     });
 
-    //Todo : Need to implement this in future
-    httpClient.addAuthenticator<dynamic>((request) async {
-      print(httpClient.baseUrl);
-      Map data = <String, String>{};
-      data = {
-        "username" : "BB",
-        "password" : "aaa"
-      };
-      final response = await post('$_baseUrl/api/api-token-auth/', data);
-      final token = Token.fromJson(response.body);
-      print(token);
-      // Set the header
-      request.headers['Authorization'] = "Token $token";
-      return request;
-    });
-
   }
 
   // Get request
-  Future<Response<List<dynamic>>> getBoard() => get('$_baseUrl/api/boards/', headers: {
+  Future<Response<List<dynamic>>> getBoard() => get('$_prod_baseUrl/api/boards/', headers: {
     'Authorization' : 'Token $getToken'
   });
 
   // Post Sign up request
-  Future<Response> signupUser(Map data) => post('$_baseUrl/api/users/', data);
+  Future<Response> signupUser(Map data) => post('$_prod_baseUrl/api/users/', data);
 
   // Post Sign in request
-  Future<Response> signinUser(Map data) => post('$_baseUrl/api/api-token-auth/', data);
+  Future<Response> signinUser(Map data) => post('$_prod_baseUrl/api/api-token-auth/', data);
 
   // Post request with File
 

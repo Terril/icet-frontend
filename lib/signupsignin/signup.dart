@@ -3,8 +3,6 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:get/utils.dart';
-import 'package:icet/overviewboard/overviewboard.dart';
-import 'package:icet/signupsignin/signin.dart';
 import 'package:icet/signupsignin/account_controller.dart';
 
 import '../const/colors.dart';
@@ -17,11 +15,11 @@ class SignupView extends GetView<AccountController> {
   }
 
   void _navigateToBoards() {
-    Get.to(OverviewboardView());
+    Get.toNamed('/overviewboard');
   }
 
   void _navigateToSignIn() {
-    Get.to(SigninView());
+    Get.toNamed('/signin');
   }
 
   @override

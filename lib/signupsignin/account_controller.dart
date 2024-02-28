@@ -57,12 +57,12 @@ class AccountController extends GetxController with CacheManager {
   void performUserSignUp() async {
     if (_email.isNotEmpty && _reinputPass.isNotEmpty) {
       Map<String, String> map = HashMap();
-      map["username"] = _email;
       map["email"] = _email;
       map["password"] = _pass;
       await provider
           .signupUser(map)
           .then((response) {
+            print(response);
             if (response != null) _trx = User.fromJson(response.body);
           })
           .catchError((err) => print('Error!!!!! : $err'))
@@ -70,21 +70,26 @@ class AccountController extends GetxController with CacheManager {
     }
   }
 
-  void performUserSignIn() async {
-    if (_email.isNotEmpty && _reinputPass.isNotEmpty) {
+  void performUserSignIn(Function func) async {
+    if (_email.isNotEmpty && _pass.isNotEmpty) {
       Map<String, String> map = HashMap();
       map["username"] = _email;
       map["password"] = _pass;
       await provider
           .signinUser(map)
           .then((response) {
+            print(response);
             if (response != null) {
-              _trx  = Token.fromJson(response.body);
+              _trx = Token.fromJson(response.body);
               saveToken((_trx as Token).token);
+              func(true);
             }
           })
           .catchError((err) => print('Error!!!!! : $err'))
-          .whenComplete(() => dataAvailable.value = _trx != null);
+          .whenComplete(() => {
+            dataAvailable.value = _trx != null,
+            func(false)
+          });
     }
   }
 }
