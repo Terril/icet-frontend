@@ -20,17 +20,93 @@ class OverviewboardView extends GetView<OverviewboardController> {
 
   double widthSize = (Get.width / 6);
 
-  // const Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-  // Text("Stock watchlist",
-  // style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-  // IconButton(
-  // iconSize: 20,
-  // icon: Icon(Icons.edit),
-  // onPressed: null,
-  // ),
-  // Spacer(),
-  // Text("Some Data")
-  // ]),
+  Dialog newBoardDialog = Dialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+    //this right here
+    child: Container(
+      height: Get.width / 3,
+      width: Get.height,
+      margin: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'New board',
+                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700),
+                ),
+                 IconButton(icon:  const Icon(Icons.cancel_outlined), onPressed: () { Get.back(); },)
+              ]
+          ),
+          const SizedBox(height: 10.0),
+          const Text(
+            'What are you looking to analyse?',
+            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w200),
+          ),
+          const SizedBox(height: 10.0),
+          Row(children: <Widget>[
+            TextButton(
+              style: ButtonStyle(
+                  shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4.0)),
+              )),
+              onPressed: () {
+                Get.back();
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                // Replace with a Row for horizontal icon + text
+                children: <Widget>[
+                  Container(
+                      margin: const EdgeInsets.only(bottom: 14.0),
+                      decoration: BoxDecoration(
+                          color: colorBlue100,
+                          borderRadius: BorderRadius.circular(4.0)),
+                      child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 30, bottom: 30, right: 90, left: 90),
+                          child: Image.asset('assets/images/stock_icon.png'))),
+                  const Text("Stocks")
+                ],
+              ),
+            ),
+            const SizedBox(width: 10.0),
+            TextButton(
+              style: ButtonStyle(
+                  shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4.0)),
+              )),
+              onPressed: () {
+                Get.back();
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                // Replace with a Row for horizontal icon + text
+                children: <Widget>[
+                  Container(
+                      margin: const EdgeInsets.only(bottom: 14.0),
+                      decoration: const BoxDecoration(
+                        color: colorBlue100,
+                      ),
+                      child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 35, bottom: 35, right: 90, left: 90),
+                          child:
+                              Image.asset('assets/images/u_plus-circle.png'))),
+                  const Text("Custom")
+                ],
+              ),
+            )
+          ])
+        ],
+      ),
+    ),
+  );
 
   List<Widget> _getTitleWidget() {
     return [
@@ -180,7 +256,8 @@ class OverviewboardView extends GetView<OverviewboardController> {
             children: [
               Text(
                 title,
-                style: const TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    fontSize: 21.0, fontWeight: FontWeight.bold),
               ),
               const SizedBox(width: 12.5),
               IconButton(
@@ -271,20 +348,41 @@ class OverviewboardView extends GetView<OverviewboardController> {
             ),
             Expanded(
                 child: ListView.builder(
-              itemCount: snapshot.data?.length,
+              itemCount: controller.getItemCount(snapshot.data?.length),
               itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  title: Row(children: [
-                    const Icon(Icons.content_paste),
-                    const SizedBox(width: 12),
-                    Text(filterNull(
-                      snapshot.data?[index]?.name,
-                    ))
-                  ]),
-                  onTap: () {
-                    Get.back();
-                  },
-                );
+                if (index == 0) {
+                  return Container(
+                      margin: const EdgeInsets.all(12),
+                      child: OutlinedButton.icon(
+                        icon: const Icon(Icons.add_sharp),
+                        style: ButtonStyle(
+                          foregroundColor:
+                              MaterialStateProperty.all(Colors.black),
+                          shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0))),
+                        ),
+                        onPressed: () => {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) => newBoardDialog)
+                        },
+                        label: const Text("Add board"),
+                      ));
+                } else {
+                  return ListTile(
+                    title: Row(children: [
+                      const Icon(Icons.content_paste),
+                      const SizedBox(width: 12),
+                      Text(filterNull(
+                        snapshot.data?[index]?.name,
+                      ))
+                    ]),
+                    onTap: () {
+                      Get.back();
+                    },
+                  );
+                }
               },
             ))
           ]);

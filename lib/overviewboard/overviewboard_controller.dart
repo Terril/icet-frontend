@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:icet/provider/apiServiceProvider.dart';
 
+import '../cache/cachemanager.dart';
 import '../datamodel/boards.dart';
 
 class OverviewboardController extends GetxController {
@@ -36,6 +37,12 @@ class OverviewboardController extends GetxController {
     List<Boards> responseBoards = BoardList.fromJsonToList(response.body).list;
 
     return responseBoards;
+  }
+
+  int? getItemCount(int?  itemCount) {
+   if(itemCount == null) return 1;
+
+   if(itemCount > 0) { return itemCount + 1 ; }
   }
 
   void createBoard() {}

@@ -58,12 +58,12 @@ class AccountController extends GetxController with CacheManager {
   }
 
   String? validatePassword(String? value) {
-    String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~])';
-    RegExp regex = RegExp(pattern);
+    // String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~])';
+    // RegExp regex = RegExp(pattern);
     _pass = filterNull(value);
     // final regex = RegExp(r"\s");
-    return filterNull(value).isNotEmpty && !regex.hasMatch(_pass)
-        ? 'Password should be a mix of Capital, Small, numbers and \nspecial characters'
+    return filterNull(value).isNotEmpty && !(_pass.length > 5)
+        ? 'Password should have a minimum of 6 characters'
         : null;
   }
 
