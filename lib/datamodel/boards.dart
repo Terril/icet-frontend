@@ -19,13 +19,13 @@ class Boards {
 
   Boards.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    if (json['columns'] != null) {
+    if (json['columns'] != null && json["columns"].isNotEmpty) {
       columns = <Columns>[];
       json['columns'].forEach((v) {
         columns!.add(Columns.fromJson(v));
       });
     }
-    if (json['rows'] != null) {
+    if (json['rows'] != null && json["rows"].isNotEmpty) {
       rows = <Rows>[];
       json['rows'].forEach((v) {
         rows!.add(Rows.fromJson(v));

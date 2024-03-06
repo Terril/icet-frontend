@@ -20,8 +20,18 @@ class APIServiceProvider extends GetConnect with CacheManager {
   }
 
   // Get request
-  Future<Response<List<dynamic>>> getBoard() => get('$_baseUrl/api/boards/', headers: {
-    'Authorization' : 'Token $getToken'
+  Future<Response<List<dynamic>>> getBoard() {
+    var token = getToken();
+    return get('$_baseUrl/api/boards/', headers: {
+      'Authorization' : 'Token $token',
+      'accept' : 'application/json',
+      'Access-Control-Allow-Origin' : '*',
+      'Content-Type' : 'application/json'
+    });
+  }
+
+  Future<Response<List<dynamic>>> addBoard(Map data) => post('$_baseUrl/api/boards/', data, headers: {
+    'Authorization' : 'Token $getToken',
   });
 
   // Post Sign up request

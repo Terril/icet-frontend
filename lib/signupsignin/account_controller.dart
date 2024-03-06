@@ -98,7 +98,6 @@ class AccountController extends GetxController with CacheManager {
       await provider
           .signinUser(map)
           .then((response) {
-            print(response);
             if (response != null) {
               _trx = Token.fromJson(response.body);
               saveToken((_trx as Token).token);

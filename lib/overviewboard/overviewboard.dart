@@ -4,6 +4,7 @@ import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:icet/extension/stringext.dart';
 
 import '../const/colors.dart';
+import '../datamodel/boards.dart';
 import 'overviewboard_controller.dart';
 
 class OverviewboardView extends GetView<OverviewboardController> {
@@ -31,16 +32,18 @@ class OverviewboardView extends GetView<OverviewboardController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'New board',
-                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700),
-                ),
-                 IconButton(icon:  const Icon(Icons.cancel_outlined), onPressed: () { Get.back(); },)
-              ]
-          ),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            const Text(
+              'New board',
+              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700),
+            ),
+            IconButton(
+              icon: const Icon(Icons.cancel_outlined),
+              onPressed: () {
+                Get.back();
+              },
+            )
+          ]),
           const SizedBox(height: 10.0),
           const Text(
             'What are you looking to analyse?',
@@ -234,12 +237,42 @@ class OverviewboardView extends GetView<OverviewboardController> {
     );
   }
 
-  Widget _widgetOptions() {
-    String title = filterNull("param.name");
+  List<String> list = <String>['New asset', 'New checklist'];
+
+  Widget _addDropDown() {
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(8)),
+
+        // dropdown below..
+        child: DropdownButton<String>(
+          hint: const Text("Add"),
+          icon: const Icon(Icons.arrow_drop_down_sharp),
+          elevation: 16,
+          underline: Container(
+            height: 2,
+          ),
+          onChanged: (String? value) {
+          },
+          items: list.map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+              onTap: () {
+
+              },
+            );
+          }).toList(),
+        ));
+  }
+
+  Widget _widgetOptions(List<Boards?>? data) {
+    String? title = data?[0]?.name;
     return Container(
         color: colorBlue,
         margin: const EdgeInsets.only(
-          left: 60,
+          left: 24,
           top: 0,
           right: 0,
           bottom: 0,
@@ -255,7 +288,7 @@ class OverviewboardView extends GetView<OverviewboardController> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-                title,
+                filterNull(title),
                 style: const TextStyle(
                     fontSize: 21.0, fontWeight: FontWeight.bold),
               ),
@@ -264,11 +297,12 @@ class OverviewboardView extends GetView<OverviewboardController> {
                   onPressed: () async {},
                   icon: const Icon(Icons.drive_file_rename_outline)),
               const Spacer(),
-              TextButton.icon(
-                  onPressed: null,
-                  icon: const Icon(Icons.settings_outlined),
-                  label: const Text("Customize Table",
-                      style: TextStyle(fontWeight: FontWeight.w600)))
+              _addDropDown()
+              // TextButton.icon(
+              //     onPressed: null,
+              //     icon: const Icon(Icons.settings_outlined),
+              //     label: const Text("Customize Table",
+              //         style: TextStyle(fontWeight: FontWeight.w600)))
             ],
           ),
           const SizedBox(height: 24),
@@ -314,14 +348,14 @@ class OverviewboardView extends GetView<OverviewboardController> {
         future: controller.fetchBoard(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return _widgetOptions();
+            return _widgetOptions(null);
           } else {
             if (snapshot.hasError) {
-              return _widgetOptions();
+              return _widgetOptions(null);
             }
             // return errorView(snapshot);
             else {
-              return Center(child: _widgetOptions());
+              return Center(child: _widgetOptions(snapshot.data));
             }
           }
         },
@@ -350,7 +384,7 @@ class OverviewboardView extends GetView<OverviewboardController> {
                 child: ListView.builder(
               itemCount: controller.getItemCount(snapshot.data?.length),
               itemBuilder: (BuildContext context, int index) {
-                if (index == 0) {
+                if (index > snapshot.data!.length - 1) {
                   return Container(
                       margin: const EdgeInsets.all(12),
                       child: OutlinedButton.icon(
@@ -363,6 +397,7 @@ class OverviewboardView extends GetView<OverviewboardController> {
                                   borderRadius: BorderRadius.circular(8.0))),
                         ),
                         onPressed: () => {
+                          Get.back(),
                           showDialog(
                               context: context,
                               builder: (BuildContext context) => newBoardDialog)
