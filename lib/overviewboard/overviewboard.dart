@@ -6,8 +6,10 @@ import 'package:icet/extension/stringext.dart';
 import '../const/colors.dart';
 import '../datamodel/boards.dart';
 import 'overviewboard_controller.dart';
+import 'overviewboard_dialog.dart';
 
-class OverviewboardView extends GetView<OverviewboardController> {
+class OverviewboardView extends GetView<OverviewboardController>
+    with OverviewboardDialogView {
   OverviewboardView({super.key});
 
   static const TextStyle optionStyle =
@@ -20,96 +22,6 @@ class OverviewboardView extends GetView<OverviewboardController> {
   }
 
   double widthSize = (Get.width / 6);
-
-  Dialog newBoardDialog = Dialog(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-    //this right here
-    child: Container(
-      height: Get.width / 3,
-      width: Get.height,
-      margin: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text(
-              'New board',
-              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700),
-            ),
-            IconButton(
-              icon: const Icon(Icons.cancel_outlined),
-              onPressed: () {
-                Get.back();
-              },
-            )
-          ]),
-          const SizedBox(height: 10.0),
-          const Text(
-            'What are you looking to analyse?',
-            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w200),
-          ),
-          const SizedBox(height: 10.0),
-          Row(children: <Widget>[
-            TextButton(
-              style: ButtonStyle(
-                  shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4.0)),
-              )),
-              onPressed: () {
-                Get.back();
-              },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                // Replace with a Row for horizontal icon + text
-                children: <Widget>[
-                  Container(
-                      margin: const EdgeInsets.only(bottom: 14.0),
-                      decoration: BoxDecoration(
-                          color: colorBlue100,
-                          borderRadius: BorderRadius.circular(4.0)),
-                      child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 30, bottom: 30, right: 90, left: 90),
-                          child: Image.asset('assets/images/stock_icon.png'))),
-                  const Text("Stocks")
-                ],
-              ),
-            ),
-            const SizedBox(width: 10.0),
-            TextButton(
-              style: ButtonStyle(
-                  shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4.0)),
-              )),
-              onPressed: () {
-                Get.back();
-              },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                // Replace with a Row for horizontal icon + text
-                children: <Widget>[
-                  Container(
-                      margin: const EdgeInsets.only(bottom: 14.0),
-                      decoration: const BoxDecoration(
-                        color: colorBlue100,
-                      ),
-                      child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 35, bottom: 35, right: 90, left: 90),
-                          child:
-                              Image.asset('assets/images/u_plus-circle.png'))),
-                  const Text("Custom")
-                ],
-              ),
-            )
-          ])
-        ],
-      ),
-    ),
-  );
 
   List<Widget> _getTitleWidget() {
     return [
@@ -239,7 +151,7 @@ class OverviewboardView extends GetView<OverviewboardController> {
 
   List<String> list = <String>['New asset', 'New checklist'];
 
-  Widget _addDropDown() {
+  Widget _addDropDown(BuildContext context) {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
@@ -254,20 +166,27 @@ class OverviewboardView extends GetView<OverviewboardController> {
             height: 2,
           ),
           onChanged: (String? value) {
+            if (value == list.first) {
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) =>
+                      newChecklistDialog(onTapCreate: () {
+                        print("Create called");
+                      }));
+            }
           },
           items: list.map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,
               child: Text(value),
-              onTap: () {
-
-              },
+              onTap: () {},
             );
           }).toList(),
         ));
   }
 
-  Widget _widgetOptions(List<Boards?>? data) {
+  Widget _widgetOptions(BuildContext context, List<Boards?>? data) {
     String? title = data?[0]?.name;
     return Container(
         color: colorBlue,
@@ -297,7 +216,7 @@ class OverviewboardView extends GetView<OverviewboardController> {
                   onPressed: () async {},
                   icon: const Icon(Icons.drive_file_rename_outline)),
               const Spacer(),
-              _addDropDown()
+              _addDropDown(context)
               // TextButton.icon(
               //     onPressed: null,
               //     icon: const Icon(Icons.settings_outlined),
@@ -348,14 +267,14 @@ class OverviewboardView extends GetView<OverviewboardController> {
         future: controller.fetchBoard(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return _widgetOptions(null);
+            return _widgetOptions(context, null);
           } else {
             if (snapshot.hasError) {
-              return _widgetOptions(null);
+              return _widgetOptions(context, null);
             }
             // return errorView(snapshot);
             else {
-              return Center(child: _widgetOptions(snapshot.data));
+              return Center(child: _widgetOptions(context, snapshot.data));
             }
           }
         },
