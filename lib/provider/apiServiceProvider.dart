@@ -6,19 +6,6 @@ class APIServiceProvider extends GetConnect with CacheManager {
   final String _baseUrl = "http://127.0.0.1:8000";
   final String _prod_baseUrl = "https://icet-django.fly.dev";
 
-  @override
-  void onInit() {
-    super.onInit();
-    // All request will pass to jsonEncode so CasesModel.fromJson()
-    httpClient.addRequestModifier<dynamic>((request) {
-      request.headers['accept'] = 'application/json';
-      request.headers['Access-Control-Allow-Origin'] = '*';
-      request.headers['User-Agent'] = 'web';
-      return request;
-    });
-
-  }
-
   // Get request
   Future<Response<List<dynamic>>> getBoard() {
     var token = getToken();
@@ -30,9 +17,12 @@ class APIServiceProvider extends GetConnect with CacheManager {
     });
   }
 
-  Future<Response<List<dynamic>>> addBoard(Map data) => post('$_baseUrl/api/boards/', data, headers: {
-    'Authorization' : 'Token $getToken',
-  });
+  Future<Response<List<dynamic>>> addBoard(Map data) {
+    var token = getToken();
+    return post('$_baseUrl/api/boards/', data, headers: {
+    'Authorization' : 'Token $token',
+    });
+  }
 
   // Post Sign up request
   Future<Response> signupUser(Map data) => post('$_baseUrl/api/users/', data);

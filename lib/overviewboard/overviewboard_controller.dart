@@ -34,6 +34,7 @@ class OverviewboardController extends GetxController {
 
   Future<List<Boards?>> fetchBoard() async {
     Response response = await overviewboardProvider.getBoard();
+
     List<Boards> responseBoards = BoardList.fromJsonToList(response.body).list;
     return responseBoards;
   }

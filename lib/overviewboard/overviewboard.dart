@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
@@ -172,17 +173,20 @@ class OverviewboardView extends GetView<OverviewboardController>
                 context: context,
                 transitionBuilder: (context, a1, a2, widget) {
                   return SlideTransition(
-                    position: Tween(begin: const Offset(1, 0), end: const Offset(0.5, 0)).animate(a1),
+                    position: Tween(
+                            begin: const Offset(1, 0),
+                            end: const Offset(0.5, 0))
+                        .animate(a1),
                     child: widget,
                   );
                 },
                 transitionDuration: const Duration(milliseconds: 500),
                 pageBuilder: (
-                    BuildContext context,
-                    Animation<double> animation,
-                    Animation<double> secondaryAnimation,
-                    ) {
-                  return const AssetsView();
+                  BuildContext context,
+                  Animation<double> animation,
+                  Animation<double> secondaryAnimation,
+                ) {
+                  return AssetsView();
                 },
               );
             } else {
@@ -202,6 +206,40 @@ class OverviewboardView extends GetView<OverviewboardController>
             );
           }).toList(),
         ));
+  }
+
+  Widget emptyView(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset("assets/images/empty_note.png"),
+        const SizedBox(height: 10),
+        const Text("Your board is empty",
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400)),
+        const SizedBox(height: 10),
+        const Text("Click Add board to create a new one",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
+        const SizedBox(height: 10),
+        OutlinedButton.icon(
+          icon: const Icon(Icons.add_sharp),
+          style: ButtonStyle(
+            foregroundColor:
+            MaterialStateProperty.all(Colors.black),
+            shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0))),
+          ),
+          onPressed: () => {
+            Get.back(),
+            showDialog(
+                context: context,
+                builder: (BuildContext context) => newBoardDialog)
+          },
+          label: const Text("Add board"),
+        )
+      ],
+    );
   }
 
   Widget _widgetOptions(BuildContext context, List<Boards?>? data) {
@@ -288,11 +326,15 @@ class OverviewboardView extends GetView<OverviewboardController>
             return _widgetOptions(context, null);
           } else {
             if (snapshot.hasError) {
-              return _widgetOptions(context, null);
+              return emptyView(context);
             }
             // return errorView(snapshot);
             else {
-              return Center(child: _widgetOptions(context, snapshot.data));
+              if (snapshot.data!.isEmpty) {
+                return Center(child: emptyView(context));
+              } else {
+                return Center(child: _widgetOptions(context, snapshot.data));
+              }
             }
           }
         },

@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 
 import '../overviewboard_controller.dart';
 
 class AssetsView extends GetView<OverviewboardController> {
-  const AssetsView({super.key});
+  AssetsView({super.key});
+
+  final QuillController _controller = QuillController.basic();
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +49,25 @@ class AssetsView extends GetView<OverviewboardController> {
                       },
                     )
                   ]),
+                  QuillToolbar.simple(
+                    configurations: QuillSimpleToolbarConfigurations(
+                      controller: _controller,
+                      sharedConfigurations: const QuillSharedConfigurations(
+                        locale: Locale('de'),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: QuillEditor.basic(
+                      configurations: QuillEditorConfigurations(
+                        controller: _controller,
+                        readOnly: false,
+                        sharedConfigurations: const QuillSharedConfigurations(
+                          locale: Locale('en'),
+                        ),
+                      ),
+                    ),
+                  )
                 ]))),
       ),
     );
