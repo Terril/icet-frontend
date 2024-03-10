@@ -5,6 +5,7 @@ import 'package:icet/extension/stringext.dart';
 
 import '../const/colors.dart';
 import '../datamodel/boards.dart';
+import 'assets/assets.dart';
 import 'overviewboard_controller.dart';
 import 'overviewboard_dialog.dart';
 
@@ -167,6 +168,23 @@ class OverviewboardView extends GetView<OverviewboardController>
           ),
           onChanged: (String? value) {
             if (value == list.first) {
+              showGeneralDialog(
+                context: context,
+                transitionBuilder: (context, a1, a2, widget) {
+                  return SlideTransition(
+                    position: Tween(begin: const Offset(1, 0), end: const Offset(0.5, 0)).animate(a1),
+                    child: widget,
+                  );
+                },
+                transitionDuration: const Duration(milliseconds: 500),
+                pageBuilder: (
+                    BuildContext context,
+                    Animation<double> animation,
+                    Animation<double> secondaryAnimation,
+                    ) {
+                  return const AssetsView();
+                },
+              );
             } else {
               showDialog(
                   context: context,
