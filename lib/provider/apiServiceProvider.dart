@@ -24,6 +24,14 @@ class APIServiceProvider extends GetConnect with CacheManager {
     });
   }
 
+  // Post Custom board request
+  Future<Response> getApiBoardsCustom(Map data) {
+    var token = getToken();
+    return post('$_baseUrl/api/boards/customs', data, headers: {
+      'Authorization' : 'Token $token',
+    });
+  }
+
   // Post Sign up request
   Future<Response> signupUser(Map data) => post('$_baseUrl/api/users/', data);
 

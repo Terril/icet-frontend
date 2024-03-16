@@ -6,7 +6,8 @@ import 'package:get/get.dart';
 import '../cache/cachemanager.dart';
 import '../datamodel/token.dart';
 import '../datamodel/user.dart';
-import '../extension/stringext.dart';
+import '../extension/ext.dart';
+import '../logs.dart';
 import '../provider/apiServiceProvider.dart';
 
 class AccountController extends GetxController with CacheManager {
@@ -100,7 +101,9 @@ class AccountController extends GetxController with CacheManager {
           .then((response) {
             if (response != null) {
               _trx = Token.fromJson(response.body);
+              Logger.printLog(message: filterNull((_trx as Token).token));
               saveToken((_trx as Token).token);
+              saveLoginState(true);
               func(true);
             }
           })

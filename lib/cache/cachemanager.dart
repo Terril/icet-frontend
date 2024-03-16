@@ -16,6 +16,17 @@ mixin CacheManager {
     final box = GetStorage();
     await box.remove(CacheManagerKey.TOKEN.toString());
   }
+
+  Future<void> saveLoginState(bool state) async {
+    final box = GetStorage();
+    await box.write(CacheManagerKey.LOGIN.toString(), state);
+  }
+
+   bool getLoginState() {
+    final box = GetStorage();
+    return box.read(CacheManagerKey.LOGIN.toString()) ?? false;
+  }
 }
 
-enum CacheManagerKey { TOKEN }
+
+enum CacheManagerKey { TOKEN, LOGIN }

@@ -126,6 +126,40 @@ class AssetsView extends GetView<OverviewboardController> {
                                   ),
                                 )
                               ]))),
+                  const SizedBox(height: 24),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Checklists',
+                          style: TextStyle(
+                            height: 1.5,
+                            shadows: [
+                              Shadow(
+                                  color: colorBlueText,
+                                  offset: Offset(0, -10))
+                            ],
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.transparent,
+                            decoration: TextDecoration.underline,
+                            decorationColor: colorBlueText,
+                          ),
+                        ),
+                        OutlinedButton.icon(
+                          icon: const Icon(Icons.add_sharp),
+                          style: ButtonStyle(
+                            foregroundColor:
+                                MaterialStateProperty.all(Colors.black),
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0))),
+                          ),
+                          onPressed: () => {},
+                          label: const Text("New checklist"),
+                        )
+                      ]),
+
                 ]))),
       ),
     );

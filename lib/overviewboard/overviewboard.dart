@@ -2,10 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
-import 'package:icet/extension/stringext.dart';
+import 'package:icet/extension/ext.dart';
 
 import '../const/colors.dart';
 import '../datamodel/boards.dart';
+import '../datamodel/columns.dart';
 import 'assets/assets.dart';
 import 'overviewboard_controller.dart';
 import 'overviewboard_dialog.dart';
@@ -25,16 +26,24 @@ class OverviewboardView extends GetView<OverviewboardController>
 
   double widthSize = (Get.width / 6);
 
-  List<Widget> _getTitleWidget() {
-    return [
-      _getTitleItemWidget('ASSET', widthSize),
-      _getTitleItemWidget('INTEREST LEVEL', widthSize),
-      _getTitleItemWidget('PRODUCTS RATING', widthSize),
-      _getTitleItemWidget('FINANCIALS', widthSize),
-      _getTitleItemWidget('BUSINESS MODEL', widthSize),
-      _getTitleItemWidget('MANAGEMENT', widthSize),
-      _getTitleItemWidget('VALUATION', widthSize),
-    ];
+  List<Widget> _getTitleWidget(List<Columns> items) {
+    double widthSize = (Get.width / (items.length + 2));
+    List<Widget> widget = <Widget>[];
+    widget.add(_getTitleItemWidget('ASSET', widthSize));
+    widget.add(_getTitleItemWidget('INTEREST LEVEL', widthSize));
+    for (var element in items) {
+      widget.add(_getTitleItemWidget(filterNull(element.name?.capitalize), widthSize));
+    }
+    return widget;
+    //   [
+    //
+    //   _getTitleItemWidget('INTEREST LEVEL', widthSize),
+    //   _getTitleItemWidget('PRODUCTS RATING', widthSize),
+    //   _getTitleItemWidget('FINANCIALS', widthSize),
+    //   _getTitleItemWidget('BUSINESS MODEL', widthSize),
+    //   _getTitleItemWidget('MANAGEMENT', widthSize),
+    //   _getTitleItemWidget('VALUATION', widthSize),
+    // ];
   }
 
   Widget _getTitleItemWidget(String label, double width) {
@@ -242,8 +251,8 @@ class OverviewboardView extends GetView<OverviewboardController>
     );
   }
 
-  Widget _widgetOptions(BuildContext context, List<Boards?>? data) {
-    String? title = data?[0]?.name;
+  Widget _widgetOptions(BuildContext context, Boards? data) {
+    String? title = data?.name;
     return Container(
         color: colorBlue,
         margin: const EdgeInsets.only(
@@ -286,7 +295,7 @@ class OverviewboardView extends GetView<OverviewboardController>
             leftHandSideColumnWidth: 100,
             rightHandSideColumnWidth: Get.width,
             isFixedHeader: true,
-            headerWidgets: _getTitleWidget(),
+            headerWidgets: _getTitleWidget(filterNullList(data?.columns)),
             isFixedFooter: false,
             leftSideItemBuilder: _generateFirstColumnRow,
             rightSideItemBuilder: _generateRightHandSideColumnRow,
@@ -333,7 +342,7 @@ class OverviewboardView extends GetView<OverviewboardController>
               if (snapshot.data!.isEmpty) {
                 return Center(child: emptyView(context));
               } else {
-                return Center(child: _widgetOptions(context, snapshot.data));
+                return Center(child: _widgetOptions(context, snapshot.data?.first));
               }
             }
           }
@@ -393,6 +402,7 @@ class OverviewboardView extends GetView<OverviewboardController>
                       ))
                     ]),
                     onTap: () {
+                      _widgetOptions(context, snapshot.data?[index]);
                       Get.back();
                     },
                   );
