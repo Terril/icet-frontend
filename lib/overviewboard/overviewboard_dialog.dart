@@ -22,7 +22,7 @@ mixin OverviewboardDialogView {
             IconButton(
               icon: const Icon(Icons.clear),
               onPressed: () {
-                Get.back();
+                Get.back(closeOverlays: true);
               },
             )
           ]),

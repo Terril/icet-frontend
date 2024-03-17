@@ -7,6 +7,7 @@ import 'package:icet/extension/ext.dart';
 import '../const/colors.dart';
 import '../datamodel/boards.dart';
 import '../datamodel/columns.dart';
+import '../datamodel/rows.dart';
 import 'assets/assets.dart';
 import 'overviewboard_controller.dart';
 import 'overviewboard_dialog.dart';
@@ -32,18 +33,10 @@ class OverviewboardView extends GetView<OverviewboardController>
     widget.add(_getTitleItemWidget('ASSET', widthSize));
     widget.add(_getTitleItemWidget('INTEREST LEVEL', widthSize));
     for (var element in items) {
-      widget.add(_getTitleItemWidget(filterNull(element.name?.capitalize), widthSize));
+      widget.add(_getTitleItemWidget(
+          filterNull(element.name?.toUpperCase()), widthSize));
     }
     return widget;
-    //   [
-    //
-    //   _getTitleItemWidget('INTEREST LEVEL', widthSize),
-    //   _getTitleItemWidget('PRODUCTS RATING', widthSize),
-    //   _getTitleItemWidget('FINANCIALS', widthSize),
-    //   _getTitleItemWidget('BUSINESS MODEL', widthSize),
-    //   _getTitleItemWidget('MANAGEMENT', widthSize),
-    //   _getTitleItemWidget('VALUATION', widthSize),
-    // ];
   }
 
   Widget _getTitleItemWidget(String label, double width) {
@@ -85,80 +78,105 @@ class OverviewboardView extends GetView<OverviewboardController>
     );
   }
 
-  Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
-    return Row(
-      children: <Widget>[
-        Container(
-          width: widthSize,
-          height: 52,
-          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                  stockStatus[index]
-                      ? Icons.notifications_off
-                      : Icons.notifications_active,
-                  color: stockStatus[index] ? Colors.red : Colors.green),
-              Text(stockStatus[index] ? 'Disabled' : 'Active')
-            ],
-          ),
-        ),
-        Container(
-          width: widthSize,
-          height: 52,
-          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
-          child: Obx(() => DropdownButton(
-                underline: const SizedBox(),
-                iconSize: 0.0,
-                onChanged: (newValue) {
-                  controller.setSelected(newValue!);
-                },
-                value: controller.selected.value,
-                items: controller.dropdownItems.map((selectedType) {
-                  return DropdownMenuItem(
-                    value: selectedType,
-                    child: Text(
-                      selectedType,
-                    ),
-                  );
-                }).toList(),
-              )), //([index]),
-        ),
-        Container(
-          width: widthSize,
-          height: 52,
-          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
-          child: Text(stockNameInfo[index]),
-        ),
-        Container(
-          width: widthSize,
-          height: 52,
-          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
-          child: Text(stockNameInfo[index]),
-        ),
-        Container(
-          width: widthSize,
-          height: 52,
-          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
-          child: Text(stockNameInfo[index]),
-        ),
-        Container(
-          width: widthSize,
-          height: 52,
-          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
-          child: Text(stockNameInfo[index]),
-        ),
-      ],
+  List<Widget> _generateRightViewRows(List<Rows> items) {
+    List<Widget> itemWidget = <Widget>[];
+    Widget sectionOne = Container(
+      width: widthSize,
+      height: 52,
+      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+      alignment: Alignment.center,
+      child: Obx(() => DropdownButton(
+            underline: const SizedBox(),
+            iconSize: 0.0,
+            onChanged: (newValue) {
+              controller.setSelected(newValue!);
+            },
+            value: controller.selected.value,
+            items: controller.dropdownItems.map((selectedType) {
+              return DropdownMenuItem(
+                value: selectedType,
+                child: Text(
+                  selectedType,
+                ),
+              );
+            }).toList(),
+          )), //([index]),
     );
+
+    Widget sectionOthers = Container(
+      width: widthSize,
+      height: 52,
+      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+      alignment: Alignment.center,
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Icon(Icons.notifications_active, color: Colors.green),
+        ],
+      ),
+    );
+
+    for (var i = 0; i < items.length; i++) {
+      if (i == 0) {
+        itemWidget.add(sectionOne);
+      } else {
+        itemWidget.add(sectionOthers);
+      }
+    }
+
+    return itemWidget;
   }
+
+  List<Rows> itemWidget = <Rows>[];
+  Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
+   for (int i = 0; i < itemWidget.length; i++) {
+     
+   }
+    if (index == 0) {
+      Widget sectionOne = Container(
+        width: widthSize,
+        height: 52,
+        padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+        alignment: Alignment.center,
+        child: Obx(() =>
+            DropdownButton(
+              underline: const SizedBox(),
+              iconSize: 0.0,
+              onChanged: (newValue) {
+                controller.setSelected(newValue!);
+              },
+              value: controller.selected.value,
+              items: controller.dropdownItems.map((selectedType) {
+                return DropdownMenuItem(
+                  value: selectedType,
+                  child: Text(
+                    selectedType,
+                  ),
+                );
+              }).toList(),
+            )), //([index]),
+      );
+      return sectionOne;
+    } else {
+      Widget sectionOthers = Container(
+        width: widthSize,
+        height: 52,
+        padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+        alignment: Alignment.center,
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.notifications_active, color: Colors.green),
+          ],
+        ),
+      );
+      return sectionOthers;
+    }
+  }
+
+
 
   List<String> list = <String>['New asset', 'New checklist'];
 
@@ -233,11 +251,9 @@ class OverviewboardView extends GetView<OverviewboardController>
         OutlinedButton.icon(
           icon: const Icon(Icons.add_sharp),
           style: ButtonStyle(
-            foregroundColor:
-            MaterialStateProperty.all(Colors.black),
-            shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0))),
+            foregroundColor: MaterialStateProperty.all(Colors.black),
+            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0))),
           ),
           onPressed: () => {
             Get.back(),
@@ -253,6 +269,7 @@ class OverviewboardView extends GetView<OverviewboardController>
 
   Widget _widgetOptions(BuildContext context, Boards? data) {
     String? title = data?.name;
+    itemWidget = filterNullList(data?.rows);
     return Container(
         color: colorBlue,
         margin: const EdgeInsets.only(
@@ -299,6 +316,8 @@ class OverviewboardView extends GetView<OverviewboardController>
             isFixedFooter: false,
             leftSideItemBuilder: _generateFirstColumnRow,
             rightSideItemBuilder: _generateRightHandSideColumnRow,
+            // rightSideChildren:
+            //     _generateRightViewRows(filterNullList(data?.rows)),
             itemCount: 6,
             rowSeparatorWidget: const Divider(
               color: Colors.black38,
@@ -342,7 +361,9 @@ class OverviewboardView extends GetView<OverviewboardController>
               if (snapshot.data!.isEmpty) {
                 return Center(child: emptyView(context));
               } else {
-                return Center(child: _widgetOptions(context, snapshot.data?.first));
+                return Obx(() => Center(
+                    child: _widgetOptions(context,
+                        snapshot.data?[controller.obxPosition.value])));
               }
             }
           }
@@ -402,7 +423,8 @@ class OverviewboardView extends GetView<OverviewboardController>
                       ))
                     ]),
                     onTap: () {
-                      _widgetOptions(context, snapshot.data?[index]);
+                      controller.selectDrawer(index);
+                      // _widgetOptions(context, snapshot.data?[index]);
                       Get.back();
                     },
                   );

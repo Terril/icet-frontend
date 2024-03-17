@@ -11,6 +11,12 @@ class OverviewboardController extends GetxController {
 
   final selected = "1".obs;
 
+  RxInt obxPosition = 0.obs;
+
+  void selectDrawer(int position) {
+    obxPosition.value = position;
+  }
+
   List<String> get dropdownItems {
     List<String> menuItems = [
       "1",

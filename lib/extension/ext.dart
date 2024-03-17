@@ -11,3 +11,10 @@ List<T> filterNullList<T>(List<T>? input) {
   }
   return input;
 }
+
+int filterNullInt(int? input) {
+  if (input == null) {
+    return 0;
+  }
+  return input;
+}
