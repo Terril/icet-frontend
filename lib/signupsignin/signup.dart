@@ -272,7 +272,7 @@ class SignupView extends GetView<AccountController> {
                                               8), // <-- Radius
                                         ),
                                         backgroundColor: colorBlueButton),
-                                    onPressed: _navigateToBoards,
+                                    onPressed: _navigateToSignIn,
                                     child: const Padding(
                                       padding: EdgeInsets.all(10.0),
                                       child: Text('Start using Ice-T',

@@ -2,11 +2,13 @@
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:icet/cache/cachemanager.dart';
+import 'package:icet/logs.dart';
 import 'package:icet/provider/apiServiceProvider.dart';
 
 import '../datamodel/boards.dart';
 
-class OverviewboardController extends GetxController {
+class OverviewboardController extends GetxController with CacheManager {
   late APIServiceProvider overviewboardProvider;
 
   final selected = "1".obs;
@@ -50,7 +52,9 @@ class OverviewboardController extends GetxController {
   }
 
   void callCustomBoard() async {
+    var token = getToken();
     Response response = await overviewboardProvider.getApiBoardsCustom();
+    Logger.printLog(message: "${response.bodyString}");
     if (response != null) {
       futureBoard = fetchBoard();
     }

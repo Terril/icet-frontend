@@ -13,7 +13,7 @@ class APIServiceProvider extends GetConnect with CacheManager {
   // Get request
   Future<Response<List<dynamic>>> getBoard() {
     var token = getToken();
-    return get('$_getUrl/api/boards/', headers: {
+    return get('$_baseUrl/api/boards/', headers: {
       'Authorization' : 'Token $token',
       'accept' : 'application/json',
       'Access-Control-Allow-Origin' : '*',
@@ -23,7 +23,7 @@ class APIServiceProvider extends GetConnect with CacheManager {
 
   Future<Response<List<dynamic>>> addBoard(Map data) {
     var token = getToken();
-    return post('$_getUrl/api/boards/', data, headers: {
+    return post('$_baseUrl/api/boards/', data, headers: {
     'Authorization' : 'Token $token',
     });
   }
@@ -36,16 +36,16 @@ class APIServiceProvider extends GetConnect with CacheManager {
     map["row_names"] = ["Asset 1", "Asset 2", "Asset 3"];
 
     var token = getToken();
-    return post('$_getUrl/api/boards/custom/', map, headers: {
+    return post('$_baseUrl/api/boards/custom/', map, headers: {
       'Authorization' : 'Token $token',
     });
   }
 
   // Post Sign up request
-  Future<Response> signupUser(Map data) => post('$_getUrl/api/users/', data);
+  Future<Response> signupUser(Map data) => post('$_baseUrl/api/users/', data);
 
   // Post Sign in request
-  Future<Response> signinUser(Map data) => post('$_getUrl/api/api-token-auth/', data);
+  Future<Response> signinUser(Map data) => post('$_baseUrl/api/api-token-auth/', data);
 
   // Post request with File
 

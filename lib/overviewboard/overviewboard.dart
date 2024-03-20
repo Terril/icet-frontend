@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:icet/extension/ext.dart';
+import 'package:icet/logs.dart';
 
 import '../const/colors.dart';
 import '../datamodel/boards.dart';
@@ -393,7 +394,7 @@ class OverviewboardView extends GetView<OverviewboardController>
                   child: ListView.builder(
                 itemCount: controller.getItemCount(snapshot.data?.length),
                 itemBuilder: (BuildContext context, int index) {
-                  if (index > snapshot.data!.length - 1) {
+                  if (snapshot.data?.length == null || index > snapshot.data?.length - 1) {
                     return Container(
                         margin: const EdgeInsets.all(12),
                         child: OutlinedButton.icon(

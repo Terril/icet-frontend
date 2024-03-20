@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:icet/cache/cachemanager.dart';
 import 'package:icet/const/colors.dart';
 import 'package:icet/logs.dart';
 import 'package:icet/signupsignin/signin.dart';
@@ -13,19 +14,21 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final Auth auth = Auth();
-  final bool isLoggedIn = await auth.isLogged();
+  await auth.isLogged().then((value) =>
+      runApp(IcetApp(value))
+  );
 
-  runApp(IcetApp(isLoggedIn));
 }
 
-class IcetApp extends StatelessWidget {
-  const IcetApp(this.isLoggedIn, {super.key});
+class IcetApp extends StatelessWidget with CacheManager {
+   IcetApp(this.isLoggedIn, {super.key});
+
 
   final bool isLoggedIn;
 
   @override
   Widget build(BuildContext context) {
-
+    initSharedPreference();
     Logger.printLog(message: "$isLoggedIn");
     return GetMaterialApp(
       theme: ThemeData(scaffoldBackgroundColor: colorBlue),

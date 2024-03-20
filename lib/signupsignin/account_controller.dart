@@ -87,7 +87,7 @@ class AccountController extends GetxController with CacheManager {
             print(response);
             if (response != null) _trx = User.fromJson(response.body);
           })
-          .catchError((err) => print('Error!!!!! : $err'))
+          .catchError((err) => print('Error!!!!! : ${err}'))
           .whenComplete(() => dataAvailable.value = _trx != null);
     }
   }
