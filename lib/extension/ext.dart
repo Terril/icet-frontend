@@ -18,3 +18,10 @@ int filterNullInt(int? input) {
   }
   return input;
 }
+
+bool filterBoolNull(bool? input) {
+  if (input == null) {
+    return false;
+  }
+  return input;
+}

@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../cache/cachemanager.dart';
 import '../datamodel/token.dart';
@@ -93,6 +94,7 @@ class AccountController extends GetxController with CacheManager {
 
   void performUserSignIn(Function func) async {
     if (_email.isNotEmpty && _pass.isNotEmpty) {
+
       Map<String, String> map = HashMap();
       map["username"] = _email;
       map["password"] = _pass;

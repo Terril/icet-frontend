@@ -43,6 +43,7 @@ dependencies:
   flutter_keyboard_visibility: ^6.0.0
   device_info_plus: ^9.1.0
   super_clipboard: ^0.8.5
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:

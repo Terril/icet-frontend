@@ -1,30 +1,32 @@
-import 'package:get_storage/get_storage.dart';
+import 'package:icet/extension/ext.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 mixin CacheManager {
   Future<bool> saveToken(String? token) async {
-    final box = GetStorage();
-    await box.write(CacheManagerKey.TOKEN.toString(), token);
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString(CacheManagerKey.TOKEN.name, filterNull(token));
     return true;
   }
 
-  String? getToken() {
-    final box = GetStorage();
-    return box.read(CacheManagerKey.TOKEN.toString());
+  Future<String?> getToken() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getString(CacheManagerKey.TOKEN.name);
   }
 
   Future<void> removeToken() async {
-    final box = GetStorage();
-    await box.remove(CacheManagerKey.TOKEN.toString());
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.remove(CacheManagerKey.TOKEN.name);
   }
 
+  // Can be any number except 0
   Future<void> saveLoginState(bool state) async {
-    final box = GetStorage();
-    await box.write(CacheManagerKey.LOGIN.toString(), state);
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setBool(CacheManagerKey.LOGIN.name, state);
   }
 
-   bool getLoginState() {
-    final box = GetStorage();
-    return box.read(CacheManagerKey.LOGIN.toString()) ?? false;
+  Future<bool?> getLoginState() async {
+     SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getBool(CacheManagerKey.LOGIN.name);
   }
 }
 
