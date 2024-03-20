@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:get/get_connect/connect.dart';
 import 'package:icet/cache/cachemanager.dart';
 
@@ -25,9 +27,14 @@ class APIServiceProvider extends GetConnect with CacheManager {
   }
 
   // Post Custom board request
-  Future<Response> getApiBoardsCustom(Map data) {
+  Future<Response> getApiBoardsCustom() {
+    Map<String, dynamic> map = HashMap();
+    map["board_name"] = "Custom";
+    map["column_names"] = ["Interest level", "Checklist 1", "Checklist 2", "Checklist 3"];
+    map["row_names"] = ["Asset 1", "Asset 2", "Asset 3"];
+
     var token = getToken();
-    return post('$_baseUrl/api/boards/customs', data, headers: {
+    return post('$_baseUrl/api/boards/custom/', map, headers: {
       'Authorization' : 'Token $token',
     });
   }

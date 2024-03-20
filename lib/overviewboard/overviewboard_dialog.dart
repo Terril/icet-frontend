@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import '../const/colors.dart';
 
 mixin OverviewboardDialogView {
-  Dialog newBoardDialog = Dialog(
+  Dialog newBoardDialog({required Function onTapBoardSelection}) => Dialog(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
     //this right here
     child: Container(
@@ -41,6 +41,7 @@ mixin OverviewboardDialogView {
               )),
               onPressed: () {
                 Get.back();
+                onTapBoardSelection(SelectedBoard.STOCK);
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,6 +69,7 @@ mixin OverviewboardDialogView {
               )),
               onPressed: () {
                 Get.back();
+                onTapBoardSelection(SelectedBoard.CUSTOM);
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -209,4 +211,8 @@ mixin OverviewboardDialogView {
   onTapCreate() {
     print("Create cakked");
   }
+}
+
+enum SelectedBoard {
+  STOCK, CUSTOM
 }

@@ -31,7 +31,6 @@ class OverviewboardView extends GetView<OverviewboardController>
     double widthSize = (Get.width / (items.length + 2));
     List<Widget> widget = <Widget>[];
     widget.add(_getTitleItemWidget('ASSET', widthSize));
-    widget.add(_getTitleItemWidget('INTEREST LEVEL', widthSize));
     for (var element in items) {
       widget.add(_getTitleItemWidget(
           filterNull(element.name?.toUpperCase()), widthSize));
@@ -50,14 +49,6 @@ class OverviewboardView extends GetView<OverviewboardController>
     );
   }
 
-  static const List<String> stockName = [
-    "Apple",
-    "Google",
-    "Tesla",
-    "Splunk",
-    "Sea",
-    "Arm"
-  ];
   static const List<String> stockNameInfo = [
     "Apple",
     "Google",
@@ -74,7 +65,7 @@ class OverviewboardView extends GetView<OverviewboardController>
       height: 52,
       padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
       alignment: Alignment.center,
-      child: Text(stockName[index]),
+      child: Text(filterNull(itemWidget[index].name)),
     );
   }
 
@@ -129,18 +120,16 @@ class OverviewboardView extends GetView<OverviewboardController>
   }
 
   List<Rows> itemWidget = <Rows>[];
+
   Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
-   for (int i = 0; i < itemWidget.length; i++) {
-     
-   }
+    for (int i = 0; i < itemWidget.length; i++) {}
     if (index == 0) {
       Widget sectionOne = Container(
         width: widthSize,
         height: 52,
         padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
         alignment: Alignment.center,
-        child: Obx(() =>
-            DropdownButton(
+        child: Obx(() => DropdownButton(
               underline: const SizedBox(),
               iconSize: 0.0,
               onChanged: (newValue) {
@@ -175,8 +164,6 @@ class OverviewboardView extends GetView<OverviewboardController>
       return sectionOthers;
     }
   }
-
-
 
   List<String> list = <String>['New asset', 'New checklist'];
 
@@ -256,10 +243,20 @@ class OverviewboardView extends GetView<OverviewboardController>
                 borderRadius: BorderRadius.circular(8.0))),
           ),
           onPressed: () => {
-            Get.back(),
             showDialog(
                 context: context,
-                builder: (BuildContext context) => newBoardDialog)
+                builder: (BuildContext context) =>
+                    newBoardDialog(onTapBoardSelection: (SelectedBoard board) {
+                      switch (board) {
+                        case SelectedBoard.STOCK:
+                          break;
+                        case SelectedBoard.CUSTOM:
+                          {
+                            controller.callCustomBoard();
+                            break;
+                          }
+                      }
+                    }))
           },
           label: const Text("Add board"),
         )
@@ -347,93 +344,109 @@ class OverviewboardView extends GetView<OverviewboardController>
               ),
             ],
           )),
-      body: FutureBuilder(
-        future: controller.fetchBoard(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return _widgetOptions(context, null);
-          } else {
-            if (snapshot.hasError) {
-              return emptyView(context);
-            }
-            // return errorView(snapshot);
-            else {
-              if (snapshot.data!.isEmpty) {
+      body: GetBuilder<OverviewboardController>(builder: (controller) {
+        return FutureBuilder(
+          future: controller.futureBoard,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return _widgetOptions(context, null);
+            } else {
+              if (snapshot.hasError) {
                 return Center(child: emptyView(context));
-              } else {
-                return Obx(() => Center(
-                    child: _widgetOptions(context,
-                        snapshot.data?[controller.obxPosition.value])));
+              }
+              // return errorView(snapshot);
+              else {
+                if (snapshot.data!.isEmpty) {
+                  return Center(child: emptyView(context));
+                } else {
+                  return Obx(() => Center(
+                      child: _widgetOptions(context,
+                          snapshot.data?[controller.obxPosition.value])));
+                }
               }
             }
-          }
-        },
-      ),
+          },
+        );
+      }),
       drawer: Drawer(
-          child: FutureBuilder(
-        future: controller.fetchBoard(),
-        builder: (context, snapshot) {
-          return Column(children: [
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Image.asset("assets/images/logo.png"),
-                  const Text(
-                    'Ice T',
-                    textAlign: TextAlign.left,
-                    style:
-                        TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold),
-                  ),
-                ],
+          child: GetBuilder<OverviewboardController>(builder: (controller) {
+        return FutureBuilder(
+          future: controller.futureBoard,
+          builder: (context, snapshot) {
+            return Column(children: [
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Image.asset("assets/images/logo.png"),
+                    const Text(
+                      'Ice T',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          fontSize: 21.0, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-                child: ListView.builder(
-              itemCount: controller.getItemCount(snapshot.data?.length),
-              itemBuilder: (BuildContext context, int index) {
-                if (index > snapshot.data!.length - 1) {
-                  return Container(
-                      margin: const EdgeInsets.all(12),
-                      child: OutlinedButton.icon(
-                        icon: const Icon(Icons.add_sharp),
-                        style: ButtonStyle(
-                          foregroundColor:
-                              MaterialStateProperty.all(Colors.black),
-                          shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0))),
-                        ),
-                        onPressed: () => {
-                          Get.back(),
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) => newBoardDialog)
-                        },
-                        label: const Text("Add board"),
-                      ));
-                } else {
-                  return ListTile(
-                    title: Row(children: [
-                      const Icon(Icons.content_paste),
-                      const SizedBox(width: 12),
-                      Text(filterNull(
-                        snapshot.data?[index]?.name,
-                      ))
-                    ]),
-                    onTap: () {
-                      controller.selectDrawer(index);
-                      // _widgetOptions(context, snapshot.data?[index]);
-                      Get.back();
-                    },
-                  );
-                }
-              },
-            ))
-          ]);
-        },
-      )),
+              Expanded(
+                  child: ListView.builder(
+                itemCount: controller.getItemCount(snapshot.data?.length),
+                itemBuilder: (BuildContext context, int index) {
+                  if (index > snapshot.data!.length - 1) {
+                    return Container(
+                        margin: const EdgeInsets.all(12),
+                        child: OutlinedButton.icon(
+                          icon: const Icon(Icons.add_sharp),
+                          style: ButtonStyle(
+                            foregroundColor:
+                                MaterialStateProperty.all(Colors.black),
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0))),
+                          ),
+                          onPressed: () => {
+                            Get.back(),
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    newBoardDialog(onTapBoardSelection:
+                                        (SelectedBoard board) {
+                                      switch (board) {
+                                        case SelectedBoard.STOCK:
+                                          break;
+                                        case SelectedBoard.CUSTOM:
+                                          {
+                                            controller.callCustomBoard();
+                                            break;
+                                          }
+                                      }
+                                    }))
+                          },
+                          label: const Text("Add board"),
+                        ));
+                  } else {
+                    return ListTile(
+                      title: Row(children: [
+                        const Icon(Icons.content_paste),
+                        const SizedBox(width: 12),
+                        Text(filterNull(
+                          snapshot.data?[index]?.name,
+                        ))
+                      ]),
+                      onTap: () {
+                        controller.selectDrawer(index);
+                        // _widgetOptions(context, snapshot.data?[index]);
+                        Get.back();
+                      },
+                    );
+                  }
+                },
+              ))
+            ]);
+          },
+        );
+      })),
     );
   }
 }
