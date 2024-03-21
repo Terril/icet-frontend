@@ -1,10 +1,9 @@
-import 'dart:developer';
 
 class Logger {
-  static bool enableLog = true;
+  static const bool _enableLog = true;
 
   static printLog({String tag = "", required String message}) {
-    if (enableLog) {
+    if (_enableLog) {
       print("TAG :$tag $message");
     }
   }

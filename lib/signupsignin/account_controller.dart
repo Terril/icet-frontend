@@ -2,8 +2,6 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../cache/cachemanager.dart';
 import '../datamodel/token.dart';
 import '../datamodel/user.dart';
@@ -22,6 +20,8 @@ class AccountController extends GetxController with CacheManager {
   TextEditingController textEmailController = TextEditingController();
 
   RxBool enableButton = false.obs;
+
+  RxBool enableLoader = false.obs;
 
   @override
   void onInit() {
@@ -93,14 +93,15 @@ class AccountController extends GetxController with CacheManager {
   }
 
   void performUserSignIn(Function func) async {
+    enableButton.value = true;
     if (_email.isNotEmpty && _pass.isNotEmpty) {
-
       Map<String, String> map = HashMap();
       map["username"] = _email;
       map["password"] = _pass;
       await provider
           .signinUser(map)
           .then((response) {
+            enableButton.value = false;
             if (response != null) {
               _trx = Token.fromJson(response.body);
               Logger.printLog(message: filterNull((_trx as Token).token));

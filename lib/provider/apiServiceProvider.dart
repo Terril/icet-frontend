@@ -3,6 +3,8 @@ import 'dart:collection';
 import 'package:get/get_connect/connect.dart';
 import 'package:icet/cache/cachemanager.dart';
 
+import '../logs.dart';
+
 
 class APIServiceProvider extends GetConnect with CacheManager {
   final String _baseUrl = "http://127.0.0.1:8000";
@@ -13,6 +15,7 @@ class APIServiceProvider extends GetConnect with CacheManager {
   // Get request
   Future<Response<List<dynamic>>> getBoard() {
     var token = getToken();
+    Logger.printLog(message: "$token");
     return get('$_baseUrl/api/boards/', headers: {
       'Authorization' : 'Token $token',
       'accept' : 'application/json',
@@ -36,6 +39,7 @@ class APIServiceProvider extends GetConnect with CacheManager {
     map["row_names"] = ["Asset 1", "Asset 2", "Asset 3"];
 
     var token = getToken();
+    Logger.printLog(message: "$token");
     return post('$_baseUrl/api/boards/custom/', map, headers: {
       'Authorization' : 'Token $token',
     });
