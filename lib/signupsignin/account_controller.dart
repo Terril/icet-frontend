@@ -77,6 +77,7 @@ class AccountController extends GetxController with CacheManager {
   }
 
   void performUserSignUp() async {
+    enableLoader.value = true;
     if (_email.isNotEmpty && _reinputPass.isNotEmpty) {
       Map<String, String> map = HashMap();
       map["email"] = _email;
@@ -84,6 +85,7 @@ class AccountController extends GetxController with CacheManager {
       await provider
           .signupUser(map)
           .then((response) {
+            enableLoader.value = false;
             print(response);
             if (response != null) _trx = User.fromJson(response.body);
           })
@@ -93,7 +95,7 @@ class AccountController extends GetxController with CacheManager {
   }
 
   void performUserSignIn(Function func) async {
-    enableButton.value = true;
+    enableLoader.value = true;
     if (_email.isNotEmpty && _pass.isNotEmpty) {
       Map<String, String> map = HashMap();
       map["username"] = _email;
@@ -101,7 +103,7 @@ class AccountController extends GetxController with CacheManager {
       await provider
           .signinUser(map)
           .then((response) {
-            enableButton.value = false;
+            enableLoader.value = false;
             if (response != null) {
               _trx = Token.fromJson(response.body);
               Logger.printLog(message: filterNull((_trx as Token).token));

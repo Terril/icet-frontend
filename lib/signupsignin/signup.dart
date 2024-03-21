@@ -180,7 +180,17 @@ class SignupView extends GetView<AccountController> {
                                             width: txtWidth,
                                             margin: const EdgeInsets.only(
                                                 top: 24.0),
-                                            child: ElevatedButton(
+                                            child: ElevatedButton.icon(
+                                              icon: controller.enableLoader.value
+                                                  ? Container(
+                                                width: 24,
+                                                height: 24,
+                                                padding: const EdgeInsets.all(2.0),
+                                                child: const CircularProgressIndicator(
+                                                  color: Colors.white,
+                                                  strokeWidth: 3,
+                                                ),
+                                              ) : const Icon(Icons.feedback, color: Colors.transparent),
                                               style: ElevatedButton.styleFrom(
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
@@ -190,7 +200,7 @@ class SignupView extends GetView<AccountController> {
                                                   backgroundColor:
                                                       colorBlueButton),
                                               onPressed: _submitCreateAccount,
-                                              child: const Padding(
+                                              label: const Padding(
                                                 padding: EdgeInsets.all(10.0),
                                                 child: Text('Create account',
                                                     style: TextStyle(
