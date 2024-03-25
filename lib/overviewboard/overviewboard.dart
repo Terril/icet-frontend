@@ -50,120 +50,71 @@ class OverviewboardView extends GetView<OverviewboardController>
     );
   }
 
-  static const List<String> stockNameInfo = [
-    "Apple",
-    "Google",
-    "Tesla",
-    "Splunk",
-    "Sea",
-    "Arm"
-  ];
-  static const List<bool> stockStatus = [true, false, false, true, false, true];
-
   Widget _generateFirstColumnRow(BuildContext context, int index) {
+
+    Logger.printLog(tag: "First Column ", message: "${itemRowWidget.length}");
     return Container(
       width: 100,
       height: 52,
       padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
       alignment: Alignment.center,
-      child: Text(filterNull(itemWidget[index].name)),
+      child: Text(filterNull(itemRowWidget[index].name)),
     );
   }
 
-  List<Widget> _generateRightViewRows(List<Rows> items) {
-    List<Widget> itemWidget = <Widget>[];
-    Widget sectionOne = Container(
-      width: widthSize,
-      height: 52,
-      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-      alignment: Alignment.center,
-      child: Obx(() => DropdownButton(
-            underline: const SizedBox(),
-            iconSize: 0.0,
-            onChanged: (newValue) {
-              controller.setSelected(newValue!);
-            },
-            value: controller.selected.value,
-            items: controller.dropdownItems.map((selectedType) {
-              return DropdownMenuItem(
-                value: selectedType,
-                child: Text(
-                  selectedType,
-                ),
-              );
-            }).toList(),
-          )), //([index]),
-    );
-
-    Widget sectionOthers = Container(
-      width: widthSize,
-      height: 52,
-      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-      alignment: Alignment.center,
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Icon(Icons.notifications_active, color: Colors.green),
-        ],
-      ),
-    );
-
-    for (var i = 0; i < items.length; i++) {
-      if (i == 0) {
-        itemWidget.add(sectionOne);
-      } else {
-        itemWidget.add(sectionOthers);
-      }
-    }
-
-    return itemWidget;
-  }
-
-  List<Rows> itemWidget = <Rows>[];
+  List<Rows> itemRowWidget = <Rows>[];
+  List<Columns> itemColumnWidget = <Columns>[];
 
   Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
-    for (int i = 0; i < itemWidget.length; i++) {}
-    if (index == 0) {
-      Widget sectionOne = Container(
-        width: widthSize,
-        height: 52,
-        padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-        alignment: Alignment.center,
-        child: Obx(() => DropdownButton(
-              underline: const SizedBox(),
-              iconSize: 0.0,
-              onChanged: (newValue) {
-                controller.setSelected(newValue!);
-              },
-              value: controller.selected.value,
-              items: controller.dropdownItems.map((selectedType) {
-                return DropdownMenuItem(
-                  value: selectedType,
-                  child: Text(
-                    selectedType,
-                  ),
-                );
-              }).toList(),
-            )), //([index]),
-      );
-      return sectionOne;
-    } else {
-      Widget sectionOthers = Container(
-        width: widthSize,
-        height: 52,
-        padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-        alignment: Alignment.center,
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Icon(Icons.notifications_active, color: Colors.green),
-          ],
-        ),
-      );
-      return sectionOthers;
-    }
+    List<Widget> widget = <Widget>[];
+
+    Logger.printLog(tag : "ROW :  ", message: "${itemRowWidget.length}");
+    Logger.printLog(tag : "Column :  ", message: "${itemColumnWidget.length}");
+     //for (int i = 0 ; i < itemRowWidget.length; i++) {
+      for (int j = 0 ; j < itemColumnWidget.length; j++) {
+        if (j == 0) {
+          Widget sectionOne = Container(
+            width: widthSize,
+            height: 52,
+            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+            alignment: Alignment.center,
+            child: Obx(() => DropdownButton(
+                  underline: const SizedBox(),
+                  iconSize: 0.0,
+                  onChanged: (newValue) {
+                    controller.setSelected(newValue!);
+                  },
+                  value: controller.selected.value,
+                  items: controller.dropdownItems.map((selectedType) {
+                    return DropdownMenuItem(
+                      value: selectedType,
+                      child: Text(
+                        selectedType,
+                      ),
+                    );
+                  }).toList(),
+                )), //([index]),
+          );
+          widget.add(sectionOne);
+        } else {
+          Widget sectionOthers = Container(
+            width: widthSize,
+            height: 52,
+            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+            alignment: Alignment.center,
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.notifications_active, color: Colors.green),
+              ],
+            ),
+          );
+          widget.add(sectionOthers);
+        }
+      }
+
+    return Row(children: widget);
   }
 
   List<String> list = <String>['New asset', 'New checklist'];
@@ -267,7 +218,8 @@ class OverviewboardView extends GetView<OverviewboardController>
 
   Widget _widgetOptions(BuildContext context, Boards? data) {
     String? title = data?.name;
-    itemWidget = filterNullList(data?.rows);
+    itemRowWidget = filterNullList(data?.rows);
+    itemColumnWidget = filterNullList(data?.columns);
     return Container(
         color: colorBlue,
         margin: const EdgeInsets.only(
@@ -316,7 +268,7 @@ class OverviewboardView extends GetView<OverviewboardController>
             rightSideItemBuilder: _generateRightHandSideColumnRow,
             // rightSideChildren:
             //     _generateRightViewRows(filterNullList(data?.rows)),
-            itemCount: 6,
+            itemCount: filterNullInt(data?.rows?.length),
             rowSeparatorWidget: const Divider(
               color: Colors.black38,
               height: 1.0,

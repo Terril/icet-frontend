@@ -45,6 +45,14 @@ class APIServiceProvider extends GetConnect with CacheManager {
     });
   }
 
+  Future<Response> getColumnsByBoardId(String boardId) {
+    var token = getToken();
+    Logger.printLog(message: "$token");
+    return get('$_prod_baseUrl/api/boards/$boardId/columns', headers: {
+      'Authorization' : 'Token $token',
+    });
+  }
+
   // Post Sign up request
   Future<Response> signupUser(Map data) => post('$_prod_baseUrl/api/users/', data);
 
