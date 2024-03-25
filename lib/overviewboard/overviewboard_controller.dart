@@ -53,7 +53,6 @@ class OverviewboardController extends GetxController with CacheManager {
   }
 
   void callCustomBoard() async {
-    var token = getToken();
     Response response = await overviewboardProvider.getApiBoardsCustom();
     Logger.printLog(message: "${response.bodyString}");
     if (response != null) {

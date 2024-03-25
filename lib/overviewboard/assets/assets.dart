@@ -6,13 +6,30 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:icet/const/colors.dart';
+import 'package:icet/extension/ext.dart';
 
 import 'assets_controller.dart';
 
 class AssetsView extends GetView<AssetsController> {
-  AssetsView({super.key});
+  AssetsView(this.boardId, {super.key});
+
+  final String? boardId;
 
   final QuillController _controller = QuillController.basic();
+
+  Widget emptyView(BuildContext context) {
+    return Expanded(
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset("assets/images/empty_note.png"),
+        const SizedBox(height: 10),
+        const Text("Your column is empty",
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400)),
+      ],
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,6 +181,41 @@ class AssetsView extends GetView<AssetsController> {
                             label: const Text("New checklist"),
                           )
                         ]),
+                    Expanded(
+                        child: FutureBuilder(
+                      future: controller.fetchColumns(boardId),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else {
+                          if (snapshot.hasError) {
+                            return Center(child: emptyView(context));
+                          } else {
+                            if (snapshot.data!.isEmpty) {
+                              return Center(child: emptyView(context));
+                            } else {
+                              return ListView.builder(
+                                  itemCount: snapshot.data?.length,
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    return Column(children: [
+                                      ListTile(
+                                          title: Text(
+                                        filterNull(snapshot.data?[index]?.name)
+                                            .toUpperCase(),
+                                          ),
+                                        trailing:  Icon(Icons.check_circle, color: colorCheckMark),
+                                      ),
+                                      const Divider(color: colorGreyField,)
+                                    ]);
+                                  });
+                            }
+                          }
+                        }
+                      },
+                    )),
                   ]))),
         )
       ]),

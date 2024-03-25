@@ -34,3 +34,18 @@ class Columns {
     return data;
   }
 }
+
+class ColumnList {
+  final List<Columns> list;
+
+  ColumnList({
+    required this.list,
+  });
+
+  factory ColumnList.fromJsonToList(List<dynamic> parsedJson) {
+    List<Columns> list = <Columns>[];
+    list = parsedJson.map((i) => Columns.fromJson(i)).toList();
+
+    return ColumnList(list: list);
+  }
+}

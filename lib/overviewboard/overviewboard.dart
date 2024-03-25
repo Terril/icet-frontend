@@ -52,7 +52,6 @@ class OverviewboardView extends GetView<OverviewboardController>
 
   Widget _generateFirstColumnRow(BuildContext context, int index) {
 
-    Logger.printLog(tag: "First Column ", message: "${itemRowWidget.length}");
     return Container(
       width: 100,
       height: 52,
@@ -68,9 +67,6 @@ class OverviewboardView extends GetView<OverviewboardController>
   Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
     List<Widget> widget = <Widget>[];
 
-    Logger.printLog(tag : "ROW :  ", message: "${itemRowWidget.length}");
-    Logger.printLog(tag : "Column :  ", message: "${itemColumnWidget.length}");
-     //for (int i = 0 ; i < itemRowWidget.length; i++) {
       for (int j = 0 ; j < itemColumnWidget.length; j++) {
         if (j == 0) {
           Widget sectionOne = Container(
@@ -106,7 +102,7 @@ class OverviewboardView extends GetView<OverviewboardController>
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Icon(Icons.notifications_active, color: Colors.green),
+                Icon(Icons.check_circle, color: colorCheckMark),
               ],
             ),
           );
@@ -119,7 +115,7 @@ class OverviewboardView extends GetView<OverviewboardController>
 
   List<String> list = <String>['New asset', 'New checklist'];
 
-  Widget _addDropDown(BuildContext context) {
+  Widget _addDropDown(BuildContext context, String? boardId) {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
@@ -152,7 +148,7 @@ class OverviewboardView extends GetView<OverviewboardController>
                   Animation<double> animation,
                   Animation<double> secondaryAnimation,
                 ) {
-                  return AssetsView();
+                  return AssetsView(boardId);
                 },
               );
             } else {
@@ -248,7 +244,7 @@ class OverviewboardView extends GetView<OverviewboardController>
                   onPressed: () async {},
                   icon: const Icon(Icons.drive_file_rename_outline)),
               const Spacer(),
-              _addDropDown(context)
+              _addDropDown(context, data?.id)
               // TextButton.icon(
               //     onPressed: null,
               //     icon: const Icon(Icons.settings_outlined),
