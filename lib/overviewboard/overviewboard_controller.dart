@@ -1,4 +1,7 @@
 
+import 'dart:collection';
+
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
@@ -7,6 +10,7 @@ import 'package:icet/logs.dart';
 import 'package:icet/provider/apiServiceProvider.dart';
 
 import '../datamodel/boards.dart';
+import '../datamodel/columns.dart';
 
 class OverviewboardController extends GetxController with CacheManager {
   late APIServiceProvider overviewboardProvider;
@@ -63,6 +67,17 @@ class OverviewboardController extends GetxController with CacheManager {
     Boards responseBoards = Boards.fromJson(response.body);
   }
 
+  Future<Columns> addColumns(String boardId, String title, String desc) async {
+    Map<String, String> map = HashMap();
+    map["name"] = title;
+    map["board"] = boardId;
+    map["description"] = desc;
+    Response response = await overviewboardProvider.addColumn(map);
+
+    var responseBody = Columns.fromJson(response.body);
+    Logger.printLog(message: "${response.bodyString}");
+    return responseBody;
+  }
 
   int? getItemCount(int?  itemCount) {
    if(itemCount == null) return 1;

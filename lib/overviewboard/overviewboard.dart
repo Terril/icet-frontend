@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:icet/extension/ext.dart';
-import 'package:icet/logs.dart';
 
 import '../const/colors.dart';
 import '../datamodel/boards.dart';
@@ -66,7 +65,7 @@ class OverviewboardView extends GetView<OverviewboardController>
 
   Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
     List<Widget> widget = <Widget>[];
-
+    double widthSize = (Get.width / (itemColumnWidget.length + 2));
       for (int j = 0 ; j < itemColumnWidget.length; j++) {
         if (j == 0) {
           Widget sectionOne = Container(
@@ -155,8 +154,8 @@ class OverviewboardView extends GetView<OverviewboardController>
               showDialog(
                   context: context,
                   builder: (BuildContext context) =>
-                      newChecklistDialog(onTapCreate: () {
-                        print("Create called");
+                      newChecklistDialog(onTapCreate: (String title, String desc) {
+                        controller.addColumns(filterNull(boardId), title, desc);
                       }));
             }
           },

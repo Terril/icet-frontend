@@ -53,6 +53,15 @@ class APIServiceProvider extends GetConnect with CacheManager {
     });
   }
 
+  // Column is nothing but the checklist
+  Future<Response<List<dynamic>>> addColumn(Map data) {
+    var token = getToken();
+    return post('$_baseUrl/api/columns/', data, headers: {
+      'Authorization' : 'Token $token',
+    });
+  }
+
+
   // Post Sign up request
   Future<Response> signupUser(Map data) => post('$_baseUrl/api/users/', data);
 
