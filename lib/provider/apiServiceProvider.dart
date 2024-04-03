@@ -5,6 +5,12 @@ import 'package:icet/cache/cachemanager.dart';
 
 import '../logs.dart';
 
+/*
+* Note :
+*  Columns mean Checklist
+*  Rows mean Assets
+*
+* */
 
 class APIServiceProvider extends GetConnect with CacheManager {
   final String _baseUrl = "http://127.0.0.1:8000";
@@ -47,12 +53,17 @@ class APIServiceProvider extends GetConnect with CacheManager {
 
   Future<Response> getColumnsByBoardId(String? boardId) {
     var token = getToken();
-    Logger.printLog(message: "$token");
     return get('$_baseUrl/api/boards/$boardId/columns', headers: {
       'Authorization' : 'Token $token',
     });
   }
 
+  Future<Response> addRows(Map map) {
+    var token = getToken();
+    return post('$_baseUrl/api/rows/', map, headers: {
+      'Authorization' : 'Token $token',
+    });
+  }
   // Column is nothing but the checklist
   Future<Response<List<dynamic>>> addColumn(Map data) {
     var token = getToken();

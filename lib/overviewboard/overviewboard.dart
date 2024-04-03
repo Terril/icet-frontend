@@ -45,12 +45,14 @@ class OverviewboardView extends GetView<OverviewboardController>
       height: 56,
       padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
       alignment: Alignment.center,
-      child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+      child: Text(label,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontWeight: FontWeight.bold)),
     );
   }
 
   Widget _generateFirstColumnRow(BuildContext context, int index) {
-
     return Container(
       width: 100,
       height: 52,
@@ -66,48 +68,48 @@ class OverviewboardView extends GetView<OverviewboardController>
   Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
     List<Widget> widget = <Widget>[];
     double widthSize = (Get.width / (itemColumnWidget.length + 2));
-      for (int j = 0 ; j < itemColumnWidget.length; j++) {
-        if (j == 0) {
-          Widget sectionOne = Container(
-            width: widthSize,
-            height: 52,
-            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-            alignment: Alignment.center,
-            child: Obx(() => DropdownButton(
-                  underline: const SizedBox(),
-                  iconSize: 0.0,
-                  onChanged: (newValue) {
-                    controller.setSelected(newValue!);
-                  },
-                  value: controller.selected.value,
-                  items: controller.dropdownItems.map((selectedType) {
-                    return DropdownMenuItem(
-                      value: selectedType,
-                      child: Text(
-                        selectedType,
-                      ),
-                    );
-                  }).toList(),
-                )), //([index]),
-          );
-          widget.add(sectionOne);
-        } else {
-          Widget sectionOthers = Container(
-            width: widthSize,
-            height: 52,
-            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-            alignment: Alignment.center,
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.check_circle, color: colorCheckMark),
-              ],
-            ),
-          );
-          widget.add(sectionOthers);
-        }
+    for (int j = 0; j < itemColumnWidget.length; j++) {
+      if (j == 0) {
+        Widget sectionOne = Container(
+          width: widthSize,
+          height: 52,
+          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+          alignment: Alignment.center,
+          child: Obx(() => DropdownButton(
+                underline: const SizedBox(),
+                iconSize: 0.0,
+                onChanged: (newValue) {
+                  controller.setSelected(newValue!);
+                },
+                value: controller.selected.value,
+                items: controller.dropdownItems.map((selectedType) {
+                  return DropdownMenuItem(
+                    value: selectedType,
+                    child: Text(
+                      selectedType,
+                    ),
+                  );
+                }).toList(),
+              )), //([index]),
+        );
+        widget.add(sectionOne);
+      } else {
+        Widget sectionOthers = Container(
+          width: widthSize,
+          height: 52,
+          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+          alignment: Alignment.center,
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Icon(Icons.check_circle, color: colorCheckMark),
+            ],
+          ),
+        );
+        widget.add(sectionOthers);
       }
+    }
 
     return Row(children: widget);
   }
@@ -153,8 +155,8 @@ class OverviewboardView extends GetView<OverviewboardController>
             } else {
               showDialog(
                   context: context,
-                  builder: (BuildContext context) =>
-                      newChecklistDialog(onTapCreate: (String title, String desc) {
+                  builder: (BuildContext context) => newChecklistDialog(
+                          onTapCreate: (String title, String desc) {
                         controller.addColumns(filterNull(boardId), title, desc);
                       }));
             }
@@ -341,7 +343,8 @@ class OverviewboardView extends GetView<OverviewboardController>
                   child: ListView.builder(
                 itemCount: controller.getItemCount(snapshot.data?.length),
                 itemBuilder: (BuildContext context, int index) {
-                  if (snapshot.data?.length == null || index > snapshot.data?.length - 1) {
+                  if (snapshot.data?.length == null ||
+                      index > snapshot.data?.length - 1) {
                     return Container(
                         margin: const EdgeInsets.all(12),
                         child: OutlinedButton.icon(

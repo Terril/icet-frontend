@@ -4,10 +4,12 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:get/get.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:icet/const/colors.dart';
 import 'package:icet/extension/ext.dart';
 
+import '../../logs.dart';
 import 'assets_controller.dart';
 
 class AssetsView extends GetView<AssetsController> {
@@ -15,7 +17,9 @@ class AssetsView extends GetView<AssetsController> {
 
   final String? boardId;
 
-  final QuillController _controller = QuillController.basic();
+  void _saveButtonClicked() {
+    controller.createAssets(filterNull(boardId));
+  }
 
   Widget emptyView(BuildContext context) {
     return Expanded(
@@ -58,11 +62,26 @@ class AssetsView extends GetView<AssetsController> {
                     Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'New Asset',
-                            style: TextStyle(
-                                fontSize: 24.0, fontWeight: FontWeight.w600),
-                          ),
+                          SizedBox(
+                              width: Get.width / 7,
+                              child: TextField(
+                                maxLength: 100,
+                                controller: controller.textController,
+                                decoration: const InputDecoration(
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.never,
+                                  border: InputBorder.none,
+                                  suffixIcon:
+                                      Icon(Icons.drive_file_rename_outline),
+                                  label: Text('New Asset',
+                                      style: TextStyle(
+                                          fontSize: 24.0,
+                                          fontWeight: FontWeight.w600)),
+                                ),
+                                style: const TextStyle(
+                                    fontSize: 24.0,
+                                    fontWeight: FontWeight.w600),
+                              )),
                           IconButton(
                             color: Colors.red,
                             icon: const Icon(Icons.delete_outlined),
@@ -74,79 +93,132 @@ class AssetsView extends GetView<AssetsController> {
                     const SizedBox(height: 24),
                     SizedBox(
                         height: Get.height / 2.75,
-                        child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(color: colorGreyField)),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    color: colorGreyEditor,
-                                    width: Get.width,
-                                    child: QuillToolbar.simple(
-                                      configurations:
-                                          QuillSimpleToolbarConfigurations(
-                                        buttonOptions:
-                                            const QuillSimpleToolbarButtonOptions(
-                                                base:
-                                                    QuillToolbarBaseButtonOptions(
-                                                        iconTheme:
-                                                            QuillIconTheme(
-                                          iconButtonSelectedData:
-                                              IconButtonData(
-                                                  highlightColor: colorBlue),
-                                          iconButtonSelectedStyle: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStatePropertyAll<
-                                                      Color>(colorBlue)),
-                                        ))),
-                                        dialogTheme: const QuillDialogTheme(
-                                            buttonStyle: ButtonStyle(
+                        child: Stack(children: <Widget>[
+                          Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: colorGreyField)),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      color: colorGreyEditor,
+                                      width: Get.width,
+                                      child: QuillToolbar.simple(
+                                        configurations:
+                                            QuillSimpleToolbarConfigurations(
+                                          buttonOptions:
+                                              const QuillSimpleToolbarButtonOptions(
+                                                  base:
+                                                      QuillToolbarBaseButtonOptions(
+                                                          iconTheme:
+                                                              QuillIconTheme(
+                                            iconButtonSelectedData:
+                                                IconButtonData(
+                                                    highlightColor: colorBlue),
+                                            iconButtonSelectedStyle: ButtonStyle(
                                                 backgroundColor:
                                                     MaterialStatePropertyAll<
                                                         Color>(colorBlue)),
-                                            dialogBackgroundColor:
-                                                colorGreyEditor),
-                                        toolbarIconAlignment:
-                                            WrapAlignment.start,
-                                        toolbarIconCrossAlignment:
-                                            WrapCrossAlignment.start,
-                                        showDividers: true,
-                                        showFontFamily: false,
-                                        showFontSize: false,
-                                        showStrikeThrough: false,
-                                        showInlineCode: false,
-                                        showSubscript: false,
-                                        showSuperscript: false,
-                                        showBackgroundColorButton: false,
-                                        showClearFormat: false,
-                                        showCodeBlock: false,
-                                        showQuote: false,
-                                        showIndent: false,
-                                        showUndo: false,
-                                        showRedo: false,
-                                        showSearchButton: false,
-                                        sectionDividerColor: Colors.black,
-                                        controller: _controller,
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: QuillEditor.basic(
-                                      configurations: QuillEditorConfigurations(
-                                        padding: const EdgeInsets.all(5),
-                                        controller: _controller,
-                                        readOnly: false,
-                                        sharedConfigurations:
-                                            const QuillSharedConfigurations(
-                                          locale: Locale('en'),
+                                          ))),
+                                          dialogTheme: const QuillDialogTheme(
+                                              buttonStyle: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStatePropertyAll<
+                                                          Color>(colorBlue)),
+                                              dialogBackgroundColor:
+                                                  colorGreyEditor),
+                                          toolbarIconAlignment:
+                                              WrapAlignment.start,
+                                          toolbarIconCrossAlignment:
+                                              WrapCrossAlignment.start,
+                                          showDividers: true,
+                                          showFontFamily: false,
+                                          showFontSize: false,
+                                          showStrikeThrough: false,
+                                          showInlineCode: false,
+                                          showSubscript: false,
+                                          showSuperscript: false,
+                                          showBackgroundColorButton: false,
+                                          showClearFormat: false,
+                                          showCodeBlock: false,
+                                          showQuote: false,
+                                          showIndent: false,
+                                          showUndo: false,
+                                          showRedo: false,
+                                          showSearchButton: false,
+                                          sectionDividerColor: Colors.black,
+                                          controller:
+                                              controller.quillController,
                                         ),
                                       ),
                                     ),
-                                  )
-                                ]))),
+                                    Expanded(
+                                      child: QuillEditor.basic(
+                                        configurations:
+                                            QuillEditorConfigurations(
+                                          padding: const EdgeInsets.all(5),
+                                          controller:
+                                              controller.quillController,
+                                          readOnly: false,
+                                          sharedConfigurations:
+                                              const QuillSharedConfigurations(
+                                            locale: Locale('en'),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Obx(() => Visibility(
+                                        visible: controller.enableButtons.value,
+                                        child: Container(
+                                          alignment: Alignment.topCenter,
+                                          padding: const EdgeInsets.only(
+                                              top: 10,
+                                              right: 20.0,
+                                              left: 16.0,
+                                              bottom: 16),
+                                          child: Row(children: [
+                                            ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8), // <-- Radius
+                                                    ),
+                                                    backgroundColor:
+                                                        colorBlueButton),
+                                                onPressed: () {
+                                                  _saveButtonClicked();
+                                                },
+                                                child: const Text("Save",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: colorWhite))),
+                                            const SizedBox(width: 12),
+                                            OutlinedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8), // <-- Radius
+                                                  ),
+                                                ),
+                                                onPressed: () {
+                                                  Get.back();
+                                                },
+                                                child: const Text("Close",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color:
+                                                            colorButtonGrey))),
+                                          ]),
+                                        )))
+                                  ])),
+                        ])),
                     const SizedBox(height: 24),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -202,13 +274,17 @@ class AssetsView extends GetView<AssetsController> {
                                   itemBuilder: (context, index) {
                                     return Column(children: [
                                       ListTile(
-                                          title: Text(
-                                        filterNull(snapshot.data?[index]?.name)
-                                            .toUpperCase(),
-                                          ),
-                                        trailing:  Icon(Icons.check_circle, color: colorCheckMark),
+                                        title: Text(
+                                          filterNull(
+                                                  snapshot.data?[index]?.name)
+                                              .toUpperCase(),
+                                        ),
+                                        trailing: const Icon(Icons.check_circle,
+                                            color: colorCheckMark),
                                       ),
-                                      const Divider(color: colorGreyField,)
+                                      const Divider(
+                                        color: colorGreyField,
+                                      )
                                     ]);
                                   });
                             }

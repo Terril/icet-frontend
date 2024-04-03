@@ -10,6 +10,8 @@ const colorBlue100 = Color(0xffE1EFFE);
 const colorGreyEditor = Color(0xfff9fafb);
 const colorBlueText = Color(0xFF1C64F2);
 const colorCheckMark = Color(0xff64E7CF);
+const colorButtonGrey = Color(0xff1F2A37);
+
 
 
 
