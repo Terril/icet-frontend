@@ -1,7 +1,6 @@
 
 import 'dart:collection';
 
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
@@ -36,7 +35,7 @@ class OverviewboardController extends GetxController with CacheManager {
   void onInit() {
     super.onInit();
     overviewboardProvider = APIServiceProvider();
-    futureBoard = fetchBoard();
+    loadBoard();
   }
 
   void selectDrawer(int position) {
@@ -47,8 +46,7 @@ class OverviewboardController extends GetxController with CacheManager {
     selected.value = value;
   }
 
-
-  Future<List<Boards?>> fetchBoard() async {
+  Future<List<Boards?>> _fetchBoard() async {
     Response response = await overviewboardProvider.getBoard();
     List<Boards> responseBoards = BoardList.fromJsonToList(response.body).list;
 
@@ -56,14 +54,18 @@ class OverviewboardController extends GetxController with CacheManager {
     return responseBoards;
   }
 
+  void loadBoard() {
+    futureBoard = _fetchBoard();
+    update();
+  }
+
   void callCustomBoard() async {
     Response response = await overviewboardProvider.getApiBoardsCustom();
     Logger.printLog(message: "${response.bodyString}");
-    if (response != null) {
-      futureBoard = fetchBoard();
+    if (response != null && response.isOk) {
+      loadBoard();
     }
 
-    update();
     Boards responseBoards = Boards.fromJson(response.body);
   }
 
@@ -75,7 +77,6 @@ class OverviewboardController extends GetxController with CacheManager {
     Response response = await overviewboardProvider.addColumn(map);
 
     var responseBody = Columns.fromJson(response.body);
-    Logger.printLog(message: "${response.bodyString}");
     return responseBody;
   }
 
@@ -84,13 +85,5 @@ class OverviewboardController extends GetxController with CacheManager {
 
    if(itemCount > 0) { return itemCount + 1 ; }
   }
-
-  void createBoard() {}
-
-  void fetchAssets() {}
-
-  void createAssets() {}
-
-  void fetchChecklists() {}
 
 }

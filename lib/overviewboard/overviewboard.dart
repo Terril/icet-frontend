@@ -132,7 +132,7 @@ class OverviewboardView extends GetView<OverviewboardController>
           ),
           onChanged: (String? value) {
             if (value == list.first) {
-              showGeneralDialog(
+              showGeneralDialog<bool>(
                 context: context,
                 transitionBuilder: (context, a1, a2, widget) {
                   return SlideTransition(
@@ -151,7 +151,7 @@ class OverviewboardView extends GetView<OverviewboardController>
                 ) {
                   return AssetsView(boardId);
                 },
-              );
+              ).then((value) => filterBoolNull(value) ? controller.loadBoard() : null);
             } else {
               showDialog(
                   context: context,

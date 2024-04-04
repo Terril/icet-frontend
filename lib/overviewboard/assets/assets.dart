@@ -54,7 +54,8 @@ class AssetsView extends GetView<AssetsController> {
                       child: IconButton(
                         icon: const Icon(Icons.clear),
                         onPressed: () {
-                          Get.back();
+                          Logger.printLog(message: "Get Back called  ${controller.assetsCreated}");
+                          Get.back(result: controller.assetsCreated);
                         },
                       ),
                     ),
@@ -207,9 +208,9 @@ class AssetsView extends GetView<AssetsController> {
                                                   ),
                                                 ),
                                                 onPressed: () {
-                                                  Get.back();
+                                                  controller.quillController.clear();
                                                 },
-                                                child: const Text("Close",
+                                                child: const Text("Clear",
                                                     style: TextStyle(
                                                         fontWeight:
                                                             FontWeight.w600,

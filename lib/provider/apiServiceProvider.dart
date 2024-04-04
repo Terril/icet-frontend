@@ -37,6 +37,13 @@ class APIServiceProvider extends GetConnect with CacheManager {
     });
   }
 
+  Future<Response> updateBoardNameByBoardId(String boardId , Map map) {
+    var token = getToken();
+    return patch('$_baseUrl/api/boards/$boardId/', map, headers: {
+      'Authorization' : 'Token $token',
+    });
+  }
+
   // Post Custom board request
   Future<Response> getApiBoardsCustom() {
     Map<String, dynamic> map = HashMap();

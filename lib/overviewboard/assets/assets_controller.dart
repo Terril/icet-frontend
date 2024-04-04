@@ -18,6 +18,7 @@ class AssetsController extends GetxController with CacheManager {
 
   RxBool enableButtons = false.obs;
 
+  bool assetsCreated = false;
   @override
   void onInit() {
     super.onInit();
@@ -52,6 +53,10 @@ class AssetsController extends GetxController with CacheManager {
     map["board"] = boardId;
     Response response = await provider.addRows(map);
 
+    if(response != null && response.isOk) {
+      Logger.printLog(message: "This is create Assets");
+      assetsCreated = true;
+    }
     Logger.printLog(message: "${response.bodyString}");
   }
 
