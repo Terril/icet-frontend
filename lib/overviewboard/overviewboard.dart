@@ -157,7 +157,7 @@ class OverviewboardView extends GetView<OverviewboardController>
                   context: context,
                   builder: (BuildContext context) => newChecklistDialog(
                           onTapCreate: (String title, String desc) {
-                        controller.addColumns(filterNull(boardId), title, desc);
+                        controller.addColumns(filterNull(boardId), title, desc).then((value) => value ? controller.loadBoard() : null);
                       }));
             }
           },

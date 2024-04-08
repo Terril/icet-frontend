@@ -62,22 +62,28 @@ class OverviewboardController extends GetxController with CacheManager {
   void callCustomBoard() async {
     Response response = await overviewboardProvider.getApiBoardsCustom();
     Logger.printLog(message: "${response.bodyString}");
-    if (response != null && response.isOk) {
+    if (response.body != null && response.isOk) {
       loadBoard();
     }
 
-    Boards responseBoards = Boards.fromJson(response.body);
+   //  Boards responseBoards = Boards.fromJson(response.body);
   }
 
-  Future<Columns> addColumns(String boardId, String title, String desc) async {
+  Future<bool> addColumns(String boardId, String title, String desc) async {
+    bool columnUpdated = false;
     Map<String, String> map = HashMap();
     map["name"] = title;
     map["board"] = boardId;
     map["description"] = desc;
     Response response = await overviewboardProvider.addColumn(map);
 
-    var responseBody = Columns.fromJson(response.body);
-    return responseBody;
+  //  var responseBody = Columns.fromJson(response.body);
+
+    if(response.body != null && response.isOk) {
+      columnUpdated = true;
+    }
+
+    return columnUpdated;
   }
 
   int? getItemCount(int?  itemCount) {

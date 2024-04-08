@@ -17,8 +17,8 @@ class AssetsView extends GetView<AssetsController> {
 
   final String? boardId;
 
-  void _saveButtonClicked() {
-    controller.createAssets(filterNull(boardId));
+  Future<bool> _saveButtonClicked() {
+    return controller.createAssets(filterNull(boardId));
   }
 
   Widget emptyView(BuildContext context) {
@@ -49,29 +49,46 @@ class AssetsView extends GetView<AssetsController> {
                   padding: const EdgeInsets.all(16),
                   color: Colors.white,
                   child: Column(children: <Widget>[
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          Logger.printLog(message: "Get Back called  ${controller.assetsCreated}");
-                          Get.back(result: controller.assetsCreated);
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 16),
+                    ButtonTheme(
+                        layoutBehavior: ButtonBarLayoutBehavior.constrained,
+                        child: ButtonBar(
+                            alignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                           TextButton.icon(
+                                icon: const Icon(Icons.check,
+                                    color: colorBlueButton),
+                                label: const Text("Save",
+                                    style: TextStyle(color: colorBlueButton, fontSize: 12)),
+                                onPressed: () {
+                                  _saveButtonClicked().then((value) =>
+                                      Get.back(result: value)
+                                  );
+
+                                },
+                              ),
+                               TextButton.icon(
+                                  icon: const Icon(Icons.clear),
+                                  label: const Text("Close", style: TextStyle(fontSize: 12),),
+                                  onPressed: () {
+                                    Logger.printLog(
+                                        message:
+                                            "Get Back called  ${controller.assetsCreated}");
+                                    Get.back(result: controller.assetsCreated);
+                                  },
+                                ),
+                            ])),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox(
                               width: Get.width / 7,
                               child: TextField(
-                                maxLength: 100,
                                 controller: controller.textController,
                                 decoration: const InputDecoration(
                                   floatingLabelBehavior:
                                       FloatingLabelBehavior.never,
                                   border: InputBorder.none,
+                                  counterText: "",
                                   suffixIcon:
                                       Icon(Icons.drive_file_rename_outline),
                                   label: Text('New Asset',
@@ -91,7 +108,7 @@ class AssetsView extends GetView<AssetsController> {
                             },
                           )
                         ]),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
                     SizedBox(
                         height: Get.height / 2.75,
                         child: Stack(children: <Widget>[
@@ -173,50 +190,29 @@ class AssetsView extends GetView<AssetsController> {
                                     Obx(() => Visibility(
                                         visible: controller.enableButtons.value,
                                         child: Container(
-                                          alignment: Alignment.topCenter,
+                                          alignment: Alignment.topLeft,
                                           padding: const EdgeInsets.only(
                                               top: 10,
                                               right: 20.0,
                                               left: 16.0,
                                               bottom: 16),
-                                          child: Row(children: [
-                                            ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8), // <-- Radius
-                                                    ),
-                                                    backgroundColor:
-                                                        colorBlueButton),
-                                                onPressed: () {
-                                                  _saveButtonClicked();
-                                                },
-                                                child: const Text("Save",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: colorWhite))),
-                                            const SizedBox(width: 12),
-                                            OutlinedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8), // <-- Radius
-                                                  ),
+                                          child: OutlinedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8), // <-- Radius
                                                 ),
-                                                onPressed: () {
-                                                  controller.quillController.clear();
-                                                },
-                                                child: const Text("Clear",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color:
-                                                            colorButtonGrey))),
-                                          ]),
+                                              ),
+                                              onPressed: () {
+                                                controller.quillController
+                                                    .clear();
+                                              },
+                                              child: const Text("Clear",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: colorButtonGrey))),
                                         )))
                                   ])),
                         ])),

@@ -46,7 +46,7 @@ class AssetsController extends GetxController with CacheManager {
     return responseBoards;
   }
 
-  void createAssets(String boardId) async {
+  Future<bool> createAssets(String boardId) async {
     Map<String, String> map = HashMap();
     map["name"] = textController.text;
     map["md_content"] = quillController.plainTextEditingValue.text;
@@ -58,6 +58,8 @@ class AssetsController extends GetxController with CacheManager {
       assetsCreated = true;
     }
     Logger.printLog(message: "${response.bodyString}");
+
+    return assetsCreated;
   }
 
   @override
