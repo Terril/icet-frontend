@@ -19,7 +19,7 @@ class APIServiceProvider extends GetConnect with CacheManager {
   String _getUrl() => _baseUrl;
 
   // Get request
-  Future<Response<List<dynamic>>> getBoard() {
+   Future<Response> getBoard() { //List<dynamic>>
     var token = getToken();
     Logger.printLog(message: "$token");
     return get('$_baseUrl/api/boards/', headers: {
