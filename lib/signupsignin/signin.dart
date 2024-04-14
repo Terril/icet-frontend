@@ -95,6 +95,7 @@ class SigninView extends GetView<AccountController> {
                                   autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
                                   validator: controller.validateEmail,
+                                  autofillHints: const [AutofillHints.username],
                                   decoration: InputDecoration(
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: const BorderSide(
@@ -121,6 +122,7 @@ class SigninView extends GetView<AccountController> {
                                   controller.textPasswordController,
                                   autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
+                                  autofillHints: const [AutofillHints.password],
                                   validator: controller.validatePassword,
                                   obscureText: true,
                                   enableSuggestions: false,
