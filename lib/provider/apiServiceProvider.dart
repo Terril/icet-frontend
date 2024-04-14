@@ -25,7 +25,6 @@ class APIServiceProvider extends GetConnect with CacheManager {
     return get('$_baseUrl/api/boards/', headers: {
       'Authorization' : 'Token $token',
       'accept' : 'application/json',
-      'Access-Control-Allow-Origin' : '*',
       'Content-Type' : 'application/json'
     });
   }
