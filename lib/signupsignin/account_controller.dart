@@ -86,8 +86,13 @@ class AccountController extends GetxController with CacheManager {
           .signupUser(map)
           .then((response) {
             enableLoader.value = false;
-            print(response);
-            if (response != null) _trx = User.fromJson(response.body);
+            Logger.printLog(message: "${response.bodyString}");
+            if (response != null) {
+              _trx = Token.fromJson(response.body);
+              Logger.printLog(message: filterNull((_trx as Token).token));
+              saveToken((_trx as Token).token);
+              saveLoginState(true);
+            }
           })
           .catchError((err) => print('Error!!!!! : ${err}'))
           .whenComplete(() => dataAvailable.value = _trx != null);

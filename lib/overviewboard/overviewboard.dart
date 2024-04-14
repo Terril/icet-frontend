@@ -21,8 +21,29 @@ class OverviewboardView extends GetView<OverviewboardController>
 
   String selectedValue = "1";
 
-  void onClickCustomizableTable() {
-    print("search button clicked");
+  void onTapProfilePic() {
+    print("Profile Pic clicked");
+  }
+
+  void showAssets(BuildContext context, String? boardId, Rows? asset) {
+    showGeneralDialog<bool>(
+      context: context,
+      transitionBuilder: (context, a1, a2, widget) {
+        return SlideTransition(
+          position: Tween(begin: const Offset(1, 0), end: const Offset(0.5, 0))
+              .animate(a1),
+          child: widget,
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 500),
+      pageBuilder: (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+      ) {
+        return AssetsView(boardId, asset);
+      },
+    ).then((value) => filterBoolNull(value) ? controller.loadBoard() : null);
   }
 
   double widthSize = (Get.width / 6);
@@ -58,12 +79,18 @@ class OverviewboardView extends GetView<OverviewboardController>
       height: 52,
       padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
       alignment: Alignment.center,
-      child: Text(filterNull(itemRowWidget[index].name)),
+      child: InkWell(
+          onTap: () {
+            showAssets(context, board?.id, itemRowWidget[index]);
+          },
+          child: Text(filterNull(itemRowWidget[index].name))),
     );
   }
 
   List<Rows> itemRowWidget = <Rows>[];
   List<Columns> itemColumnWidget = <Columns>[];
+
+  Boards? board = null;
 
   Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
     List<Widget> widget = <Widget>[];
@@ -132,32 +159,16 @@ class OverviewboardView extends GetView<OverviewboardController>
           ),
           onChanged: (String? value) {
             if (value == list.first) {
-              showGeneralDialog<bool>(
-                context: context,
-                transitionBuilder: (context, a1, a2, widget) {
-                  return SlideTransition(
-                    position: Tween(
-                            begin: const Offset(1, 0),
-                            end: const Offset(0.5, 0))
-                        .animate(a1),
-                    child: widget,
-                  );
-                },
-                transitionDuration: const Duration(milliseconds: 500),
-                pageBuilder: (
-                  BuildContext context,
-                  Animation<double> animation,
-                  Animation<double> secondaryAnimation,
-                ) {
-                  return AssetsView(boardId);
-                },
-              ).then((value) => filterBoolNull(value) ? controller.loadBoard() : null);
+              showAssets(context, boardId, null);
             } else {
               showDialog(
                   context: context,
                   builder: (BuildContext context) => newChecklistDialog(
                           onTapCreate: (String title, String desc) {
-                        controller.addColumns(filterNull(boardId), title, desc).then((value) => value ? controller.loadBoard() : null);
+                        controller
+                            .addColumns(filterNull(boardId), title, desc)
+                            .then((value) =>
+                                value ? controller.loadBoard() : null);
                       }));
             }
           },
@@ -217,6 +228,7 @@ class OverviewboardView extends GetView<OverviewboardController>
     String? title = data?.name;
     itemRowWidget = filterNullList(data?.rows);
     itemColumnWidget = filterNullList(data?.columns);
+    board = data;
     return Container(
         color: colorBlue,
         margin: const EdgeInsets.only(
@@ -240,6 +252,15 @@ class OverviewboardView extends GetView<OverviewboardController>
                 style: const TextStyle(
                     fontSize: 21.0, fontWeight: FontWeight.bold),
               ),
+
+              // TextField(
+              //     controller: controller.titleController,
+              //     enabled: false,
+              //     decoration: InputDecoration(
+              //       label: Text(filterNull(title),
+              //           style: const TextStyle(
+              //               fontSize: 21.0, fontWeight: FontWeight.bold)),
+              //     )),
               const SizedBox(width: 12.5),
               IconButton(
                   onPressed: () async {},
@@ -283,17 +304,30 @@ class OverviewboardView extends GetView<OverviewboardController>
     return Scaffold(
       appBar: AppBar(
           centerTitle: false,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Image.asset("assets/images/logo.png"),
-              const Text(
-                'Ice T',
-                textAlign: TextAlign.left,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ],
-          )),
+          title:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Image.asset("assets/images/logo.png"),
+                const Text(
+                  'Ice T',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            InkWell(
+                onTap: () {
+                  onTapProfilePic();
+                },
+                child: const CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(
+                    'https://source.unsplash.com/50x50/?portrait', scale: 1.0
+                  ),
+                )),
+          ])),
       body: GetBuilder<OverviewboardController>(builder: (controller) {
         return FutureBuilder(
           future: controller.futureBoard,

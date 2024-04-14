@@ -7,15 +7,17 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:icet/const/colors.dart';
+import 'package:icet/datamodel/rows.dart';
 import 'package:icet/extension/ext.dart';
 
 import '../../logs.dart';
 import 'assets_controller.dart';
 
 class AssetsView extends GetView<AssetsController> {
-  AssetsView(this.boardId, {super.key});
+  AssetsView(this.boardId, this.asset, {super.key});
 
   final String? boardId;
+  final Rows? asset;
 
   Future<bool> _saveButtonClicked() {
     return controller.createAssets(filterNull(boardId));
@@ -37,6 +39,7 @@ class AssetsView extends GetView<AssetsController> {
 
   @override
   Widget build(BuildContext context) {
+    String title = asset != null ? filterNull(asset?.name) : 'New Asset';
     return Scaffold(
       backgroundColor: Colors.white.withOpacity(0.5),
       // this is the main reason of transparency at next screen. I am ignoring rest implementation but what i have achieved is you can see.
@@ -54,28 +57,30 @@ class AssetsView extends GetView<AssetsController> {
                         child: ButtonBar(
                             alignment: MainAxisAlignment.end,
                             children: <Widget>[
-                           TextButton.icon(
+                              TextButton.icon(
                                 icon: const Icon(Icons.check,
                                     color: colorBlueButton),
                                 label: const Text("Save",
-                                    style: TextStyle(color: colorBlueButton, fontSize: 12)),
+                                    style: TextStyle(
+                                        color: colorBlueButton, fontSize: 12)),
                                 onPressed: () {
-                                  _saveButtonClicked().then((value) =>
-                                      Get.back(result: value)
-                                  );
-
+                                  _saveButtonClicked()
+                                      .then((value) => Get.back(result: value));
                                 },
                               ),
-                               TextButton.icon(
-                                  icon: const Icon(Icons.clear),
-                                  label: const Text("Close", style: TextStyle(fontSize: 12),),
-                                  onPressed: () {
-                                    Logger.printLog(
-                                        message:
-                                            "Get Back called  ${controller.assetsCreated}");
-                                    Get.back(result: controller.assetsCreated);
-                                  },
+                              TextButton.icon(
+                                icon: const Icon(Icons.clear),
+                                label: const Text(
+                                  "Close",
+                                  style: TextStyle(fontSize: 12),
                                 ),
+                                onPressed: () {
+                                  Logger.printLog(
+                                      message:
+                                          "Get Back called  ${controller.assetsCreated}");
+                                  Get.back(result: controller.assetsCreated);
+                                },
+                              ),
                             ])),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -84,15 +89,15 @@ class AssetsView extends GetView<AssetsController> {
                               width: Get.width / 7,
                               child: TextField(
                                 controller: controller.textController,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   floatingLabelBehavior:
                                       FloatingLabelBehavior.never,
                                   border: InputBorder.none,
                                   counterText: "",
-                                  suffixIcon:
-                                      Icon(Icons.drive_file_rename_outline),
-                                  label: Text('New Asset',
-                                      style: TextStyle(
+                                  suffixIcon: const Icon(
+                                      Icons.drive_file_rename_outline),
+                                  label: Text(title,
+                                      style: const TextStyle(
                                           fontSize: 24.0,
                                           fontWeight: FontWeight.w600)),
                                 ),
@@ -100,13 +105,15 @@ class AssetsView extends GetView<AssetsController> {
                                     fontSize: 24.0,
                                     fontWeight: FontWeight.w600),
                               )),
-                          IconButton(
-                            color: Colors.red,
-                            icon: const Icon(Icons.delete_outlined),
-                            onPressed: () {
-                              Get.back();
-                            },
-                          )
+                          Visibility(
+                              visible: false,
+                              child: IconButton(
+                                color: Colors.red,
+                                icon: const Icon(Icons.delete_outlined),
+                                onPressed: () {
+                                  Get.back();
+                                },
+                              ))
                         ]),
                     const SizedBox(height: 16),
                     SizedBox(

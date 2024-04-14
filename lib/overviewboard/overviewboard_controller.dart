@@ -1,6 +1,7 @@
 
 import 'dart:collection';
 
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
@@ -9,16 +10,18 @@ import 'package:icet/logs.dart';
 import 'package:icet/provider/apiServiceProvider.dart';
 
 import '../datamodel/boards.dart';
-import '../datamodel/columns.dart';
 
 class OverviewboardController extends GetxController with CacheManager {
   late APIServiceProvider overviewboardProvider;
+  TextEditingController titleController = TextEditingController();
 
   final selected = "1".obs;
 
   RxInt obxPosition = 0.obs;
 
   late Future futureBoard;
+
+  bool isAssetDeleted = false;
 
   List<String> get dropdownItems {
     List<String> menuItems = [
@@ -34,6 +37,9 @@ class OverviewboardController extends GetxController with CacheManager {
   @override
   void onInit() {
     super.onInit();
+    titleController.addListener(() {
+
+    });
     overviewboardProvider = APIServiceProvider();
     loadBoard();
   }
@@ -61,7 +67,7 @@ class OverviewboardController extends GetxController with CacheManager {
 
   void callCustomBoard() async {
     Response response = await overviewboardProvider.getApiBoardsCustom();
-    Logger.printLog(message: "${response.bodyString}");
+    Logger.printLog(tag:" Custom Board ", message: "${response.bodyString}");
     if (response.body != null && response.isOk) {
       loadBoard();
     }
