@@ -62,6 +62,18 @@ class AssetsController extends GetxController with CacheManager {
     return assetsCreated;
   }
 
+
+  Future<bool> deleteAsset(String rowId) async {
+    Response response = await provider.deleteRow(rowId);
+    Logger.printLog(message: "${response.bodyString}");
+    if(response != null && response.isOk) {
+      Logger.printLog(message: "This is create Assets");
+      assetsCreated = true;
+    }
+
+    return assetsCreated;
+  }
+
   @override
   void onClose() {
     super.onClose();

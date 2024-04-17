@@ -14,13 +14,18 @@ import '../../logs.dart';
 import 'assets_controller.dart';
 
 class AssetsView extends GetView<AssetsController> {
-  AssetsView(this.boardId, this.asset, {super.key});
+  AssetsView(this.boardId, this.asset, this.isDeletable, {super.key});
 
   final String? boardId;
   final Rows? asset;
+  final bool isDeletable;
 
   Future<bool> _saveButtonClicked() {
     return controller.createAssets(filterNull(boardId));
+  }
+
+  Future<bool> _deleteAsset() {
+    return controller.deleteAsset(filterNull(asset?.id));
   }
 
   Widget emptyView(BuildContext context) {
@@ -35,6 +40,67 @@ class AssetsView extends GetView<AssetsController> {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400)),
       ],
     ));
+  }
+
+  void _showDeleteDialog(BuildContext context) {
+    // set up the buttons
+    Widget deleteButton = ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8), // <-- Radius
+          ),
+          backgroundColor: colorDeleteButton),
+      child: const Text(
+        "Delete",
+        style: TextStyle(color: Colors.white),
+      ),
+      onPressed: () {
+        _deleteAsset().then((value) => Get.back(closeOverlays: true));
+      },
+    );
+    Widget closeButton = OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8), // <-- Radius
+        ),
+      ),
+      child: const Text("Close", style: TextStyle(color: Colors.black)),
+      onPressed: () {
+        Get.back(closeOverlays: true);
+      },
+    );
+
+    // set up the AlertDialog
+    SimpleDialog alert = SimpleDialog(
+        contentPadding: const EdgeInsets.all(24),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        children: <Widget>[
+          Column(children: <Widget>[
+            const Icon(size: 24, Icons.info_outline),
+            const SizedBox(height: 16),
+            const Text(
+                "Are you sure you want to delete this\n asset? \n"
+                "All notes and criteria will be deleted and \ncannot be retrieved.",
+                textAlign: TextAlign.center),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  closeButton,
+                  deleteButton,
+                ])
+          ]),
+        ]);
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return PopScope(child: alert);
+      },
+    );
   }
 
   @override
@@ -106,12 +172,12 @@ class AssetsView extends GetView<AssetsController> {
                                     fontWeight: FontWeight.w600),
                               )),
                           Visibility(
-                              visible: false,
+                              visible: isDeletable,
                               child: IconButton(
                                 color: Colors.red,
                                 icon: const Icon(Icons.delete_outlined),
                                 onPressed: () {
-                                  Get.back();
+                                  _showDeleteDialog(context);
                                 },
                               ))
                         ]),
@@ -263,7 +329,8 @@ class AssetsView extends GetView<AssetsController> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
+                          return const Center(
+                              child: CircularProgressIndicator());
                         } else {
                           if (snapshot.hasError) {
                             return Center(child: emptyView(context));

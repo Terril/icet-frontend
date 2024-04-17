@@ -1,4 +1,3 @@
-
 import 'dart:collection';
 
 import 'package:flutter/widgets.dart';
@@ -30,6 +29,11 @@ class OverviewboardController extends GetxController with CacheManager {
       "3",
       "4",
       "5",
+      "6",
+      "7",
+      "7",
+      "9",
+      "10"
     ];
     return menuItems;
   }
@@ -37,9 +41,7 @@ class OverviewboardController extends GetxController with CacheManager {
   @override
   void onInit() {
     super.onInit();
-    titleController.addListener(() {
-
-    });
+    titleController.addListener(() {});
     overviewboardProvider = APIServiceProvider();
     loadBoard();
   }
@@ -67,12 +69,12 @@ class OverviewboardController extends GetxController with CacheManager {
 
   void callCustomBoard() async {
     Response response = await overviewboardProvider.getApiBoardsCustom();
-    Logger.printLog(tag:" Custom Board ", message: "${response.bodyString}");
+    Logger.printLog(tag: " Custom Board ", message: "${response.bodyString}");
     if (response.body != null && response.isOk) {
       loadBoard();
     }
 
-   //  Boards responseBoards = Boards.fromJson(response.body);
+    //  Boards responseBoards = Boards.fromJson(response.body);
   }
 
   Future<bool> addColumns(String boardId, String title, String desc) async {
@@ -83,19 +85,20 @@ class OverviewboardController extends GetxController with CacheManager {
     map["description"] = desc;
     Response response = await overviewboardProvider.addColumn(map);
 
-  //  var responseBody = Columns.fromJson(response.body);
+    //  var responseBody = Columns.fromJson(response.body);
 
-    if(response.body != null && response.isOk) {
+    if (response.body != null && response.isOk) {
       columnUpdated = true;
     }
 
     return columnUpdated;
   }
 
-  int? getItemCount(int?  itemCount) {
-   if(itemCount == null) return 1;
+  int? getItemCount(int? itemCount) {
+    if (itemCount == null) return 1;
 
-   if(itemCount > 0) { return itemCount + 1 ; }
+    if (itemCount > 0) {
+      return itemCount + 1;
+    }
   }
-
 }

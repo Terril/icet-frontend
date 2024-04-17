@@ -25,7 +25,7 @@ class OverviewboardView extends GetView<OverviewboardController>
     print("Profile Pic clicked");
   }
 
-  void showAssets(BuildContext context, String? boardId, Rows? asset) {
+  void showAssets(BuildContext context, String? boardId, Rows? asset, bool canDelete) {
     showGeneralDialog<bool>(
       context: context,
       transitionBuilder: (context, a1, a2, widget) {
@@ -41,7 +41,7 @@ class OverviewboardView extends GetView<OverviewboardController>
         Animation<double> animation,
         Animation<double> secondaryAnimation,
       ) {
-        return AssetsView(boardId, asset);
+        return AssetsView(boardId, asset, canDelete);
       },
     ).then((value) => filterBoolNull(value) ? controller.loadBoard() : null);
   }
@@ -81,7 +81,7 @@ class OverviewboardView extends GetView<OverviewboardController>
       alignment: Alignment.center,
       child: InkWell(
           onTap: () {
-            showAssets(context, board?.id, itemRowWidget[index]);
+            showAssets(context, board?.id, itemRowWidget[index], true);
           },
           child: Text(filterNull(itemRowWidget[index].name))),
     );
@@ -159,7 +159,7 @@ class OverviewboardView extends GetView<OverviewboardController>
           ),
           onChanged: (String? value) {
             if (value == list.first) {
-              showAssets(context, boardId, null);
+              showAssets(context, boardId, null, false);
             } else {
               showDialog(
                   context: context,

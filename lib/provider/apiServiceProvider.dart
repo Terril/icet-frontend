@@ -70,6 +70,13 @@ class APIServiceProvider extends GetConnect with CacheManager {
       'Authorization' : 'Token $token',
     });
   }
+
+  Future<Response> deleteRow(String rowId) {
+    var token = getToken();
+    return delete('$_baseUrl/api/row/$rowId/delete', headers: {
+      'Authorization' : 'Token $token',
+    });
+  }
   // Column is nothing but the checklist
   Future<Response> addColumn(Map data) {
     var token = getToken();
