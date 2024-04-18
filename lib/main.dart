@@ -30,7 +30,6 @@ class IcetApp extends StatelessWidget with CacheManager {
   @override
   Widget build(BuildContext context) {
 
-    Logger.printLog(message: "$isLoggedIn");
     return GetMaterialApp(
       theme: ThemeData(scaffoldBackgroundColor: colorBlue),
       initialRoute: isLoggedIn ? '/overviewboard' : '/signin',

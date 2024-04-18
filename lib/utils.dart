@@ -45,10 +45,13 @@ class UIUtils {
               height: 20,
             ),
             Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  closeButton,
-                  deleteButton,
+                  Expanded(child: closeButton),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  Expanded(child: deleteButton),
                 ])
           ]),
         ]);
