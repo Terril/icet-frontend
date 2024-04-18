@@ -97,7 +97,7 @@ class OverviewboardController extends GetxController with CacheManager {
     bool columnDeleted = false;
     Response response = await overviewboardProvider.deleteColumn(columnId);
 
-    if (response.body != null && response.isOk) {
+    if (response.isOk) {
       columnDeleted = true;
     }
 
