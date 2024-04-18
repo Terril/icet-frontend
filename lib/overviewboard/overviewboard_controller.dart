@@ -11,7 +11,7 @@ import 'package:icet/provider/apiServiceProvider.dart';
 import '../datamodel/boards.dart';
 
 class OverviewboardController extends GetxController with CacheManager {
-  late APIServiceProvider overviewboardProvider;
+  APIServiceProvider overviewboardProvider  = APIServiceProvider();
   TextEditingController titleController = TextEditingController();
 
   final selected = "1".obs;
@@ -42,7 +42,6 @@ class OverviewboardController extends GetxController with CacheManager {
   void onInit() {
     super.onInit();
     titleController.addListener(() {});
-    overviewboardProvider = APIServiceProvider();
     loadBoard();
   }
 
@@ -92,6 +91,18 @@ class OverviewboardController extends GetxController with CacheManager {
     }
 
     return columnUpdated;
+  }
+
+  Future<bool> deleteColumn(String columnId) async {
+    bool columnDeleted = false;
+    Response response = await overviewboardProvider.deleteColumn(columnId);
+
+    if (response.body != null && response.isOk) {
+      columnDeleted = true;
+    }
+
+    Logger.printLog(message: "${response.bodyString}  $columnDeleted");
+    return columnDeleted;
   }
 
   int? getItemCount(int? itemCount) {

@@ -85,6 +85,12 @@ class APIServiceProvider extends GetConnect with CacheManager {
     });
   }
 
+  Future<Response> deleteColumn(String columnId) {
+    var token = getToken();
+    return delete('$_baseUrl/api/column/$columnId/delete', headers: {
+      'Authorization' : 'Token $token',
+    });
+  }
 
   // Post Sign up request
   Future<Response> signupUser(Map data) => post('$_baseUrl/api/users/', data);
