@@ -104,9 +104,22 @@ class AssetsView extends GetView<AssetsController> {
   //   );
   // }
 
+  String preprocessContent(String content) {
+    // Logic to identify and remove Lorem Ipsum (replace with your logic)
+    content = content.replaceAll(r'lorem.*?ipsum', '');
+
+    // Logic to extract specific parts (replace with your logic)
+    int instructionEndIndex = content.indexOf('.'); // Assuming instruction ends with a period
+    String instruction = content.substring(0, instructionEndIndex + 1);
+
+    // Return the cleaned content or specific parts
+    return instruction; // Or return the entire cleaned content
+  }
+
   @override
   Widget build(BuildContext context) {
     String title = asset != null ? filterNull(asset?.name) : 'New Asset';
+    String description = asset != null ? filterNull(asset?.mdContent).removeAllWhitespace.replaceAll("\n", "\\n").replaceAll("\"", "\\\"") : '';
     return Scaffold(
       backgroundColor: Colors.white.withOpacity(0.5),
       // this is the main reason of transparency at next screen. I am ignoring rest implementation but what i have achieved is you can see.
@@ -179,9 +192,11 @@ class AssetsView extends GetView<AssetsController> {
                                 icon: const Icon(Icons.delete_outlined),
                                 onPressed: () {
                                   //_showDeleteDialog(context);
-                                  UIUtils.showDeleteDialog(context,
+                                  UIUtils.showDeleteDialog(
+                                      context,
                                       "Are you sure you want to delete this\n asset? \n"
-                                      "All notes and criteria will be deleted and \ncannot be retrieved.",onCloseClicked: () {
+                                      "All notes and criteria will be deleted and \ncannot be retrieved.",
+                                      onCloseClicked: () {
                                     Get.back(closeOverlays: true);
                                   }, onDeleteClicked: () {
                                     _deleteAsset().then((value) =>
@@ -234,6 +249,7 @@ class AssetsView extends GetView<AssetsController> {
                                           toolbarIconCrossAlignment:
                                               WrapCrossAlignment.start,
                                           showDividers: true,
+                                          showColorButton: false,
                                           showFontFamily: false,
                                           showFontSize: false,
                                           showStrikeThrough: false,
@@ -258,6 +274,7 @@ class AssetsView extends GetView<AssetsController> {
                                       child: QuillEditor.basic(
                                         configurations:
                                             QuillEditorConfigurations(
+                                          placeholder: description,
                                           padding: const EdgeInsets.all(5),
                                           controller:
                                               controller.quillController,

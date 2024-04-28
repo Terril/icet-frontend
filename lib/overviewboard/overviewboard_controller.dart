@@ -11,7 +11,7 @@ import 'package:icet/provider/apiServiceProvider.dart';
 import '../datamodel/boards.dart';
 
 class OverviewboardController extends GetxController with CacheManager {
-  APIServiceProvider overviewboardProvider  = APIServiceProvider();
+  APIServiceProvider overviewboardProvider = APIServiceProvider();
   TextEditingController titleController = TextEditingController();
 
   final selected = "1".obs;
@@ -51,6 +51,23 @@ class OverviewboardController extends GetxController with CacheManager {
 
   void setSelected(String value) {
     selected.value = value;
+  }
+
+  Future<bool> updateBoard(String boardId, String name) async {
+    bool boardUpdated = false;
+    Map<String, String> data = HashMap();
+    data["name"] = name;
+
+    Response response =
+        await overviewboardProvider.updateBoardNameByBoardId(boardId, data);
+
+    Logger.printLog(message: "${response.bodyString}");
+    if (response.body != null && response.isOk) {
+      loadBoard();
+      boardUpdated = true;
+    }
+
+    return boardUpdated;
   }
 
   Future<List<Boards?>> _fetchBoard() async {

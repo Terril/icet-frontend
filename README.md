@@ -7,6 +7,7 @@ A Flutter project.
 - If on mac set the SDK in your .bash_profile
 - Go to the root folder of the app i.e., icet
 - Use the command `flutter run -d chrome` to run the app on Chrom browser
+- flutter run -d chrome --web-hostname localhost --web-port 5051
 
 ## Getting Started
 

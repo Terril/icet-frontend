@@ -1,4 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import '../const/colors.dart';
+
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+GlobalKey<ScaffoldMessengerState>();
 
 String filterNull(String? input) {
   if (input == null) {
@@ -26,6 +32,14 @@ bool filterBoolNull(bool? input) {
     return false;
   }
   return input;
+}
+
+void showInSnackBar(String value) {
+  var snackBar = SnackBar(
+      backgroundColor: colorDeleteButton,
+      content: Text(value, style: const TextStyle(color: colorWhite)));
+  //_scaffoldMessengerKey.currentState?.hideCurrentSnackBar(snackBar);
+  scaffoldMessengerKey.currentState?.showSnackBar(snackBar);
 }
 
 extension GlobalKeyExtension on GlobalKey {

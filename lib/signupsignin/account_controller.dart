@@ -4,15 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '../cache/cachemanager.dart';
 import '../datamodel/token.dart';
-import '../datamodel/user.dart';
 import '../extension/ext.dart';
 import '../logs.dart';
 import '../provider/apiServiceProvider.dart';
 
 class AccountController extends GetxController with CacheManager {
   late APIServiceProvider provider;
-  late String _pass;
-  late String _email;
+  String _pass = "";
+  String _email = "";
   late String _reinputPass;
   var _trx;
   var dataAvailable = false.obs;
@@ -76,7 +75,7 @@ class AccountController extends GetxController with CacheManager {
         : null;
   }
 
-  void performUserSignUp() async {
+  void performUserSignUp(Function func) async {
     enableLoader.value = true;
     if (_email.isNotEmpty && _reinputPass.isNotEmpty) {
       Map<String, String> map = HashMap();
@@ -86,12 +85,13 @@ class AccountController extends GetxController with CacheManager {
           .signupUser(map)
           .then((response) {
             enableLoader.value = false;
-            Logger.printLog(message: "${response.bodyString}");
-            if (response != null) {
+            if (response != null && response.isOk) {
               _trx = Token.fromJson(response.body);
               Logger.printLog(message: filterNull((_trx as Token).token));
               saveToken((_trx as Token).token);
               saveLoginState(true);
+            } else {
+              func(false);
             }
           })
           .catchError((err) => print('Error!!!!! : ${err}'))
@@ -109,12 +109,14 @@ class AccountController extends GetxController with CacheManager {
           .signinUser(map)
           .then((response) {
             enableLoader.value = false;
-            if (response != null) {
+            if (response != null && response.isOk) {
               _trx = Token.fromJson(response.body);
               Logger.printLog(message: filterNull((_trx as Token).token));
               saveToken((_trx as Token).token);
               saveLoginState(true);
               func(true);
+            } else {
+              func(false);
             }
           })
           .catchError((err) => print('Error!!!!! : $err'))
