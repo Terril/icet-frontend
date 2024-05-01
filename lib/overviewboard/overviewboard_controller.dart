@@ -31,7 +31,7 @@ class OverviewboardController extends GetxController with CacheManager {
       "5",
       "6",
       "7",
-      "7",
+      "8",
       "9",
       "10"
     ];

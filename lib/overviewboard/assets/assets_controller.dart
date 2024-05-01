@@ -19,6 +19,25 @@ class AssetsController extends GetxController with CacheManager {
   RxBool enableButtons = false.obs;
 
   bool assetsCreated = false;
+
+  List<String> get dropdownItems {
+    List<String> menuItems = [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10"
+    ];
+    return menuItems;
+  }
+
+  final selected = "Unset".obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -32,6 +51,10 @@ class AssetsController extends GetxController with CacheManager {
               : false;
       _showSaveAnnCancelButtons(state);
     });
+  }
+
+  void setSelected(String value) {
+    selected.value = value;
   }
 
   void _showSaveAnnCancelButtons(bool state) {

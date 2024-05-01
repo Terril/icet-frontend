@@ -12,6 +12,8 @@ const colorBlueText = Color(0xFF1C64F2);
 const colorCheckMark = Color(0xff64E7CF);
 const colorButtonGrey = Color(0xff1F2A37);
 const colorDeleteButton = Color(0xffF05252);
+const colorTextUnsetButton = Color(0xff6B7280);
+
 
 
 
