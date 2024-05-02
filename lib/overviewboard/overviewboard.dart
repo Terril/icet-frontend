@@ -96,22 +96,23 @@ class OverviewboardView extends GetView<OverviewboardController>
           height: 52,
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.center,
-          child: Obx(() => DropdownButton(
-                underline: const SizedBox(),
-                iconSize: 0.0,
-                onChanged: (newValue) {
-                  controller.setSelected(newValue!);
-                },
-                value: controller.selected.value,
-                items: controller.dropdownItems.map((selectedType) {
-                  return DropdownMenuItem(
-                    value: selectedType,
-                    child: Text(
-                      selectedType,
-                    ),
-                  );
-                }).toList(),
-              )), //([index]),
+          child: Text(itemRowWidget[j].interestLevel.toString())
+          // Obx(() => DropdownButton(
+          //       underline: const SizedBox(),
+          //       iconSize: 0.0,
+          //       onChanged: (newValue) {
+          //         controller.setSelected(newValue!);
+          //       },
+          //       value: controller.selected.value,
+          //       items: controller.dropdownItems.map((selectedType) {
+          //         return DropdownMenuItem(
+          //           value: selectedType,
+          //           child: Text(
+          //             selectedType,
+          //           ),
+          //         );
+          //       }).toList(),
+          //     )), //([index]),
         );
         widget.add(sectionOne);
       } else {

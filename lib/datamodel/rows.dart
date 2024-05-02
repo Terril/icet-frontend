@@ -7,16 +7,17 @@ class Rows {
   String? updatedAt;
   String? mdContent;
   String? board;
+  int? interestLevel;
 
-  Rows(
-      {this.id,
-      this.cells,
-      this.nonGlobalCells,
-      this.name,
-      this.createdAt,
-      this.updatedAt,
-      this.mdContent,
-      this.board});
+  Rows({this.id,
+    this.cells,
+    this.nonGlobalCells,
+    this.name,
+    this.createdAt,
+    this.updatedAt,
+    this.mdContent,
+    this.interestLevel,
+    this.board});
 
   Rows.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -33,6 +34,7 @@ class Rows {
       });
     }
     name = json['name'];
+    interestLevel = json['interest_level'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     mdContent = json['md_content'];
@@ -53,6 +55,7 @@ class Rows {
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     data['md_content'] = this.mdContent;
+    data['interest_level'] = this.interestLevel;
     data['board'] = this.board;
     return data;
   }
@@ -67,14 +70,13 @@ class Cells {
   String? row;
   String? column;
 
-  Cells(
-      {this.id,
-      this.createdAt,
-      this.updatedAt,
-      this.data,
-      this.mdContent,
-      this.row,
-      this.column});
+  Cells({this.id,
+    this.createdAt,
+    this.updatedAt,
+    this.data,
+    this.mdContent,
+    this.row,
+    this.column});
 
   Cells.fromJson(Map<String, dynamic> json) {
     id = json['id'];

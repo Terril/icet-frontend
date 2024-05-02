@@ -23,7 +23,9 @@ class AssetsView extends GetView<AssetsController> {
   final bool isDeletable;
 
   Future<bool> _saveButtonClicked() {
-    return controller.createAssets(filterNull(boardId));
+    return asset?.id != null
+        ? controller.updateAssets(filterNull(asset?.id))
+        : controller.createAssets(filterNull(boardId));
   }
 
   Future<bool> _deleteAsset() {
@@ -33,15 +35,15 @@ class AssetsView extends GetView<AssetsController> {
   Widget emptyView(BuildContext context) {
     return Expanded(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset("assets/images/empty_note.png"),
-            const SizedBox(height: 10),
-            const Text("Your column is empty",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400)),
-          ],
-        ));
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset("assets/images/empty_note.png"),
+        const SizedBox(height: 10),
+        const Text("Your column is empty",
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400)),
+      ],
+    ));
   }
 
   showInterestLevel() {
@@ -51,109 +53,35 @@ class AssetsView extends GetView<AssetsController> {
           style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.all(4.0),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                    8), // <-- Radius
+                borderRadius: BorderRadius.circular(8), // <-- Radius
               ),
               backgroundColor: colorGreyEditor),
           onPressed: null,
           icon: Padding(
               padding: const EdgeInsets.all(4.0),
-              child: Obx(() =>
-               Text(controller.selected.value,
-                  style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: colorTextUnsetButton)),
+              child: Obx(
+                () => Text(controller.selected.value,
+                    style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: colorTextUnsetButton)),
               )),
           label: const Icon(Icons.arrow_drop_down),
         ),
         items: [
           ...controller.dropdownItems.map(
-                (item) =>
-                DropdownMenuItem<String>(
-                  value: item,
-                  child: Text(item),
-                ),
+            (item) => DropdownMenuItem<String>(
+              value: item,
+              child: Text(item),
+            ),
           ),
         ],
         onChanged: (value) {
           controller.setSelected(value!);
         },
-        // dropdownStyleData: DropdownStyleData(
-        //   width: 160,
-        //   padding: const EdgeInsets.symmetric(vertical: 6),
-        //   decoration: BoxDecoration(
-        //     borderRadius: BorderRadius.circular(4),
-        //   ),
-        //   offset: const Offset(0, 8),
-        // ),
-        // menuItemStyleData: const MenuItemStyleData(
-        //   padding: EdgeInsets.only(left: 16, right: 16),
-        // ),
       ),
     );
   }
-
-  // void _showDeleteDialog(BuildContext context) {
-  //   // set up the buttons
-  //   Widget deleteButton = ElevatedButton(
-  //     style: ElevatedButton.styleFrom(
-  //         shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.circular(8), // <-- Radius
-  //         ),
-  //         backgroundColor: colorDeleteButton),
-  //     child: const Text(
-  //       "Delete",
-  //       style: TextStyle(color: Colors.white),
-  //     ),
-  //     onPressed: () {
-  //       _deleteAsset().then((value) => Get.back(closeOverlays: true));
-  //     },
-  //   );
-  //   Widget closeButton = OutlinedButton(
-  //     style: OutlinedButton.styleFrom(
-  //       shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.circular(8), // <-- Radius
-  //       ),
-  //     ),
-  //     child: const Text("Close", style: TextStyle(color: Colors.black)),
-  //     onPressed: () {
-  //       Get.back(closeOverlays: true);
-  //     },
-  //   );
-  //
-  //   // set up the AlertDialog
-  //   SimpleDialog alert = SimpleDialog(
-  //       contentPadding: const EdgeInsets.all(24),
-  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-  //       children: <Widget>[
-  //         Column(children: <Widget>[
-  //           const Icon(size: 24, Icons.info_outline),
-  //           const SizedBox(height: 16),
-  //           const Text(
-  //               "Are you sure you want to delete this\n asset? \n"
-  //               "All notes and criteria will be deleted and \ncannot be retrieved.",
-  //               textAlign: TextAlign.center),
-  //           const SizedBox(
-  //             height: 20,
-  //           ),
-  //           Row(
-  //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //               children: <Widget>[
-  //                 closeButton,
-  //                 deleteButton,
-  //               ])
-  //         ]),
-  //       ]);
-  //
-  //   // show the dialog
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return PopScope(child: alert);
-  //     },
-  //   );
-  // }
 
   String preprocessContent(String content) {
     // Logic to identify and remove Lorem Ipsum (replace with your logic)
@@ -161,7 +89,7 @@ class AssetsView extends GetView<AssetsController> {
 
     // Logic to extract specific parts (replace with your logic)
     int instructionEndIndex =
-    content.indexOf('.'); // Assuming instruction ends with a period
+        content.indexOf('.'); // Assuming instruction ends with a period
     String instruction = content.substring(0, instructionEndIndex + 1);
 
     // Return the cleaned content or specific parts
@@ -173,10 +101,14 @@ class AssetsView extends GetView<AssetsController> {
     String title = asset != null ? filterNull(asset?.name) : 'New Asset';
     String description = asset != null
         ? filterNull(asset?.mdContent)
-        .removeAllWhitespace
-        .replaceAll("\n", "\\n")
-        .replaceAll("\"", "\\\"")
+            .replaceAll("\n", "\\n")
+            .replaceAll("\"", "\\\"")
         : '';
+    controller.textController.text = title;
+    if(asset != null && asset?.interestLevel != null) {
+      controller.setSelected(asset!.interestLevel.toString());
+    }
+
     return Scaffold(
       backgroundColor: Colors.white.withOpacity(0.5),
       // this is the main reason of transparency at next screen. I am ignoring rest implementation but what i have achieved is you can see.
@@ -214,8 +146,7 @@ class AssetsView extends GetView<AssetsController> {
                                 onPressed: () {
                                   Logger.printLog(
                                       message:
-                                      "Get Back called  ${controller
-                                          .assetsCreated}");
+                                          "Get Back called  ${controller.assetsCreated}");
                                   Get.back(result: controller.assetsCreated);
                                 },
                               ),
@@ -229,7 +160,7 @@ class AssetsView extends GetView<AssetsController> {
                                 controller: controller.textController,
                                 decoration: InputDecoration(
                                   floatingLabelBehavior:
-                                  FloatingLabelBehavior.never,
+                                      FloatingLabelBehavior.never,
                                   border: InputBorder.none,
                                   counterText: "",
                                   suffixIcon: const Icon(
@@ -261,10 +192,10 @@ class AssetsView extends GetView<AssetsController> {
                                       UIUtils.showDeleteDialog(
                                           context,
                                           "Are you sure you want to delete this\n asset? \n"
-                                              "All notes and criteria will be deleted and \ncannot be retrieved.",
+                                          "All notes and criteria will be deleted and \ncannot be retrieved.",
                                           onCloseClicked: () {
-                                            Get.back(closeOverlays: true);
-                                          }, onDeleteClicked: () {
+                                        Get.back(closeOverlays: true);
+                                      }, onDeleteClicked: () {
                                         _deleteAsset().then((value) =>
                                             Get.back(closeOverlays: true));
                                       });
@@ -290,32 +221,32 @@ class AssetsView extends GetView<AssetsController> {
                                       width: Get.width,
                                       child: QuillToolbar.simple(
                                         configurations:
-                                        QuillSimpleToolbarConfigurations(
+                                            QuillSimpleToolbarConfigurations(
                                           buttonOptions:
-                                          const QuillSimpleToolbarButtonOptions(
-                                              base:
-                                              QuillToolbarBaseButtonOptions(
-                                                  iconTheme:
-                                                  QuillIconTheme(
-                                                    iconButtonSelectedData:
-                                                    IconButtonData(
-                                                        highlightColor: colorBlue),
-                                                    iconButtonSelectedStyle: ButtonStyle(
-                                                        backgroundColor:
-                                                        MaterialStatePropertyAll<
-                                                            Color>(colorBlue)),
-                                                  ))),
+                                              const QuillSimpleToolbarButtonOptions(
+                                                  base:
+                                                      QuillToolbarBaseButtonOptions(
+                                                          iconTheme:
+                                                              QuillIconTheme(
+                                            iconButtonSelectedData:
+                                                IconButtonData(
+                                                    highlightColor: colorBlue),
+                                            iconButtonSelectedStyle: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStatePropertyAll<
+                                                        Color>(colorBlue)),
+                                          ))),
                                           dialogTheme: const QuillDialogTheme(
                                               buttonStyle: ButtonStyle(
                                                   backgroundColor:
-                                                  MaterialStatePropertyAll<
-                                                      Color>(colorBlue)),
+                                                      MaterialStatePropertyAll<
+                                                          Color>(colorBlue)),
                                               dialogBackgroundColor:
-                                              colorGreyEditor),
+                                                  colorGreyEditor),
                                           toolbarIconAlignment:
-                                          WrapAlignment.start,
+                                              WrapAlignment.start,
                                           toolbarIconCrossAlignment:
-                                          WrapCrossAlignment.start,
+                                              WrapCrossAlignment.start,
                                           showDividers: true,
                                           showColorButton: false,
                                           showFontFamily: false,
@@ -334,56 +265,53 @@ class AssetsView extends GetView<AssetsController> {
                                           showSearchButton: false,
                                           sectionDividerColor: Colors.black,
                                           controller:
-                                          controller.quillController,
+                                              controller.quillController,
                                         ),
                                       ),
                                     ),
                                     Expanded(
                                       child: QuillEditor.basic(
                                         configurations:
-                                        QuillEditorConfigurations(
+                                            QuillEditorConfigurations(
                                           placeholder: description,
                                           padding: const EdgeInsets.all(5),
                                           controller:
-                                          controller.quillController,
+                                              controller.quillController,
                                           readOnly: false,
                                           sharedConfigurations:
-                                          const QuillSharedConfigurations(
+                                              const QuillSharedConfigurations(
                                             locale: Locale('en'),
                                           ),
                                         ),
                                       ),
                                     ),
-                                    Obx(() =>
-                                        Visibility(
-                                            visible: controller.enableButtons
-                                                .value,
-                                            child: Container(
-                                              alignment: Alignment.topLeft,
-                                              padding: const EdgeInsets.only(
-                                                  top: 10,
-                                                  right: 20.0,
-                                                  left: 16.0,
-                                                  bottom: 16),
-                                              child: OutlinedButton(
-                                                  style: ElevatedButton
-                                                      .styleFrom(
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius:
+                                    Obx(() => Visibility(
+                                        visible: controller.enableButtons.value,
+                                        child: Container(
+                                          alignment: Alignment.topLeft,
+                                          padding: const EdgeInsets.only(
+                                              top: 10,
+                                              right: 20.0,
+                                              left: 16.0,
+                                              bottom: 16),
+                                          child: OutlinedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
                                                       BorderRadius.circular(
                                                           8), // <-- Radius
-                                                    ),
-                                                  ),
-                                                  onPressed: () {
-                                                    controller.quillController
-                                                        .clear();
-                                                  },
-                                                  child: const Text("Clear",
-                                                      style: TextStyle(
-                                                          fontWeight:
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                controller.quillController
+                                                    .clear();
+                                              },
+                                              child: const Text("Clear",
+                                                  style: TextStyle(
+                                                      fontWeight:
                                                           FontWeight.w600,
-                                                          color: colorButtonGrey))),
-                                            )))
+                                                      color: colorButtonGrey))),
+                                        )))
                                   ])),
                         ])),
                     const SizedBox(height: 24),
@@ -410,11 +338,11 @@ class AssetsView extends GetView<AssetsController> {
                             icon: const Icon(Icons.add_sharp),
                             style: ButtonStyle(
                               foregroundColor:
-                              MaterialStateProperty.all(Colors.black),
+                                  MaterialStateProperty.all(Colors.black),
                               shape: MaterialStateProperty.all(
                                   RoundedRectangleBorder(
                                       borderRadius:
-                                      BorderRadius.circular(8.0))),
+                                          BorderRadius.circular(8.0))),
                             ),
                             onPressed: () => {},
                             label: const Text("New checklist"),
@@ -422,45 +350,44 @@ class AssetsView extends GetView<AssetsController> {
                         ]),
                     Expanded(
                         child: FutureBuilder(
-                          future: controller.fetchColumns(boardId),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
+                      future: controller.fetchColumns(boardId),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else {
+                          if (snapshot.hasError) {
+                            return Center(child: emptyView(context));
+                          } else {
+                            if (snapshot.data!.isEmpty) {
+                              return Center(child: emptyView(context));
                             } else {
-                              if (snapshot.hasError) {
-                                return Center(child: emptyView(context));
-                              } else {
-                                if (snapshot.data!.isEmpty) {
-                                  return Center(child: emptyView(context));
-                                } else {
-                                  return ListView.builder(
-                                      itemCount: snapshot.data?.length,
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      itemBuilder: (context, index) {
-                                        return Column(children: [
-                                          ListTile(
-                                            title: Text(
-                                              filterNull(
+                              return ListView.builder(
+                                  itemCount: snapshot.data?.length,
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    return Column(children: [
+                                      ListTile(
+                                        title: Text(
+                                          filterNull(
                                                   snapshot.data?[index]?.name)
-                                                  .toUpperCase(),
-                                            ),
-                                            trailing: const Icon(
-                                                Icons.check_circle,
-                                                color: colorCheckMark),
-                                          ),
-                                          const Divider(
-                                            color: colorGreyField,
-                                          )
-                                        ]);
-                                      });
-                                }
-                              }
+                                              .toUpperCase(),
+                                        ),
+                                        trailing: const Icon(Icons.check_circle,
+                                            color: colorCheckMark),
+                                      ),
+                                      const Divider(
+                                        color: colorGreyField,
+                                      )
+                                    ]);
+                                  });
                             }
-                          },
-                        )),
+                          }
+                        }
+                      },
+                    )),
                   ]))),
         )
       ]),

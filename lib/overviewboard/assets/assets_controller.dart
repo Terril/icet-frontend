@@ -70,14 +70,30 @@ class AssetsController extends GetxController with CacheManager {
   }
 
   Future<bool> createAssets(String boardId) async {
-    Map<String, String> map = HashMap();
+    Map<String, dynamic> map = HashMap();
     map["name"] = textController.text;
     map["md_content"] = quillController.plainTextEditingValue.text;
     map["board"] = boardId;
+    map["interest_level"] = int.parse(selected.value);
     Response response = await provider.addRows(map);
 
     if(response != null && response.isOk) {
       Logger.printLog(message: "This is create Assets");
+      assetsCreated = true;
+    }
+    Logger.printLog(message: "${response.bodyString}");
+
+    return assetsCreated;
+  }
+
+  Future<bool> updateAssets(String assetId) async {
+    Map<String, dynamic> map = HashMap();
+    map["name"] = textController.text;
+    map["md_content"] = quillController.plainTextEditingValue.text;
+    map["interest_level"] = int.parse(selected.value);
+    Response response = await provider.updateRows(assetId, map);
+
+    if(response != null && response.isOk) {
       assetsCreated = true;
     }
     Logger.printLog(message: "${response.bodyString}");

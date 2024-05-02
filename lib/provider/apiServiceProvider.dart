@@ -106,6 +106,14 @@ class APIServiceProvider extends GetConnect with CacheManager {
     });
   }
 
+  Future<Response> updateRows(String rowId, Map map) {
+    var token = getToken();
+    return patch('$_baseUrl/api/rows/$rowId/', map, headers: {
+      'Authorization': 'Token $token',
+    });
+  }
+
+
   // Column is nothing but the checklist
   Future<Response> addColumn(Map data) {
     var token = getToken();
