@@ -310,7 +310,7 @@ class OverviewboardView extends GetView<OverviewboardController>
                     },
                     child: const Padding(
                       padding: EdgeInsets.all(10.0),
-                      child: Text('Create',
+                      child: Text('Save',
                           style: TextStyle(
                               fontWeight: FontWeight.w500, color: colorWhite)),
                     )),
