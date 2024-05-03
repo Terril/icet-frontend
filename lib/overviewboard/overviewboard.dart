@@ -9,7 +9,6 @@ import '../const/colors.dart';
 import '../datamodel/boards.dart';
 import '../datamodel/columns.dart';
 import '../datamodel/rows.dart';
-import '../provider/apiServiceProvider.dart';
 import 'assets/assets.dart';
 import 'overviewboard_controller.dart';
 import 'overviewboard_dialog.dart';
@@ -96,7 +95,7 @@ class OverviewboardView extends GetView<OverviewboardController>
           height: 52,
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.center,
-          child: Text(itemRowWidget[j].interestLevel.toString())
+          child: Text(itemRowWidget[controller.rowZeroIndex].interestLevel.toString())
           // Obx(() => DropdownButton(
           //       underline: const SizedBox(),
           //       iconSize: 0.0,
@@ -115,6 +114,10 @@ class OverviewboardView extends GetView<OverviewboardController>
           //     )), //([index]),
         );
         widget.add(sectionOne);
+        while(controller.rowZeroIndex <= itemRowWidget.length) {
+            controller.rowZeroIndex++;
+            break;
+        }
       } else {
         Widget sectionOthers = Container(
           width: widthSize,

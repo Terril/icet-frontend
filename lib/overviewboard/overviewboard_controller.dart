@@ -21,6 +21,7 @@ class OverviewboardController extends GetxController with CacheManager {
   late Future futureBoard;
 
   bool isAssetDeleted = false;
+  int rowZeroIndex = 0;
 
   List<String> get dropdownItems {
     List<String> menuItems = [
@@ -46,6 +47,7 @@ class OverviewboardController extends GetxController with CacheManager {
   }
 
   void selectDrawer(int position) {
+    rowZeroIndex = 0;
     obxPosition.value = position;
   }
 
@@ -79,6 +81,7 @@ class OverviewboardController extends GetxController with CacheManager {
   }
 
   void loadBoard() {
+    rowZeroIndex = 0;
     futureBoard = _fetchBoard();
     update();
   }
