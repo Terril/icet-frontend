@@ -10,7 +10,7 @@ import 'package:icet/provider/apiServiceProvider.dart';
 
 import '../../datamodel/columns.dart';
 
-class AssetsController extends GetxController with CacheManager {
+class ChecklistController extends GetxController with CacheManager {
   late APIServiceProvider provider;
 
   final QuillController quillController = QuillController.basic();
@@ -19,22 +19,6 @@ class AssetsController extends GetxController with CacheManager {
   RxBool enableButtons = false.obs;
 
   bool assetsCreated = false;
-
-  List<String> get dropdownItems {
-    List<String> menuItems = [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10"
-    ];
-    return menuItems;
-  }
 
   final selected = "Unset".obs;
 
@@ -51,10 +35,6 @@ class AssetsController extends GetxController with CacheManager {
               : false;
       _showSaveAndCancelButtons(state);
     });
-  }
-
-  void setSelected(String value) {
-    selected.value = value;
   }
 
   void _showSaveAndCancelButtons(bool state) {

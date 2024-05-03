@@ -11,24 +11,23 @@ import 'package:icet/const/colors.dart';
 import 'package:icet/datamodel/columns.dart';
 import 'package:icet/datamodel/rows.dart';
 import 'package:icet/extension/ext.dart';
-import 'package:icet/overviewboard/checklist/checklist.dart';
 import 'package:icet/utils.dart';
 
 import '../../logs.dart';
-import 'assets_controller.dart';
+import 'checklist_controller.dart';
 
-class AssetsView extends GetView<AssetsController> {
-  AssetsView(this.boardId, this.asset, this.isDeletable, {super.key});
+class ChecklistView extends GetView<ChecklistController> {
+  ChecklistView(this.column, this.asset, this.isDeletable, {super.key});
 
-  final String? boardId;
+  final Columns? column;
   final Rows? asset;
   final bool isDeletable;
 
-  Future<bool> _saveButtonClicked() {
-    return asset?.id != null
-        ? controller.updateAssets(filterNull(asset?.id))
-        : controller.createAssets(filterNull(boardId));
-  }
+  // Future<bool> _saveButtonClicked() {
+  //   return asset?.id != null
+  //       ? controller.updateAssets(filterNull(asset?.id))
+  //       : controller.createAssets(filterNull(boardId));
+  // }
 
   Future<bool> _deleteAsset() {
     return controller.deleteAsset(filterNull(asset?.id));
@@ -48,65 +47,6 @@ class AssetsView extends GetView<AssetsController> {
     ));
   }
 
-  showInterestLevel() {
-    return DropdownButtonHideUnderline(
-      child: DropdownButton2(
-        customButton: OutlinedButton.icon(
-          style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.all(4.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8), // <-- Radius
-              ),
-              backgroundColor: colorGreyEditor),
-          onPressed: null,
-          icon: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Obx(
-                () => Text(controller.selected.value,
-                    style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: colorTextUnsetButton)),
-              )),
-          label: const Icon(Icons.arrow_drop_down),
-        ),
-        items: [
-          ...controller.dropdownItems.map(
-            (item) => DropdownMenuItem<String>(
-              value: item,
-              child: Text(item),
-            ),
-          ),
-        ],
-        onChanged: (value) {
-          controller.setSelected(value!);
-        },
-      ),
-    );
-  }
-
-  void showChecklist(
-      BuildContext context, Columns? columns, Rows? asset, bool canDelete) {
-    showGeneralDialog<bool>(
-      context: context,
-      transitionBuilder: (context, a1, a2, widget) {
-        return SlideTransition(
-          position: Tween(begin: const Offset(1, 0), end: const Offset(0.5, 0))
-              .animate(a1),
-          child: widget,
-        );
-      },
-      transitionDuration: const Duration(milliseconds: 500),
-      pageBuilder: (
-          BuildContext context,
-          Animation<double> animation,
-          Animation<double> secondaryAnimation,
-          ) {
-        return ChecklistView(columns, asset, canDelete);
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     String title = asset != null ? filterNull(asset?.name) : 'New Asset';
@@ -119,9 +59,6 @@ class AssetsView extends GetView<AssetsController> {
       controller.quillController.document = Document.fromHtml(description);
     }
     controller.textController.text = title;
-    if (asset != null && asset?.interestLevel != null) {
-      controller.setSelected(asset!.interestLevel.toString());
-    }
 
     return Scaffold(
       backgroundColor: Colors.white.withOpacity(0.5),
@@ -147,8 +84,8 @@ class AssetsView extends GetView<AssetsController> {
                                     style: TextStyle(
                                         color: colorBlueButton, fontSize: 12)),
                                 onPressed: () {
-                                  _saveButtonClicked()
-                                      .then((value) => Get.back(result: value));
+                                  // _saveButtonClicked()
+                                  //     .then((value) => Get.back(result: value));
                                 },
                               ),
                               TextButton.icon(
@@ -188,39 +125,29 @@ class AssetsView extends GetView<AssetsController> {
                                     fontSize: 24.0,
                                     fontWeight: FontWeight.w600),
                               )),
-                          Row(
-                            children: [
-                              const Text("Interest Level: ",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                              showInterestLevel(),
-                              Visibility(
-                                  visible: isDeletable,
-                                  child: IconButton(
-                                    color: Colors.red,
-                                    icon: const Icon(Icons.delete_outlined),
-                                    onPressed: () {
-                                      //_showDeleteDialog(context);
-                                      UIUtils.showDeleteDialog(
-                                          context,
-                                          "Are you sure you want to delete this\n asset? \n"
+                          Visibility(
+                              visible: isDeletable,
+                              child: IconButton(
+                                color: Colors.red,
+                                icon: const Icon(Icons.delete_outlined),
+                                onPressed: () {
+                                  //_showDeleteDialog(context);
+                                  UIUtils.showDeleteDialog(
+                                      context,
+                                      "Are you sure you want to delete this\n asset? \n"
                                           "All notes and criteria will be deleted and \ncannot be retrieved.",
-                                          onCloseClicked: () {
+                                      onCloseClicked: () {
                                         Get.back(closeOverlays: true);
                                       }, onDeleteClicked: () {
-                                        _deleteAsset().then((value) =>
-                                            Get.back(closeOverlays: true));
-                                      });
-                                    },
-                                  ))
-                            ],
-                          )
+                                    _deleteAsset().then((value) =>
+                                        Get.back(closeOverlays: true));
+                                  });
+                                },
+                              ))
                         ]),
                     const SizedBox(height: 16),
                     SizedBox(
-                        height: Get.height / 2.75,
+                        height: Get.height / 1.75,
                         child: Stack(children: <Widget>[
                           Container(
                               decoration: BoxDecoration(
@@ -328,82 +255,6 @@ class AssetsView extends GetView<AssetsController> {
                                   ])),
                         ])),
                     const SizedBox(height: 24),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Checklists',
-                            style: TextStyle(
-                              height: 1.5,
-                              shadows: [
-                                Shadow(
-                                    color: colorBlueText,
-                                    offset: Offset(0, -10))
-                              ],
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.transparent,
-                              decoration: TextDecoration.underline,
-                              decorationColor: colorBlueText,
-                            ),
-                          ),
-                          OutlinedButton.icon(
-                            icon: const Icon(Icons.add_sharp),
-                            style: ButtonStyle(
-                              foregroundColor:
-                                  MaterialStateProperty.all(Colors.black),
-                              shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(8.0))),
-                            ),
-                            onPressed: () => {},
-                            label: const Text("New checklist"),
-                          )
-                        ]),
-                    Expanded(
-                        child: FutureBuilder(
-                      future: controller.fetchColumns(boardId),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        } else {
-                          if (snapshot.hasError) {
-                            return Center(child: emptyView(context));
-                          } else {
-                            if (snapshot.data!.isEmpty) {
-                              return Center(child: emptyView(context));
-                            } else {
-                              return ListView.builder(
-                                  itemCount: snapshot.data?.length,
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) {
-                                    return Column(children: [
-                                      ListTile(
-                                        onTap:() {
-                                          showChecklist(context, snapshot.data?[index], asset, true);
-                                        },
-                                        title: Text(
-                                          filterNull(
-                                                  snapshot.data?[index]?.name)
-                                              .toUpperCase(),
-                                        ),
-                                        trailing: const Icon(Icons.check_circle,
-                                            color: colorCheckMark),
-                                      ),
-                                      const Divider(
-                                        color: colorGreyField,
-                                      )
-                                    ]);
-                                  });
-                            }
-                          }
-                        }
-                      },
-                    )),
                   ]))),
         )
       ]),
