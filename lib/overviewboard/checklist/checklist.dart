@@ -23,11 +23,9 @@ class ChecklistView extends GetView<ChecklistController> {
   final Rows? asset;
   final bool isDeletable;
 
-  // Future<bool> _saveButtonClicked() {
-  //   return asset?.id != null
-  //       ? controller.updateAssets(filterNull(asset?.id))
-  //       : controller.createAssets(filterNull(boardId));
-  // }
+  Future<bool> _saveButtonClicked() {
+    return controller.updateChecklist(filterNull(asset?.id));
+  }
 
   Future<bool> _deleteAsset() {
     return controller.deleteAsset(filterNull(asset?.id));
@@ -50,6 +48,7 @@ class ChecklistView extends GetView<ChecklistController> {
   @override
   Widget build(BuildContext context) {
     String title = asset != null ? filterNull(asset?.name) : 'New Asset';
+    title = "$title \u{203A}";
     String description = asset != null
         ? filterNull(asset?.mdContent)
             .replaceAll("\n", "\\n")
@@ -71,191 +70,300 @@ class ChecklistView extends GetView<ChecklistController> {
               child: Container(
                   padding: const EdgeInsets.all(16),
                   color: Colors.white,
-                  child: Column(children: <Widget>[
-                    ButtonTheme(
-                        layoutBehavior: ButtonBarLayoutBehavior.constrained,
-                        child: ButtonBar(
-                            alignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              TextButton.icon(
-                                icon: const Icon(Icons.check,
-                                    color: colorBlueButton),
-                                label: const Text("Save",
-                                    style: TextStyle(
-                                        color: colorBlueButton, fontSize: 12)),
-                                onPressed: () {
-                                  // _saveButtonClicked()
-                                  //     .then((value) => Get.back(result: value));
-                                },
-                              ),
-                              TextButton.icon(
-                                icon: const Icon(Icons.clear),
-                                label: const Text(
-                                  "Close",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                                onPressed: () {
-                                  Logger.printLog(
-                                      message:
-                                          "Get Back called  ${controller.assetsCreated}");
-                                  Get.back(result: controller.assetsCreated);
-                                },
-                              ),
-                            ])),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                              width: Get.width / 7,
-                              child: TextField(
-                                controller: controller.textController,
-                                decoration: InputDecoration(
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.never,
-                                  border: InputBorder.none,
-                                  counterText: "",
-                                  suffixIcon: const Icon(
-                                      Icons.drive_file_rename_outline),
-                                  label: Text(title,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        ButtonTheme(
+                            layoutBehavior: ButtonBarLayoutBehavior.constrained,
+                            child: ButtonBar(
+                                alignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  TextButton.icon(
+                                    icon: const Icon(Icons.check,
+                                        color: colorBlueButton),
+                                    label: const Text("Save",
+                                        style: TextStyle(
+                                            color: colorBlueButton,
+                                            fontSize: 12)),
+                                    onPressed: () {
+                                      _saveButtonClicked().then(
+                                          (value) => Get.back(result: value));
+                                    },
+                                  ),
+                                  TextButton.icon(
+                                    icon: const Icon(Icons.clear),
+                                    label: const Text(
+                                      "Close",
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                    onPressed: () {
+                                      Logger.printLog(
+                                          message:
+                                              "Get Back called  ${controller.assetsCreated}");
+                                      Get.back(
+                                          result: controller.assetsCreated);
+                                    },
+                                  ),
+                                ])),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                  width: Get.width / 7,
+                                  child: Text(title,
                                       style: const TextStyle(
-                                          fontSize: 24.0,
-                                          fontWeight: FontWeight.w600)),
-                                ),
-                                style: const TextStyle(
-                                    fontSize: 24.0,
-                                    fontWeight: FontWeight.w600),
-                              )),
-                          Visibility(
-                              visible: isDeletable,
-                              child: IconButton(
-                                color: Colors.red,
-                                icon: const Icon(Icons.delete_outlined),
-                                onPressed: () {
-                                  //_showDeleteDialog(context);
-                                  UIUtils.showDeleteDialog(
-                                      context,
-                                      "Are you sure you want to delete this\n asset? \n"
+                                          color: colorTextUnsetButton,
+                                          fontSize: 16))),
+                              Visibility(
+                                  visible: isDeletable,
+                                  child: IconButton(
+                                    color: Colors.red,
+                                    icon: const Icon(Icons.delete_outlined),
+                                    onPressed: () {
+                                      //_showDeleteDialog(context);
+                                      UIUtils.showDeleteDialog(
+                                          context,
+                                          "Are you sure you want to delete this\n checklist? \n"
                                           "All notes and criteria will be deleted and \ncannot be retrieved.",
-                                      onCloseClicked: () {
+                                          onCloseClicked: () {
                                         Get.back(closeOverlays: true);
                                       }, onDeleteClicked: () {
-                                    _deleteAsset().then((value) =>
-                                        Get.back(closeOverlays: true));
-                                  });
-                                },
-                              ))
-                        ]),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                        height: Get.height / 1.75,
-                        child: Stack(children: <Widget>[
-                          Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: colorGreyField)),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      color: colorGreyEditor,
-                                      width: Get.width,
-                                      child: QuillToolbar.simple(
-                                        configurations:
-                                            QuillSimpleToolbarConfigurations(
-                                          buttonOptions:
-                                              const QuillSimpleToolbarButtonOptions(
-                                                  base:
-                                                      QuillToolbarBaseButtonOptions(
-                                                          iconTheme:
-                                                              QuillIconTheme(
-                                            iconButtonSelectedData:
-                                                IconButtonData(
-                                                    highlightColor: colorBlue),
-                                            iconButtonSelectedStyle: ButtonStyle(
-                                                backgroundColor:
-                                                    MaterialStatePropertyAll<
-                                                        Color>(colorBlue)),
-                                          ))),
-                                          dialogTheme: const QuillDialogTheme(
-                                              buttonStyle: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStatePropertyAll<
-                                                          Color>(colorBlue)),
-                                              dialogBackgroundColor:
-                                                  colorGreyEditor),
-                                          toolbarIconAlignment:
-                                              WrapAlignment.start,
-                                          toolbarIconCrossAlignment:
-                                              WrapCrossAlignment.start,
-                                          showDividers: true,
-                                          showColorButton: false,
-                                          showFontFamily: false,
-                                          showFontSize: false,
-                                          showStrikeThrough: false,
-                                          showInlineCode: false,
-                                          showSubscript: false,
-                                          showSuperscript: false,
-                                          showBackgroundColorButton: false,
-                                          showClearFormat: false,
-                                          showCodeBlock: false,
-                                          showQuote: false,
-                                          showIndent: false,
-                                          showUndo: false,
-                                          showRedo: false,
-                                          showSearchButton: false,
-                                          sectionDividerColor: Colors.black,
-                                          controller:
-                                              controller.quillController,
-                                        ),
-                                      ),
+                                        _deleteAsset().then((value) =>
+                                            Get.back(closeOverlays: true));
+                                      });
+                                    },
+                                  ))
+                            ]),
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Wrap(
+                              children: [
+                                const Icon(
+                                  Icons.info_outline,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  textAlign: TextAlign.start,
+                                  filterNull(column?.name),
+                                  style: const TextStyle(
+                                      color: colorGrey, fontSize: 16),
+                                )
+                              ],
+                            )),
+                        const SizedBox(height: 24),
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: colorGreyField)),
+                          child: Wrap(
+                            children: [
+                              ButtonTheme(
+                                  minWidth: 40.0,
+                                  height: 40.0,
+                                  child: ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      shape: const CircleBorder(),
+                                      padding: const EdgeInsets.all(5),
+                                      backgroundColor:
+                                          colorCheckMark, // <-- Button color
+                                      foregroundColor:
+                                          Colors.red, // <-- Splash color
                                     ),
-                                    Expanded(
-                                      child: QuillEditor.basic(
-                                        configurations:
-                                            QuillEditorConfigurations(
-                                          padding: const EdgeInsets.all(5),
-                                          controller:
-                                              controller.quillController,
-                                          readOnly: false,
-                                          sharedConfigurations:
-                                              const QuillSharedConfigurations(
-                                            locale: Locale('en'),
+                                    child: const Icon(Icons.check,
+                                        color: Colors.white),
+                                  )),
+                              ButtonTheme(
+                                  minWidth: 40.0,
+                                  height: 40.0,
+                                  child: ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      shape: const CircleBorder(),
+                                      padding: const EdgeInsets.all(5),
+                                      backgroundColor: colorClearButton,
+                                      // <-- Button color
+                                      foregroundColor:
+                                          Colors.blue, // <-- Splash color
+                                    ),
+                                    child: const Icon(Icons.clear,
+                                        color: Colors.white),
+                                  )),
+                              ButtonTheme(
+                                  minWidth: 40.0,
+                                  height: 40.0,
+                                  child: ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      shape: const CircleBorder(),
+                                      padding: const EdgeInsets.all(5),
+                                      backgroundColor: colorQuestionButton,
+                                      // <-- Button color
+                                      foregroundColor:
+                                          Colors.red, // <-- Splash color
+                                    ),
+                                    child: const Icon(Icons.question_mark,
+                                        color: Colors.white),
+                                  )),
+                              ButtonTheme(
+                                  minWidth: 40.0,
+                                  height: 40.0,
+                                  child: ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      shape: const CircleBorder(),
+                                      padding: const EdgeInsets.all(5),
+                                      backgroundColor:
+                                      colorEmojiButton, // <-- Button color
+                                      foregroundColor:
+                                          Colors.red, // <-- Splash color
+                                    ),
+                                    child: const Icon(Icons.emoji_emotions_outlined,
+                                        color: Colors.white),
+                                  )),
+                              ButtonTheme(
+                                  minWidth: 40.0,
+                                  height: 40.0,
+                                  child: ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      shape: const CircleBorder(),
+                                      padding: const EdgeInsets.all(5),
+                                      backgroundColor:
+                                      colorGreyField, // <-- Button color
+                                      foregroundColor:
+                                          Colors.red, // <-- Splash color
+                                    ),
+                                    child: null,
+                                  )),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                            height: Get.height / 1.75,
+                            child: Stack(children: <Widget>[
+                              Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      border:
+                                          Border.all(color: colorGreyField)),
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          color: colorGreyEditor,
+                                          width: Get.width,
+                                          child: QuillToolbar.simple(
+                                            configurations:
+                                                QuillSimpleToolbarConfigurations(
+                                              buttonOptions:
+                                                  const QuillSimpleToolbarButtonOptions(
+                                                      base:
+                                                          QuillToolbarBaseButtonOptions(
+                                                              iconTheme:
+                                                                  QuillIconTheme(
+                                                iconButtonSelectedData:
+                                                    IconButtonData(
+                                                        highlightColor:
+                                                            colorBlue),
+                                                iconButtonSelectedStyle:
+                                                    ButtonStyle(
+                                                        backgroundColor:
+                                                            MaterialStatePropertyAll<
+                                                                    Color>(
+                                                                colorBlue)),
+                                              ))),
+                                              dialogTheme: const QuillDialogTheme(
+                                                  buttonStyle: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStatePropertyAll<
+                                                                  Color>(
+                                                              colorBlue)),
+                                                  dialogBackgroundColor:
+                                                      colorGreyEditor),
+                                              toolbarIconAlignment:
+                                                  WrapAlignment.start,
+                                              toolbarIconCrossAlignment:
+                                                  WrapCrossAlignment.start,
+                                              showDividers: true,
+                                              showColorButton: false,
+                                              showFontFamily: false,
+                                              showFontSize: false,
+                                              showStrikeThrough: false,
+                                              showInlineCode: false,
+                                              showSubscript: false,
+                                              showSuperscript: false,
+                                              showBackgroundColorButton: false,
+                                              showClearFormat: false,
+                                              showCodeBlock: false,
+                                              showQuote: false,
+                                              showIndent: false,
+                                              showUndo: false,
+                                              showRedo: false,
+                                              showSearchButton: false,
+                                              sectionDividerColor: Colors.black,
+                                              controller:
+                                                  controller.quillController,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    Obx(() => Visibility(
-                                        visible: controller.enableButtons.value,
-                                        child: Container(
-                                          alignment: Alignment.topLeft,
-                                          padding: const EdgeInsets.only(
-                                              top: 10,
-                                              right: 20.0,
-                                              left: 16.0,
-                                              bottom: 16),
-                                          child: OutlinedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8), // <-- Radius
-                                                ),
+                                        Expanded(
+                                          child: QuillEditor.basic(
+                                            configurations:
+                                                QuillEditorConfigurations(
+                                              padding: const EdgeInsets.all(5),
+                                              controller:
+                                                  controller.quillController,
+                                              readOnly: false,
+                                              sharedConfigurations:
+                                                  const QuillSharedConfigurations(
+                                                locale: Locale('en'),
                                               ),
-                                              onPressed: () {
-                                                controller.quillController
-                                                    .clear();
-                                              },
-                                              child: const Text("Clear",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: colorButtonGrey))),
-                                        )))
-                                  ])),
-                        ])),
-                    const SizedBox(height: 24),
-                  ]))),
+                                            ),
+                                          ),
+                                        ),
+                                        Obx(() => Visibility(
+                                            visible:
+                                                controller.enableButtons.value,
+                                            child: Container(
+                                              alignment: Alignment.topLeft,
+                                              padding: const EdgeInsets.only(
+                                                  top: 10,
+                                                  right: 20.0,
+                                                  left: 16.0,
+                                                  bottom: 16),
+                                              child: OutlinedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8), // <-- Radius
+                                                    ),
+                                                  ),
+                                                  onPressed: () {
+                                                    controller.quillController
+                                                        .clear();
+                                                  },
+                                                  child: const Text("Clear",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color:
+                                                              colorButtonGrey))),
+                                            )))
+                                      ])),
+                            ])),
+                        const SizedBox(height: 24),
+                      ]))),
         )
       ]),
     );

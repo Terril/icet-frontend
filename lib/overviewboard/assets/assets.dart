@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -110,13 +112,9 @@ class AssetsView extends GetView<AssetsController> {
   @override
   Widget build(BuildContext context) {
     String title = asset != null ? filterNull(asset?.name) : 'New Asset';
-    String description = asset != null
-        ? filterNull(asset?.mdContent)
-            .replaceAll("\n", "\\n")
-            .replaceAll("\"", "\\\"")
-        : '';
-    if (description.isNotEmpty) {
-      controller.quillController.document = Document.fromHtml(description);
+
+    if (asset != null && filterNullList(asset?.content?.data).isNotEmpty) {
+      controller.quillController.document = Document.fromJson(asset!.content!.data as List<dynamic>);
     }
     controller.textController.text = title;
     if (asset != null && asset?.interestLevel != null) {
@@ -177,7 +175,7 @@ class AssetsView extends GetView<AssetsController> {
                                       FloatingLabelBehavior.never,
                                   border: InputBorder.none,
                                   counterText: "",
-                                  suffixIcon: const Icon(
+                                  suffix: const Icon(
                                       Icons.drive_file_rename_outline),
                                   label: Text(title,
                                       style: const TextStyle(

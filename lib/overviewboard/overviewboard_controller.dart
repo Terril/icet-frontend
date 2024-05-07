@@ -63,7 +63,6 @@ class OverviewboardController extends GetxController with CacheManager {
     Response response =
         await overviewboardProvider.updateBoardNameByBoardId(boardId, data);
 
-    Logger.printLog(message: "${response.bodyString}");
     if (response.body != null && response.isOk) {
       loadBoard();
       boardUpdated = true;
@@ -76,7 +75,7 @@ class OverviewboardController extends GetxController with CacheManager {
     Response response = await overviewboardProvider.getBoard();
     List<Boards> responseBoards = BoardList.fromJsonToList(response.body).list;
 
-    Logger.printLog(message: "${response.bodyString}");
+   // Logger.printLog(message: "${response.bodyString}");
     return responseBoards;
   }
 
@@ -88,7 +87,7 @@ class OverviewboardController extends GetxController with CacheManager {
 
   void callCustomBoard() async {
     Response response = await overviewboardProvider.getApiBoardsCustom();
-    Logger.printLog(tag: " Custom Board ", message: "${response.bodyString}");
+
     if (response.body != null && response.isOk) {
       loadBoard();
     }
@@ -121,7 +120,6 @@ class OverviewboardController extends GetxController with CacheManager {
       columnDeleted = true;
     }
 
-    Logger.printLog(message: "${response.bodyString}  $columnDeleted");
     return columnDeleted;
   }
 

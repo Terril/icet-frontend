@@ -199,7 +199,7 @@ mixin OverviewboardDialogView {
                         ),
                         backgroundColor: colorBlueButton),
                     onPressed: () {
-                      onTapCreate(titleEditor.text, descEditor.text);
+                      onTapCreate(titleEditor.text, descEditor.text.isEmpty ? "" : descEditor.text);
                       Get.back(closeOverlays: true);
                     },
                     child: const Padding(

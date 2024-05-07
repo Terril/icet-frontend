@@ -20,8 +20,6 @@ class ChecklistController extends GetxController with CacheManager {
 
   bool assetsCreated = false;
 
-  final selected = "Unset".obs;
-
   @override
   void onInit() {
     super.onInit();
@@ -41,36 +39,11 @@ class ChecklistController extends GetxController with CacheManager {
     enableButtons.value = state;
   }
 
-  Future<List<Columns?>> fetchColumns(String? boardId) async {
-    Response response = await provider.getColumnsByBoardId(boardId);
-    List<Columns> responseBoards =
-        ColumnList.fromJsonToList(response.body).list;
 
-    return responseBoards;
-  }
-
-  Future<bool> createAssets(String boardId) async {
-    Map<String, dynamic> map = HashMap();
-    map["name"] = textController.text;
-    map["md_content"] = quillController.document.toDelta().toString();
-    map["board"] = boardId;
-    map["interest_level"] = int.parse(selected.value);
-    Response response = await provider.addRows(map);
-
-    if(response != null && response.isOk) {
-      Logger.printLog(message: "This is create Assets");
-      assetsCreated = true;
-    }
-    Logger.printLog(message: "${response.bodyString}");
-
-    return assetsCreated;
-  }
-
-  Future<bool> updateAssets(String assetId) async {
+  Future<bool> updateChecklist(String assetId) async {
     Map<String, dynamic> map = HashMap();
     map["name"] = textController.text;
     map["md_content"] = quillController.document.toDelta().toJson();
-    map["interest_level"] = int.parse(selected.value);
     Response response = await provider.updateRows(assetId, map);
 
     if(response != null && response.isOk) {

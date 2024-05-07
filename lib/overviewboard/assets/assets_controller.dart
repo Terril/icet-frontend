@@ -72,7 +72,7 @@ class AssetsController extends GetxController with CacheManager {
   Future<bool> createAssets(String boardId) async {
     Map<String, dynamic> map = HashMap();
     map["name"] = textController.text;
-    map["md_content"] = quillController.document.toDelta().toString();
+    map["content"] = {"data" : quillController.document.toDelta().toJson()};
     map["board"] = boardId;
     map["interest_level"] = int.parse(selected.value);
     Response response = await provider.addRows(map);
@@ -89,7 +89,7 @@ class AssetsController extends GetxController with CacheManager {
   Future<bool> updateAssets(String assetId) async {
     Map<String, dynamic> map = HashMap();
     map["name"] = textController.text;
-    map["md_content"] = quillController.document.toDelta().toJson();
+    map["content"] = {"data" : quillController.document.toDelta().toJson()};
     map["interest_level"] = int.parse(selected.value);
     Response response = await provider.updateRows(assetId, map);
 
