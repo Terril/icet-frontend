@@ -53,8 +53,10 @@ class OverviewboardView extends GetView<OverviewboardController>
     double widthSize =
         (Get.width / (items.length + 2)); // Earlier items.length + 2
     List<Widget> widget = <Widget>[];
-    widget.add(_getTitleItemWidget(context, Columns(name: 'ASSET'), widthSize));
-    for (var element in items) {
+    widget.add(_columWidgetWithoutDropDown(Columns(name: 'ASSET'), widthSize));
+    widget.add(_columWidgetWithoutDropDown(items[0], widthSize));
+    List<Columns> updatedItem = items.sublist(1);
+    for (var element in updatedItem) {
       widget.add(_getTitleItemWidget(context, element, widthSize));
     }
     return widget;
@@ -62,6 +64,20 @@ class OverviewboardView extends GetView<OverviewboardController>
 
   Widget _getTitleItemWidget(BuildContext context, Columns col, double width) {
     return _addColumnDropDown(context, col, width);
+  }
+
+  Widget _columWidgetWithoutDropDown(Columns column, double width) {
+    return Container(
+      color: const Color.fromARGB(249, 250, 251, 255),
+      width: width,
+      height: 56,
+      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+      alignment: Alignment.center,
+      child: Text(filterNull(column.name?.toUpperCase()),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontWeight: FontWeight.bold)),
+    );
   }
 
   Widget _generateFirstColumnRow(BuildContext context, int index) {
@@ -85,32 +101,33 @@ class OverviewboardView extends GetView<OverviewboardController>
     for (int j = 0; j < itemColumnWidget.length; j++) {
       if (j == 0) {
         Widget sectionOne = Container(
-          width: widthSize,
-          height: 52,
-          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
-          child: Text(itemRowWidget[controller.rowZeroIndex].interestLevel.toString())
-          // Obx(() => DropdownButton(
-          //       underline: const SizedBox(),
-          //       iconSize: 0.0,
-          //       onChanged: (newValue) {
-          //         controller.setSelected(newValue!);
-          //       },
-          //       value: controller.selected.value,
-          //       items: controller.dropdownItems.map((selectedType) {
-          //         return DropdownMenuItem(
-          //           value: selectedType,
-          //           child: Text(
-          //             selectedType,
-          //           ),
-          //         );
-          //       }).toList(),
-          //     )), //([index]),
-        );
+            width: widthSize,
+            height: 52,
+            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+            alignment: Alignment.center,
+            child: Text(
+                itemRowWidget[controller.rowZeroIndex].interestLevel.toString())
+            // Obx(() => DropdownButton(
+            //       underline: const SizedBox(),
+            //       iconSize: 0.0,
+            //       onChanged: (newValue) {
+            //         controller.setSelected(newValue!);
+            //       },
+            //       value: controller.selected.value,
+            //       items: controller.dropdownItems.map((selectedType) {
+            //         return DropdownMenuItem(
+            //           value: selectedType,
+            //           child: Text(
+            //             selectedType,
+            //           ),
+            //         );
+            //       }).toList(),
+            //     )), //([index]),
+            );
         widget.add(sectionOne);
-        while(controller.rowZeroIndex <= itemRowWidget.length) {
-            controller.rowZeroIndex++;
-            break;
+        while (controller.rowZeroIndex <= itemRowWidget.length) {
+          controller.rowZeroIndex++;
+          break;
         }
       } else {
         Widget sectionOthers = Container(
@@ -196,7 +213,21 @@ class OverviewboardView extends GetView<OverviewboardController>
           ),
         ],
         onChanged: (value) {
-          _MenuItems.onChanged(context, column, value!);
+          if (value?.text == _MenuItems.delete.text) {
+            UIUtils.showDeleteDialog(
+                context,
+                "Are you sure you want to delete this checklist? \n"
+                "All notes within will be deleted and cannot be \nretrieved.",
+                onCloseClicked: () {
+              Get.back(closeOverlays: true);
+            }, onDeleteClicked: () {
+              controller.deleteColumn(filterNull(column.id)).then((value) => {
+                    value ? controller.loadBoard() : null,
+                    Get.back(closeOverlays: true)
+                  });
+            });
+          }
+          _MenuItems.onChanged(context, value!);
         },
         dropdownStyleData: DropdownStyleData(
           width: 160,
@@ -217,10 +248,7 @@ class OverviewboardView extends GetView<OverviewboardController>
     String email = controller.getUserEmail();
 
     final List<_MenuItem> profileValues = [
-      _MenuItem(
-          text: email,
-          icon: null,
-          color: colorGrey),
+      _MenuItem(text: email, icon: null, color: colorGrey),
       const _MenuItem(
           text: 'Sign Out',
           icon: Icons.exit_to_app_outlined,
@@ -236,12 +264,12 @@ class OverviewboardView extends GetView<OverviewboardController>
         ),
         items: profileValues
             .map((item) => DropdownMenuItem<_MenuItem>(
-          value: item,
-          child: _MenuItems.buildItem(item),
-        ))
+                  value: item,
+                  child: _MenuItems.buildItem(item),
+                ))
             .toList(),
         onChanged: (value) {
-          if(value?.icon != null) {
+          if (value?.icon != null) {
             Get.offAllNamed('/signin');
           }
         },
@@ -405,8 +433,10 @@ class OverviewboardView extends GetView<OverviewboardController>
                         context: context,
                         builder: (BuildContext context) => showRenameDialog(
                                 filterNull(title), onTapCreate: (String title) {
-                              controller.updateBoard(filterNull(data?.id), title).then(
-                                  (value) => Get.back(closeOverlays: true));
+                              controller
+                                  .updateBoard(filterNull(data?.id), title)
+                                  .then(
+                                      (value) => Get.back(closeOverlays: true));
                             }));
                   },
                   icon: const Icon(Icons.drive_file_rename_outline)),
@@ -586,7 +616,6 @@ class _MenuItem {
 }
 
 abstract class _MenuItems {
-
   static const List<_MenuItem> firstItems = [info, delete];
   static const info = _MenuItem(
       text: 'View full info', icon: Icons.info_outline, color: Colors.black38);
@@ -612,25 +641,12 @@ abstract class _MenuItems {
     );
   }
 
-  static void onChanged(BuildContext context, Columns column, _MenuItem item) {
+  static void onChanged(BuildContext context, _MenuItem item) {
     switch (item) {
       case _MenuItems.info:
         //Do something
         break;
       case _MenuItems.delete:
-        UIUtils.showDeleteDialog(
-            context,
-            "Are you sure you want to delete this checklist? \n"
-            "All notes within will be deleted and cannot be \nretrieved.",
-            onCloseClicked: () {
-          Get.back(closeOverlays: true);
-        }, onDeleteClicked: () {
-          OverviewboardController controller = OverviewboardController();
-          controller.deleteColumn(filterNull(column.id)).then((value) => {
-                value ? controller.loadBoard() : null,
-                Get.back(closeOverlays: true)
-              });
-        });
         break;
     }
   }

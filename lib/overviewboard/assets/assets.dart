@@ -100,10 +100,10 @@ class AssetsView extends GetView<AssetsController> {
       },
       transitionDuration: const Duration(milliseconds: 500),
       pageBuilder: (
-          BuildContext context,
-          Animation<double> animation,
-          Animation<double> secondaryAnimation,
-          ) {
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+      ) {
         return ChecklistView(columns, asset, canDelete);
       },
     );
@@ -111,10 +111,11 @@ class AssetsView extends GetView<AssetsController> {
 
   @override
   Widget build(BuildContext context) {
-    String title = asset != null ? filterNull(asset?.name) : '';
+    String title = asset != null ? filterNull(asset?.name) : 'New Asset';
 
     if (asset != null && filterNullList(asset?.content?.data).isNotEmpty) {
-      controller.quillController.document = Document.fromJson(asset!.content!.data as List<dynamic>);
+      controller.quillController.document =
+          Document.fromJson(asset!.content!.data as List<dynamic>);
     }
     controller.textController.text = title;
     if (asset != null && asset?.interestLevel != null) {
@@ -156,9 +157,6 @@ class AssetsView extends GetView<AssetsController> {
                                   style: TextStyle(fontSize: 12),
                                 ),
                                 onPressed: () {
-                                  Logger.printLog(
-                                      message:
-                                          "Get Back called  ${controller.assetsCreated}");
                                   Get.back(result: controller.assetsCreated);
                                 },
                               ),
@@ -208,8 +206,10 @@ class AssetsView extends GetView<AssetsController> {
                                           onCloseClicked: () {
                                         Get.back(closeOverlays: true);
                                       }, onDeleteClicked: () {
-                                        _deleteAsset().then((value) =>
-                                            Get.back(closeOverlays: true));
+                                        _deleteAsset().then((value) {
+                                          Get.back(closeOverlays: true);
+                                          Get.back(result: controller.assetsCreated);
+                                          });
                                       });
                                     },
                                   ))
@@ -297,7 +297,7 @@ class AssetsView extends GetView<AssetsController> {
                                       ),
                                     ),
                                     Obx(() => Visibility(
-                                        visible: false,
+                                        visible: controller.enableButtons.value,
                                         child: Container(
                                           alignment: Alignment.topLeft,
                                           padding: const EdgeInsets.only(
@@ -382,12 +382,12 @@ class AssetsView extends GetView<AssetsController> {
                                   itemBuilder: (context, index) {
                                     return Column(children: [
                                       ListTile(
-                                        onTap:() {
-                                          showChecklist(context, updatedList?[index], asset, true);
+                                        onTap: () {
+                                          showChecklist(context,
+                                              updatedList?[index], asset, true);
                                         },
                                         title: Text(
-                                          filterNull(
-                                              updatedList?[index]?.name)
+                                          filterNull(updatedList?[index]?.name)
                                               .toUpperCase(),
                                         ),
                                         trailing: const Icon(Icons.check_circle,
