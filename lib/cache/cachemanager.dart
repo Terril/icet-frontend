@@ -34,6 +34,17 @@ mixin CacheManager {
     String storageValue = storage.read(CacheManagerKey.LOGIN.name);
     return storageValue ==  "true" ? true : false;
   }
+
+  void saveLoginEmail(String email) {
+    var storage = GetStorage(STORAGE_CONTAINER);
+    storage.write(CacheManagerKey.USER_EMAIL.name, email);
+  }
+
+  String? getLoginEmail() {
+    var storage = GetStorage(STORAGE_CONTAINER);
+    var email = storage.read(CacheManagerKey.USER_EMAIL.name);
+    return email;
+  }
 }
 
-enum CacheManagerKey { TOKEN, LOGIN }
+enum CacheManagerKey { TOKEN, LOGIN, USER_EMAIL }

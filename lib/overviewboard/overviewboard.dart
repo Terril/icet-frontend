@@ -2,6 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
+import 'package:icet/cache/cachemanager.dart';
 import 'package:icet/extension/ext.dart';
 import 'package:icet/utils.dart';
 
@@ -17,14 +18,14 @@ class OverviewboardView extends GetView<OverviewboardController>
     with OverviewboardDialogView {
   OverviewboardView({super.key});
 
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-
   String selectedValue = "1";
 
-  void onTapProfilePic() {
-    print("Profile Pic clicked");
-  }
+  List<Rows> itemRowWidget = <Rows>[];
+  List<Columns> itemColumnWidget = <Columns>[];
+
+  Boards? board = null;
+  List<String> list = <String>['New asset', 'New checklist'];
+  double widthSize = (Get.width / 6);
 
   void showAssets(
       BuildContext context, String? boardId, Rows? asset, bool canDelete) {
@@ -47,8 +48,6 @@ class OverviewboardView extends GetView<OverviewboardController>
       },
     ).then((value) => filterBoolNull(value) ? controller.loadBoard() : null);
   }
-
-  double widthSize = (Get.width / 6);
 
   List<Widget> _getTitleWidget(BuildContext context, List<Columns> items) {
     double widthSize =
@@ -78,11 +77,6 @@ class OverviewboardView extends GetView<OverviewboardController>
           child: Text(filterNull(itemRowWidget[index].name))),
     );
   }
-
-  List<Rows> itemRowWidget = <Rows>[];
-  List<Columns> itemColumnWidget = <Columns>[];
-
-  Boards? board = null;
 
   Widget _generateRightHandSideColumnRow(BuildContext context, int index) {
     List<Widget> widget = <Widget>[];
@@ -138,8 +132,6 @@ class OverviewboardView extends GetView<OverviewboardController>
 
     return Row(children: widget);
   }
-
-  List<String> list = <String>['New asset', 'New checklist'];
 
   Widget _addDropDown(BuildContext context, String? boardId) {
     return Container(
@@ -222,6 +214,18 @@ class OverviewboardView extends GetView<OverviewboardController>
   }
 
   Widget _addProfile() {
+    String email = controller.getUserEmail();
+
+    final List<_MenuItem> profileValues = [
+      _MenuItem(
+          text: email,
+          icon: null,
+          color: colorGrey),
+      const _MenuItem(
+          text: 'Sign Out',
+          icon: Icons.exit_to_app_outlined,
+          color: colorDeleteButton),
+    ];
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
         customButton: const CircleAvatar(
@@ -230,16 +234,16 @@ class OverviewboardView extends GetView<OverviewboardController>
               'https://source.unsplash.com/50x50/?portrait',
               scale: 1.0),
         ),
-        items: [
-          ..._MenuItems.secondItems.map(
-            (item) => DropdownMenuItem<_MenuItem>(
-              value: item,
-              child: _MenuItems.buildItem(item),
-            ),
-          ),
-        ],
+        items: profileValues
+            .map((item) => DropdownMenuItem<_MenuItem>(
+          value: item,
+          child: _MenuItems.buildItem(item),
+        ))
+            .toList(),
         onChanged: (value) {
-          Get.toNamed('/signin');
+          if(value?.icon != null) {
+            Get.offAllNamed('/signin');
+          }
         },
         dropdownStyleData: DropdownStyleData(
           width: 160,
@@ -577,21 +581,17 @@ class _MenuItem {
   });
 
   final String text;
-  final IconData icon;
+  final IconData? icon;
   final Color color;
 }
 
 abstract class _MenuItems {
+
   static const List<_MenuItem> firstItems = [info, delete];
-  static const List<_MenuItem> secondItems = [signout];
   static const info = _MenuItem(
       text: 'View full info', icon: Icons.info_outline, color: Colors.black38);
   static const delete = _MenuItem(
       text: 'Delete', icon: Icons.delete_outline, color: colorDeleteButton);
-  static const signout = _MenuItem(
-      text: 'Sign Out',
-      icon: Icons.exit_to_app_outlined,
-      color: colorDeleteButton);
 
   static Widget buildItem(_MenuItem item) {
     return Row(
@@ -631,8 +631,6 @@ abstract class _MenuItems {
                 Get.back(closeOverlays: true)
               });
         });
-        break;
-      case _MenuItems.signout:
         break;
     }
   }

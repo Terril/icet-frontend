@@ -111,7 +111,7 @@ class AssetsView extends GetView<AssetsController> {
 
   @override
   Widget build(BuildContext context) {
-    String title = asset != null ? filterNull(asset?.name) : 'New Asset';
+    String title = asset != null ? filterNull(asset?.name) : '';
 
     if (asset != null && filterNullList(asset?.content?.data).isNotEmpty) {
       controller.quillController.document = Document.fromJson(asset!.content!.data as List<dynamic>);
@@ -297,7 +297,7 @@ class AssetsView extends GetView<AssetsController> {
                                       ),
                                     ),
                                     Obx(() => Visibility(
-                                        visible: controller.enableButtons.value,
+                                        visible: false,
                                         child: Container(
                                           alignment: Alignment.topLeft,
                                           padding: const EdgeInsets.only(
@@ -363,6 +363,7 @@ class AssetsView extends GetView<AssetsController> {
                         child: FutureBuilder(
                       future: controller.fetchColumns(boardId),
                       builder: (context, snapshot) {
+                        List<Columns?>? updatedList = snapshot.data?.sublist(1);
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return const Center(
@@ -375,18 +376,18 @@ class AssetsView extends GetView<AssetsController> {
                               return Center(child: emptyView(context));
                             } else {
                               return ListView.builder(
-                                  itemCount: snapshot.data?.length,
+                                  itemCount: updatedList?.length,
                                   scrollDirection: Axis.vertical,
                                   shrinkWrap: true,
                                   itemBuilder: (context, index) {
                                     return Column(children: [
                                       ListTile(
                                         onTap:() {
-                                          showChecklist(context, snapshot.data?[index], asset, true);
+                                          showChecklist(context, updatedList?[index], asset, true);
                                         },
                                         title: Text(
                                           filterNull(
-                                                  snapshot.data?[index]?.name)
+                                              updatedList?[index]?.name)
                                               .toUpperCase(),
                                         ),
                                         trailing: const Icon(Icons.check_circle,

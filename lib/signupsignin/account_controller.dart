@@ -89,6 +89,7 @@ class AccountController extends GetxController with CacheManager {
               _trx = Token.fromJson(response.body);
               Logger.printLog(message: filterNull((_trx as Token).token));
               saveToken((_trx as Token).token);
+              saveLoginEmail(_email);
               saveLoginState(true);
             } else {
               func(false);
@@ -110,9 +111,11 @@ class AccountController extends GetxController with CacheManager {
           .then((response) {
             enableLoader.value = false;
             if (response != null && response.isOk) {
+
               _trx = Token.fromJson(response.body);
               Logger.printLog(message: filterNull((_trx as Token).token));
               saveToken((_trx as Token).token);
+              saveLoginEmail(_email);
               saveLoginState(true);
               func(true);
             } else {

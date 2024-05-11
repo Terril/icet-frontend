@@ -9,6 +9,7 @@ import 'package:icet/logs.dart';
 import 'package:icet/provider/apiServiceProvider.dart';
 
 import '../datamodel/boards.dart';
+import '../extension/ext.dart';
 
 class OverviewboardController extends GetxController with CacheManager {
   APIServiceProvider overviewboardProvider = APIServiceProvider();
@@ -129,5 +130,14 @@ class OverviewboardController extends GetxController with CacheManager {
     if (itemCount > 0) {
       return itemCount + 1;
     }
+  }
+
+  String getUserEmail() {
+    String email = "";
+    if(getLoginEmail() != null) {
+      email = filterNull(getLoginEmail());
+    }
+
+    return email;
   }
 }
