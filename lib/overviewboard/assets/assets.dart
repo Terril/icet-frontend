@@ -166,13 +166,15 @@ class AssetsView extends GetView<AssetsController> {
                         children: [
                           SizedBox(
                               width: Get.width / 7,
-                              child: TextField(
+                              child: Obx(() => TextField(
+                                maxLength: 51,
                                 controller: controller.textController,
                                 decoration: InputDecoration(
                                   floatingLabelBehavior:
                                       FloatingLabelBehavior.never,
                                   border: InputBorder.none,
                                   counterText: "",
+                                  errorText: controller.showErrorMessage.value ? "Max. character limit is 50" : "",
                                   suffix: const Icon(
                                       Icons.drive_file_rename_outline),
                                   label: Text(title,
@@ -183,7 +185,7 @@ class AssetsView extends GetView<AssetsController> {
                                 style: const TextStyle(
                                     fontSize: 24.0,
                                     fontWeight: FontWeight.w600),
-                              )),
+                              ))),
                           Row(
                             children: [
                               const Text("Interest Level: ",
@@ -208,8 +210,9 @@ class AssetsView extends GetView<AssetsController> {
                                       }, onDeleteClicked: () {
                                         _deleteAsset().then((value) {
                                           Get.back(closeOverlays: true);
-                                          Get.back(result: controller.assetsCreated);
-                                          });
+                                          Get.back(
+                                              result: controller.assetsCreated);
+                                        });
                                       });
                                     },
                                   ))

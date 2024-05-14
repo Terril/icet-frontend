@@ -1,4 +1,4 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -17,7 +17,7 @@ import '../../logs.dart';
 import 'checklist_controller.dart';
 
 class ChecklistView extends GetView<ChecklistController> {
-  ChecklistView(this.column, this.asset, this.isDeletable, {super.key});
+  const ChecklistView(this.column, this.asset, this.isDeletable, {super.key});
 
   final Columns? column;
   final Rows? asset;
@@ -27,8 +27,8 @@ class ChecklistView extends GetView<ChecklistController> {
     return controller.updateChecklist(filterNull(asset?.id));
   }
 
-  Future<bool> _deleteAsset() {
-    return controller.deleteAsset(filterNull(asset?.id));
+  Future<bool> _deleteChecklist() {
+    return controller.deleteChecklist(filterNull(column?.id));
   }
 
   Widget emptyView(BuildContext context) {
@@ -128,7 +128,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                           onCloseClicked: () {
                                         Get.back(closeOverlays: true);
                                       }, onDeleteClicked: () {
-                                        _deleteAsset().then((value) =>
+                                        _deleteChecklist().then((value) =>
                                             Get.back(closeOverlays: true));
                                       });
                                     },

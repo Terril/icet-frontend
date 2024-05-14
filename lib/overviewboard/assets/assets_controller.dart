@@ -17,6 +17,7 @@ class AssetsController extends GetxController with CacheManager {
   TextEditingController textController = TextEditingController();
 
   RxBool enableButtons = false.obs;
+  RxBool showErrorMessage = false.obs;
 
   bool assetsCreated = false;
 
@@ -51,6 +52,15 @@ class AssetsController extends GetxController with CacheManager {
               : false;
       _showSaveAndCancelButtons(state);
     });
+
+    textController.addListener(() {
+      bool state =
+      (textController.text.length >= 50 ||
+          textController.text.isEmpty)
+          ? true
+          : false;
+      showErrorMessage.value = state;
+    });
   }
 
   void setSelected(String value) {
@@ -74,7 +84,7 @@ class AssetsController extends GetxController with CacheManager {
     map["name"] = textController.text;
     map["content"] = {"data" : quillController.document.toDelta().toJson()};
     map["board"] = boardId;
-    map["interest_level"] = int.parse(selected.value);
+    map["interest_level"] = selected.value == "Unset" ? 1 : int.parse(selected.value);
     Response response = await provider.addRows(map);
 
     if(response != null && response.isOk) {
@@ -90,7 +100,7 @@ class AssetsController extends GetxController with CacheManager {
     Map<String, dynamic> map = HashMap();
     map["name"] = textController.text;
     map["content"] = {"data" : quillController.document.toDelta().toJson()};
-    map["interest_level"] = int.parse(selected.value);
+    map["interest_level"] = selected.value == "Unset" ? 1 : int.parse(selected.value);
     Response response = await provider.updateRows(assetId, map);
 
     if(response != null && response.isOk) {

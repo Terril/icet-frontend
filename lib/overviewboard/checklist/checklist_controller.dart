@@ -55,8 +55,8 @@ class ChecklistController extends GetxController with CacheManager {
   }
 
 
-  Future<bool> deleteAsset(String rowId) async {
-    Response response = await provider.deleteRow(rowId);
+  Future<bool> deleteChecklist(String columnId) async {
+    Response response = await provider.deleteColumn(columnId);
     Logger.printLog(message: "${response.bodyString}");
     if(response != null && response.isOk) {
       Logger.printLog(message: "This is create Assets");
