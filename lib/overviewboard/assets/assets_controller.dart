@@ -46,8 +46,7 @@ class AssetsController extends GetxController with CacheManager {
 
     quillController.addListener(() {
       bool state =
-          (quillController.plainTextEditingValue.text.length <= 30000 &&
-                  quillController.plainTextEditingValue.text.isNotEmpty)
+          (quillController.plainTextEditingValue.text.length >= 30000)
               ? true
               : false;
       _showSaveAndCancelButtons(state);
@@ -55,10 +54,9 @@ class AssetsController extends GetxController with CacheManager {
 
     textController.addListener(() {
       bool state =
-      (textController.text.length >= 50 ||
-          textController.text.isEmpty)
-          ? true
-          : false;
+          (textController.text.length >= 50 || textController.text.isEmpty)
+              ? true
+              : false;
       showErrorMessage.value = state;
     });
   }
@@ -80,14 +78,22 @@ class AssetsController extends GetxController with CacheManager {
   }
 
   Future<bool> createAssets(String boardId) async {
+    if(textController.text.length >= 50) {
+      showErrorMessage.value = true;
+      return false;
+    } else if (quillController.plainTextEditingValue.text.length >= 30000) {
+      _showSaveAndCancelButtons(true);
+    }
+
     Map<String, dynamic> map = HashMap();
     map["name"] = textController.text;
-    map["content"] = {"data" : quillController.document.toDelta().toJson()};
+    map["content"] = {"data": quillController.document.toDelta().toJson()};
     map["board"] = boardId;
-    map["interest_level"] = selected.value == "Unset" ? 1 : int.parse(selected.value);
+    map["interest_level"] =
+        selected.value == "Unset" ? 1 : int.parse(selected.value);
     Response response = await provider.addRows(map);
 
-    if(response != null && response.isOk) {
+    if (response != null && response.isOk) {
       Logger.printLog(message: "This is create Assets");
       assetsCreated = true;
     }
@@ -97,13 +103,21 @@ class AssetsController extends GetxController with CacheManager {
   }
 
   Future<bool> updateAssets(String assetId) async {
+    if(textController.text.length >= 50) {
+      showErrorMessage.value = true;
+      return false;
+    } else if (quillController.plainTextEditingValue.text.length >= 30000) {
+      _showSaveAndCancelButtons(true);
+    }
+
     Map<String, dynamic> map = HashMap();
     map["name"] = textController.text;
-    map["content"] = {"data" : quillController.document.toDelta().toJson()};
-    map["interest_level"] = selected.value == "Unset" ? 1 : int.parse(selected.value);
+    map["content"] = {"data": quillController.document.toDelta().toJson()};
+    map["interest_level"] =
+        selected.value == "Unset" ? 1 : int.parse(selected.value);
     Response response = await provider.updateRows(assetId, map);
 
-    if(response != null && response.isOk) {
+    if (response != null && response.isOk) {
       assetsCreated = true;
     }
     Logger.printLog(message: "${response.bodyString}");
@@ -111,11 +125,10 @@ class AssetsController extends GetxController with CacheManager {
     return assetsCreated;
   }
 
-
   Future<bool> deleteAsset(String rowId) async {
     Response response = await provider.deleteRow(rowId);
     Logger.printLog(message: "${response.bodyString}");
-    if(response != null && response.isOk) {
+    if (response != null && response.isOk) {
       Logger.printLog(message: "This is create Assets");
       assetsCreated = true;
     }

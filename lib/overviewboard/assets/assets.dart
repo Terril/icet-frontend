@@ -167,25 +167,28 @@ class AssetsView extends GetView<AssetsController> {
                           SizedBox(
                               width: Get.width / 7,
                               child: Obx(() => TextField(
-                                maxLength: 51,
-                                controller: controller.textController,
-                                decoration: InputDecoration(
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.never,
-                                  border: InputBorder.none,
-                                  counterText: "",
-                                  errorText: controller.showErrorMessage.value ? "Max. character limit is 50" : "",
-                                  suffix: const Icon(
-                                      Icons.drive_file_rename_outline),
-                                  label: Text(title,
-                                      style: const TextStyle(
-                                          fontSize: 24.0,
-                                          fontWeight: FontWeight.w600)),
-                                ),
-                                style: const TextStyle(
-                                    fontSize: 24.0,
-                                    fontWeight: FontWeight.w600),
-                              ))),
+                                    maxLength: 51,
+                                    controller: controller.textController,
+                                    decoration: InputDecoration(
+                                      floatingLabelBehavior:
+                                          FloatingLabelBehavior.never,
+                                      border: InputBorder.none,
+                                      counterText: "",
+                                      errorText:
+                                          controller.showErrorMessage.value
+                                              ? "Max. character limit is 50"
+                                              : "",
+                                      suffix: const Icon(
+                                          Icons.drive_file_rename_outline),
+                                      label: Text(title,
+                                          style: const TextStyle(
+                                              fontSize: 24.0,
+                                              fontWeight: FontWeight.w600)),
+                                    ),
+                                    style: const TextStyle(
+                                        fontSize: 24.0,
+                                        fontWeight: FontWeight.w600),
+                                  ))),
                           Row(
                             children: [
                               const Text("Interest Level: ",
@@ -300,32 +303,24 @@ class AssetsView extends GetView<AssetsController> {
                                       ),
                                     ),
                                     Obx(() => Visibility(
-                                        visible: controller.enableButtons.value,
-                                        child: Container(
-                                          alignment: Alignment.topLeft,
-                                          padding: const EdgeInsets.only(
-                                              top: 10,
-                                              right: 20.0,
-                                              left: 16.0,
-                                              bottom: 16),
-                                          child: OutlinedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8), // <-- Radius
-                                                ),
-                                              ),
-                                              onPressed: () {
-                                                controller.quillController
-                                                    .clear();
-                                              },
-                                              child: const Text("Clear",
+                                          visible:
+                                              controller.enableButtons.value,
+                                          child: Container(
+                                              alignment: Alignment.topLeft,
+                                              padding: const EdgeInsets.only(
+                                                  top: 10,
+                                                  right: 20.0,
+                                                  left: 16.0,
+                                                  bottom: 16),
+                                              child: const Text(
+                                                  "Max text limit is 30000 characters",
                                                   style: TextStyle(
+                                                      backgroundColor:
+                                                          colorDeleteButton,
                                                       fontWeight:
                                                           FontWeight.w600,
-                                                      color: colorButtonGrey))),
-                                        )))
+                                                      color: colorWhite))),
+                                        ))
                                   ])),
                         ])),
                     const SizedBox(height: 24),

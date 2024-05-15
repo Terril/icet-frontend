@@ -74,7 +74,7 @@ class OverviewboardView extends GetView<OverviewboardController>
       padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
       alignment: Alignment.center,
       child: Text(filterNull(column.name?.toUpperCase()),
-          maxLines: 2,
+          maxLines: 2, textAlign: TextAlign.center,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(fontWeight: FontWeight.bold)),
     );
@@ -200,7 +200,7 @@ class OverviewboardView extends GetView<OverviewboardController>
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.center,
           child: Text(filterNull(column.name?.toUpperCase()),
-              maxLines: 2,
+              maxLines: 2, textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(fontWeight: FontWeight.bold)),
         ),

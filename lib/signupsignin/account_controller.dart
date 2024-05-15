@@ -85,6 +85,7 @@ class AccountController extends GetxController with CacheManager {
           .signupUser(map)
           .then((response) {
             enableLoader.value = false;
+            print(response.bodyString);
             if (response != null && response.isOk) {
               _trx = Token.fromJson(response.body);
               Logger.printLog(message: filterNull((_trx as Token).token));
