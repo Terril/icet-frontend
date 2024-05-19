@@ -24,7 +24,7 @@ class ChecklistView extends GetView<ChecklistController> {
   final bool isDeletable;
 
   Future<bool> _saveButtonClicked() {
-    return controller.updateChecklist(filterNull(asset?.id));
+    return controller.updateChecklist(filterNull(column?.id));
   }
 
   Future<bool> _deleteChecklist() {
@@ -205,7 +205,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                       foregroundColor:
                                           Colors.red, // <-- Splash color
                                     ),
-                                    child: const Icon(Icons.question_mark,
+                                    child: const Icon(Icons.question_mark_outlined,
                                         color: Colors.white),
                                   )),
                               ButtonTheme(
@@ -330,36 +330,24 @@ class ChecklistView extends GetView<ChecklistController> {
                                           ),
                                         ),
                                         Obx(() => Visibility(
-                                            visible:
-                                                controller.enableButtons.value,
-                                            child: Container(
+                                          visible:
+                                          controller.enableButtons.value,
+                                          child: Container(
                                               alignment: Alignment.topLeft,
                                               padding: const EdgeInsets.only(
                                                   top: 10,
                                                   right: 20.0,
                                                   left: 16.0,
                                                   bottom: 16),
-                                              child: OutlinedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8), // <-- Radius
-                                                    ),
-                                                  ),
-                                                  onPressed: () {
-                                                    controller.quillController
-                                                        .clear();
-                                                  },
-                                                  child: const Text("Clear",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color:
-                                                              colorButtonGrey))),
-                                            )))
+                                              child: const Text(
+                                                  "Max. character limit is 30000",
+                                                  style: TextStyle(
+                                                      backgroundColor:
+                                                      colorDeleteButton,
+                                                      fontWeight:
+                                                      FontWeight.w600,
+                                                      color: colorWhite))),
+                                        ))
                                       ])),
                             ])),
                         const SizedBox(height: 24),

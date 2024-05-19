@@ -3,18 +3,27 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:get/utils.dart';
+import 'package:icet/logs.dart';
 import 'package:icet/signupsignin/account_controller.dart';
 
 import '../const/colors.dart';
 import '../extension/ext.dart';
+import '../datamodel/error.dart';
 
 class SignupView extends GetView<AccountController> {
   SignupView({super.key});
 
   void _submitCreateAccount() {
-    controller.performUserSignUp((bool res) {
+    controller.performUserSignUp((bool res, Error error) {
       if (!res) {
-        showInSnackBar("Unable to log in with provided credentials");
+        var errorMessage = "";
+        error.errors?.forEach((element) {
+          var fieldName = filterNull(element.field);
+          var message =
+              filterNull(element.message).replaceFirst("field", fieldName);
+          errorMessage += " ${message},";
+        });
+        showInSnackBar(errorMessage.substring(0, errorMessage.length - 1));
       }
     });
   }
@@ -29,6 +38,7 @@ class SignupView extends GetView<AccountController> {
 
   @override
   Widget build(context) {
+    controller.isSignUp = true;
     double txtWidth = Get.width * 0.3;
     return ScaffoldMessenger(
         key: scaffoldMessengerKey,
@@ -100,6 +110,8 @@ class SignupView extends GetView<AccountController> {
                                                 margin: const EdgeInsets.only(
                                                     top: 8),
                                                 child: TextFormField(
+                                                  controller: controller
+                                                      .textEmailController,
                                                   autovalidateMode:
                                                       AutovalidateMode
                                                           .onUserInteraction,
@@ -135,6 +147,8 @@ class SignupView extends GetView<AccountController> {
                                                 margin: const EdgeInsets.only(
                                                     top: 8),
                                                 child: TextFormField(
+                                                  controller: controller
+                                                      .textPasswordController,
                                                   autovalidateMode:
                                                       AutovalidateMode
                                                           .onUserInteraction,
@@ -173,6 +187,8 @@ class SignupView extends GetView<AccountController> {
                                                 margin: const EdgeInsets.only(
                                                     top: 8),
                                                 child: TextFormField(
+                                                  controller: controller
+                                                      .textRePasswordController,
                                                   autovalidateMode:
                                                       AutovalidateMode
                                                           .onUserInteraction,
@@ -226,10 +242,16 @@ class SignupView extends GetView<AccountController> {
                                                                     .circular(
                                                                         8), // <-- Radius
                                                           ),
-                                                          backgroundColor:
-                                                              colorBlueButton),
-                                                  onPressed:
-                                                      _submitCreateAccount,
+                                                          backgroundColor: controller
+                                                                  .enableButton
+                                                                  .value
+                                                              ? colorBlueButton
+                                                              : colorGreyField),
+                                                  onPressed: () => {
+                                                    if (controller
+                                                        .enableButton.value == true)
+                                                      {_submitCreateAccount() }
+                                                  },
                                                   label: const Padding(
                                                     padding:
                                                         EdgeInsets.all(10.0),

@@ -39,12 +39,37 @@ class ChecklistController extends GetxController with CacheManager {
     enableButtons.value = state;
   }
 
+  // Future<bool> createChecklist(String boardId) async {
+  //   if(textController.text.length >= 50) {
+  //   //  showErrorMessage.value = true;
+  //     return false;
+  //   } else if (quillController.plainTextEditingValue.text.length >= 30000) {
+  //     _showSaveAndCancelButtons(true);
+  //   }
+  //
+  //   Map<String, dynamic> map = HashMap();
+  //   map["name"] = textController.text;
+  //   map["content"] = {"data": quillController.document.toDelta().toJson()};
+  //   map["board"] = boardId;
+  //   map["interest_level"] =
+   // selected.value == "Unset" ? 1 : int.parse(selected.value);
+   //  Response response = await provider.addRows(map);
+   //
+   //  if (response != null && response.isOk) {
+   //    Logger.printLog(message: "This is create Assets");
+   //    assetsCreated = true;
+   //  }
+   //  Logger.printLog(message: "${response.bodyString}");
 
-  Future<bool> updateChecklist(String assetId) async {
+  //   return assetsCreated;
+  // }
+
+  Future<bool> updateChecklist(String columnId) async {
     Map<String, dynamic> map = HashMap();
     map["name"] = textController.text;
-    map["md_content"] = quillController.document.toDelta().toJson();
-    Response response = await provider.updateRows(assetId, map);
+    map["data_type"] = textController.text;
+    map["description"] = quillController.document.toDelta().toJson();
+    Response response = await provider.updateColumns(columnId, map);
 
     if(response != null && response.isOk) {
       assetsCreated = true;

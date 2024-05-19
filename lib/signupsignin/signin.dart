@@ -31,6 +31,7 @@ class SigninView extends GetView<AccountController> {
 
   @override
   Widget build(context) {
+    controller.isSignUp = false;
     double txtWidth = Get.width * 0.3;
     return ScaffoldMessenger(
         key: scaffoldMessengerKey,

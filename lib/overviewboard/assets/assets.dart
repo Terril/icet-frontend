@@ -313,7 +313,7 @@ class AssetsView extends GetView<AssetsController> {
                                                   left: 16.0,
                                                   bottom: 16),
                                               child: const Text(
-                                                  "Max text limit is 30000 characters",
+                                                  "Max. character limit is 30000",
                                                   style: TextStyle(
                                                       backgroundColor:
                                                           colorDeleteButton,

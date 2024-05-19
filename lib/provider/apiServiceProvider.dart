@@ -129,6 +129,13 @@ class APIServiceProvider extends GetConnect with CacheManager {
     });
   }
 
+  Future<Response> updateColumns(String rowId, Map map) {
+    var token = getToken();
+    return patch('$_baseUrl/api/columns/$rowId/', map, headers: {
+      'Authorization': 'Token $token',
+    });
+  }
+
   // Post Sign up request
   Future<Response> signupUser(Map data) => post('$_baseUrl/api/users/', data);
 

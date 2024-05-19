@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '../cache/cachemanager.dart';
 import '../datamodel/token.dart';
+import '../datamodel/error.dart';
 import '../extension/ext.dart';
 import '../logs.dart';
 import '../provider/apiServiceProvider.dart';
@@ -17,10 +18,11 @@ class AccountController extends GetxController with CacheManager {
   var dataAvailable = false.obs;
   TextEditingController textPasswordController = TextEditingController();
   TextEditingController textEmailController = TextEditingController();
+  TextEditingController textRePasswordController = TextEditingController();
 
   RxBool enableButton = false.obs;
-
   RxBool enableLoader = false.obs;
+  bool isSignUp = false;
 
   @override
   void onInit() {
@@ -33,10 +35,22 @@ class AccountController extends GetxController with CacheManager {
     textEmailController.addListener(() {
       _checkButtonEnableLogic();
     });
+
+    textRePasswordController.addListener(() {
+      _checkButtonEnableLogic();
+    });
   }
 
   void _checkButtonEnableLogic() {
-    if (_email.isNotEmpty && _pass.isNotEmpty) {
+    if(isSignUp) {
+      if (_email.isNotEmpty && _pass.isNotEmpty && _pass.length + 1 > 5
+          && _reinputPass.isNotEmpty && _reinputPass.length + 1  > 5) {
+        enableButton.value = true;
+      } else {
+        enableButton.value = false;
+      }
+    }
+    else if (_email.isNotEmpty && _pass.isNotEmpty && _pass.length + 1 > 5) {
       enableButton.value = true;
     } else {
       enableButton.value = false;
@@ -77,7 +91,7 @@ class AccountController extends GetxController with CacheManager {
 
   void performUserSignUp(Function func) async {
     enableLoader.value = true;
-    if (_email.isNotEmpty && _reinputPass.isNotEmpty) {
+    if (_email.isNotEmpty && _pass.isNotEmpty && _reinputPass.isNotEmpty) {
       Map<String, String> map = HashMap();
       map["email"] = _email;
       map["password"] = _pass;
@@ -85,7 +99,7 @@ class AccountController extends GetxController with CacheManager {
           .signupUser(map)
           .then((response) {
             enableLoader.value = false;
-            print(response.bodyString);
+            print("${response.bodyString}  ${response.statusCode}") ;
             if (response != null && response.isOk) {
               _trx = Token.fromJson(response.body);
               Logger.printLog(message: filterNull((_trx as Token).token));
@@ -93,7 +107,8 @@ class AccountController extends GetxController with CacheManager {
               saveLoginEmail(_email);
               saveLoginState(true);
             } else {
-              func(false);
+              var error = Error.fromJson(response.body);
+              func(false, error);
             }
           })
           .catchError((err) => print('Error!!!!! : ${err}'))
@@ -129,9 +144,4 @@ class AccountController extends GetxController with CacheManager {
     }
   }
 
-  @override
-  void onClose() {
-    textPasswordController.dispose();
-    super.onClose();
-  }
 }

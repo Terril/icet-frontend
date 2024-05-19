@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../const/colors.dart';
@@ -129,7 +130,7 @@ mixin OverviewboardDialogView {
                       style: TextStyle(
                           fontSize: 24.0, fontWeight: FontWeight.w700),
                     ),
-                    OutlinedButton(
+                    Visibility(visible: false, child: OutlinedButton(
                         style: ButtonStyle(
                             shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
@@ -151,7 +152,7 @@ mixin OverviewboardDialogView {
                                 fontSize: 12.0,
                                 fontWeight: FontWeight.w200),
                           ),
-                        ]))
+                        ])))
                   ]),
               const SizedBox(height: 16.0),
               const Text(
