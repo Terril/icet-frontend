@@ -168,6 +168,7 @@ class AssetsView extends GetView<AssetsController> {
                               width: Get.width / 7,
                               child: Obx(() => TextField(
                                     maxLength: 51,
+                                    autofocus: true,
                                     controller: controller.textController,
                                     decoration: InputDecoration(
                                       floatingLabelBehavior:
