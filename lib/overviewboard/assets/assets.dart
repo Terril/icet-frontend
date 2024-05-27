@@ -16,7 +16,6 @@ import 'package:icet/extension/ext.dart';
 import 'package:icet/overviewboard/checklist/checklist.dart';
 import 'package:icet/utils.dart';
 
-import '../../logs.dart';
 import 'assets_controller.dart';
 
 class AssetsView extends GetView<AssetsController> {

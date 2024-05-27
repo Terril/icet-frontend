@@ -8,7 +8,8 @@ import 'package:icet/cache/cachemanager.dart';
 import 'package:icet/logs.dart';
 import 'package:icet/provider/apiServiceProvider.dart';
 
-import '../../datamodel/columns.dart';
+import '../../datamodel/cell.dart';
+
 
 class ChecklistController extends GetxController with CacheManager {
   late APIServiceProvider provider;
@@ -27,7 +28,7 @@ class ChecklistController extends GetxController with CacheManager {
 
     quillController.addListener(() {
       bool state =
-          (quillController.plainTextEditingValue.text.length <= 30000 &&
+          (quillController.plainTextEditingValue.text.length >= 30000 &&
                   quillController.plainTextEditingValue.text.isNotEmpty)
               ? true
               : false;
@@ -52,14 +53,14 @@ class ChecklistController extends GetxController with CacheManager {
   //   map["content"] = {"data": quillController.document.toDelta().toJson()};
   //   map["board"] = boardId;
   //   map["interest_level"] =
-   // selected.value == "Unset" ? 1 : int.parse(selected.value);
-   //  Response response = await provider.addRows(map);
-   //
-   //  if (response != null && response.isOk) {
-   //    Logger.printLog(message: "This is create Assets");
-   //    assetsCreated = true;
-   //  }
-   //  Logger.printLog(message: "${response.bodyString}");
+  // selected.value == "Unset" ? 1 : int.parse(selected.value);
+  //  Response response = await provider.addRows(map);
+  //
+  //  if (response != null && response.isOk) {
+  //    Logger.printLog(message: "This is create Assets");
+  //    assetsCreated = true;
+  //  }
+  //  Logger.printLog(message: "${response.bodyString}");
 
   //   return assetsCreated;
   // }
@@ -67,11 +68,11 @@ class ChecklistController extends GetxController with CacheManager {
   Future<bool> updateChecklist(String columnId) async {
     Map<String, dynamic> map = HashMap();
     map["name"] = textController.text;
-    map["data_type"] = textController.text;
-    map["description"] = quillController.document.toDelta().toJson();
+    map["data_type"] = {"rating": "2"};
+    map["description_data"] = {"data": quillController.document.toDelta().toJson()};
     Response response = await provider.updateColumns(columnId, map);
 
-    if(response != null && response.isOk) {
+    if (response != null && response.isOk) {
       assetsCreated = true;
     }
     Logger.printLog(message: "${response.bodyString}");
@@ -79,11 +80,32 @@ class ChecklistController extends GetxController with CacheManager {
     return assetsCreated;
   }
 
+  Future<String?> getCell(String columnId, String rowId) async {
+    Response response = await provider.getCell(rowId, columnId);
+    Logger.printLog(message: "${response.bodyString}");
+    var cell = Cells.fromJson(response.body);
+
+    return cell.id;
+  }
+
+  Future<bool> updateCell(String cellData, String cellId) async {
+    Map<String, dynamic> map = HashMap();
+    map["data"] = cellData;
+    map["content_str"] = "empty";
+    Response response = await provider.updateCell(cellId, map);
+
+    if (response != null && response.isOk) {
+      assetsCreated = true;
+    }
+    Logger.printLog(message: "${response.bodyString}");
+
+    return assetsCreated;
+  }
 
   Future<bool> deleteChecklist(String columnId) async {
     Response response = await provider.deleteColumn(columnId);
     Logger.printLog(message: "${response.bodyString}");
-    if(response != null && response.isOk) {
+    if (response != null && response.isOk) {
       Logger.printLog(message: "This is create Assets");
       assetsCreated = true;
     }
@@ -97,4 +119,5 @@ class ChecklistController extends GetxController with CacheManager {
     textController.dispose();
     super.dispose();
   }
+
 }

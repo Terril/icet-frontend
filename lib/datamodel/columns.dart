@@ -1,3 +1,6 @@
+import 'cell.dart';
+import 'non_cell.dart';
+
 class Columns {
   String? id;
   String? name;
@@ -5,10 +8,14 @@ class Columns {
   String? createdAt;
   String? updatedAt;
   String? board;
+  List<Cells>? cells;
+  List<NonGlobalCells>? nonGlobalCells;
 
   Columns(
       {this.id,
         this.name,
+        this.cells,
+        this.nonGlobalCells,
         this.dataType,
         this.createdAt,
         this.updatedAt,
@@ -21,6 +28,18 @@ class Columns {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     board = json['board'];
+    if (json['cells'] != null) {
+      cells = <Cells>[];
+      json['cells'].forEach((v) {
+        cells!.add(Cells.fromJson(v));
+      });
+    }
+    if (json['non_global_cells'] != null) {
+      nonGlobalCells = <NonGlobalCells>[];
+      json['non_global_cells'].forEach((v) {
+        nonGlobalCells!.add(NonGlobalCells.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -31,6 +50,13 @@ class Columns {
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     data['board'] = this.board;
+    if (this.cells != null) {
+      data['cells'] = this.cells!.map((v) => v.toJson()).toList();
+    }
+    if (this.nonGlobalCells != null) {
+      data['non_global_cells'] =
+          this.nonGlobalCells!.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }

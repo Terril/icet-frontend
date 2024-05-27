@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -14,17 +13,24 @@ import 'package:icet/extension/ext.dart';
 import 'package:icet/utils.dart';
 
 import '../../logs.dart';
+import '../../ratings.dart';
 import 'checklist_controller.dart';
 
 class ChecklistView extends GetView<ChecklistController> {
-  const ChecklistView(this.column, this.asset, this.isDeletable, {super.key});
+  ChecklistView(this.column, this.asset, this.isDeletable,
+      {super.key});
 
   final Columns? column;
   final Rows? asset;
   final bool isDeletable;
+  late String cellId;
 
   Future<bool> _saveButtonClicked() {
     return controller.updateChecklist(filterNull(column?.id));
+  }
+
+  Future<bool> _updateCell(String cellData) {
+    return controller.updateCell(cellData, cellId);
   }
 
   Future<bool> _deleteChecklist() {
@@ -58,6 +64,10 @@ class ChecklistView extends GetView<ChecklistController> {
       controller.quillController.document = Document.fromHtml(description);
     }
     controller.textController.text = title;
+
+    controller
+        .getCell(filterNull(column?.id), filterNull(asset?.id))
+        .then((value) => cellId = filterNull(value));
 
     return Scaffold(
       backgroundColor: Colors.white.withOpacity(0.5),
@@ -164,14 +174,47 @@ class ChecklistView extends GetView<ChecklistController> {
                                   minWidth: 40.0,
                                   height: 40.0,
                                   child: ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      shape: const CircleBorder(),
-                                      padding: const EdgeInsets.all(5),
+                                    onPressed: () {
+                                      _updateCell(Rating.great.name);
+                                    },
+                                    style: ButtonStyle(
+                                      shape: MaterialStateProperty.resolveWith(
+                                            (Set<MaterialState> states) {
+                                          if (states.contains(
+                                              MaterialState.pressed)) {
+                                            return const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                            );
+                                          } else {
+                                            return const CircleBorder();
+                                          }
+                                          // Defer to the widget's default.
+                                        },
+                                      ),
+                                      side: MaterialStateProperty.resolveWith(
+                                            (Set<MaterialState> states) {
+                                          if (states.contains(
+                                              MaterialState.pressed)) {
+                                            return const BorderSide(
+                                              color: Colors.blue,
+                                              width: 2,
+                                            );
+                                          } else {
+                                            return null;
+                                          }
+                                          // Defer to the widget's default.
+                                        },
+                                      ),
+                                      padding: MaterialStateProperty.all(
+                                          const EdgeInsets.all(5)),
                                       backgroundColor:
-                                          colorCheckMark, // <-- Button color
+                                      MaterialStateProperty.all(
+                                        colorCheckMark),
+                                      // <-- Button color
                                       foregroundColor:
-                                          Colors.red, // <-- Splash color
+                                      MaterialStateProperty.all(
+                                          Colors.red), // <-- Splash color
                                     ),
                                     child: const Icon(Icons.check,
                                         color: Colors.white),
@@ -180,14 +223,47 @@ class ChecklistView extends GetView<ChecklistController> {
                                   minWidth: 40.0,
                                   height: 40.0,
                                   child: ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      shape: const CircleBorder(),
-                                      padding: const EdgeInsets.all(5),
-                                      backgroundColor: colorClearButton,
+                                    onPressed: () {
+                                      _updateCell(Rating.failure.name);
+                                    },
+                                    style: ButtonStyle(
+                                      shape: MaterialStateProperty.resolveWith(
+                                        (Set<MaterialState> states) {
+                                          if (states.contains(
+                                              MaterialState.pressed)) {
+                                            return const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                            );
+                                          } else {
+                                            return const CircleBorder();
+                                          }
+                                          // Defer to the widget's default.
+                                        },
+                                      ),
+                                      side: MaterialStateProperty.resolveWith(
+                                        (Set<MaterialState> states) {
+                                          if (states.contains(
+                                              MaterialState.pressed)) {
+                                            return const BorderSide(
+                                              color: Colors.blue,
+                                              width: 2,
+                                            );
+                                          } else {
+                                            return null;
+                                          }
+                                          // Defer to the widget's default.
+                                        },
+                                      ),
+                                      padding: MaterialStateProperty.all(
+                                          const EdgeInsets.all(5)),
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              colorClearButton),
                                       // <-- Button color
                                       foregroundColor:
-                                          Colors.blue, // <-- Splash color
+                                          MaterialStateProperty.all(
+                                              Colors.blue), // <-- Splash color
                                     ),
                                     child: const Icon(Icons.clear,
                                         color: Colors.white),
@@ -196,46 +272,147 @@ class ChecklistView extends GetView<ChecklistController> {
                                   minWidth: 40.0,
                                   height: 40.0,
                                   child: ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      shape: const CircleBorder(),
-                                      padding: const EdgeInsets.all(5),
-                                      backgroundColor: colorQuestionButton,
+                                    onPressed: () {
+                                      _updateCell(Rating.clueless.name);
+                                    },
+                                    style: ButtonStyle(
+                                      shape: MaterialStateProperty.resolveWith(
+                                            (Set<MaterialState> states) {
+                                          if (states.contains(
+                                              MaterialState.pressed)) {
+                                            return const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                            );
+                                          } else {
+                                            return const CircleBorder();
+                                          }
+                                          // Defer to the widget's default.
+                                        },
+                                      ),
+                                      side: MaterialStateProperty.resolveWith(
+                                            (Set<MaterialState> states) {
+                                          if (states.contains(
+                                              MaterialState.pressed)) {
+                                            return const BorderSide(
+                                              color: Colors.blue,
+                                              width: 2,
+                                            );
+                                          } else {
+                                            return null;
+                                          }
+                                          // Defer to the widget's default.
+                                        },
+                                      ),
+                                      padding: MaterialStateProperty.all(
+                                          const EdgeInsets.all(5)),
+                                      backgroundColor:
+                                      MaterialStateProperty.all(
+                                          colorQuestionButton),
                                       // <-- Button color
                                       foregroundColor:
-                                          Colors.red, // <-- Splash color
+                                      MaterialStateProperty.all(
+                                          Colors.red), // <-- Splash color
                                     ),
-                                    child: const Icon(Icons.question_mark_outlined,
+                                    child: const Icon(
+                                        Icons.question_mark_outlined,
                                         color: Colors.white),
                                   )),
                               ButtonTheme(
                                   minWidth: 40.0,
                                   height: 40.0,
                                   child: ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      shape: const CircleBorder(),
-                                      padding: const EdgeInsets.all(5),
+                                    onPressed: () {
+                                      _updateCell(Rating.happy.name);
+                                    },
+                                    style: ButtonStyle(
+                                      shape: MaterialStateProperty.resolveWith(
+                                            (Set<MaterialState> states) {
+                                          if (states.contains(
+                                              MaterialState.pressed)) {
+                                            return const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                            );
+                                          } else {
+                                            return const CircleBorder();
+                                          }
+                                          // Defer to the widget's default.
+                                        },
+                                      ),
+                                      side: MaterialStateProperty.resolveWith(
+                                            (Set<MaterialState> states) {
+                                          if (states.contains(
+                                              MaterialState.pressed)) {
+                                            return const BorderSide(
+                                              color: Colors.blue,
+                                              width: 2,
+                                            );
+                                          } else {
+                                            return null;
+                                          }
+                                          // Defer to the widget's default.
+                                        },
+                                      ),
+                                      padding: MaterialStateProperty.all(
+                                          const EdgeInsets.all(5)),
                                       backgroundColor:
-                                      colorEmojiButton, // <-- Button color
+                                      MaterialStateProperty.all(
+                                        colorEmojiButton),
+                                      // <-- Button color
                                       foregroundColor:
-                                          Colors.red, // <-- Splash color
+                                      MaterialStateProperty.all(
+                                          Colors.red), // <-- Splash color
                                     ),
-                                    child: const Icon(Icons.emoji_emotions_outlined,
+                                    child: const Icon(
+                                        Icons.emoji_emotions_outlined,
                                         color: Colors.white),
                                   )),
                               ButtonTheme(
                                   minWidth: 40.0,
                                   height: 40.0,
                                   child: ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      shape: const CircleBorder(),
-                                      padding: const EdgeInsets.all(5),
+                                    onPressed: () {
+                                      _updateCell(Rating.doubtful.name);
+                                    },
+                                    style: ButtonStyle(
+                                      shape: MaterialStateProperty.resolveWith(
+                                            (Set<MaterialState> states) {
+                                          if (states.contains(
+                                              MaterialState.pressed)) {
+                                            return const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                            );
+                                          } else {
+                                            return const CircleBorder();
+                                          }
+                                          // Defer to the widget's default.
+                                        },
+                                      ),
+                                      side: MaterialStateProperty.resolveWith(
+                                            (Set<MaterialState> states) {
+                                          if (states.contains(
+                                              MaterialState.pressed)) {
+                                            return const BorderSide(
+                                              color: Colors.blue,
+                                              width: 2,
+                                            );
+                                          } else {
+                                            return null;
+                                          }
+                                          // Defer to the widget's default.
+                                        },
+                                      ),
+                                      padding: MaterialStateProperty.all(
+                                          const EdgeInsets.all(5)),
                                       backgroundColor:
-                                      colorGreyField, // <-- Button color
+                                      MaterialStateProperty.all(
+                                          colorGreyField),
+                                      // <-- Button color
                                       foregroundColor:
-                                          Colors.red, // <-- Splash color
+                                      MaterialStateProperty.all(
+                                          Colors.red), // <-- Splash color
                                     ),
                                     child: null,
                                   )),
@@ -330,24 +507,25 @@ class ChecklistView extends GetView<ChecklistController> {
                                           ),
                                         ),
                                         Obx(() => Visibility(
-                                          visible:
-                                          controller.enableButtons.value,
-                                          child: Container(
-                                              alignment: Alignment.topLeft,
-                                              padding: const EdgeInsets.only(
-                                                  top: 10,
-                                                  right: 20.0,
-                                                  left: 16.0,
-                                                  bottom: 16),
-                                              child: const Text(
-                                                  "Max. character limit is 30000",
-                                                  style: TextStyle(
-                                                      backgroundColor:
-                                                      colorDeleteButton,
-                                                      fontWeight:
-                                                      FontWeight.w600,
-                                                      color: colorWhite))),
-                                        ))
+                                              visible: controller
+                                                  .enableButtons.value,
+                                              child: Container(
+                                                  alignment: Alignment.topLeft,
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 10,
+                                                          right: 20.0,
+                                                          left: 16.0,
+                                                          bottom: 16),
+                                                  child: const Text(
+                                                      "Max. character limit is 30000",
+                                                      style: TextStyle(
+                                                          backgroundColor:
+                                                              colorDeleteButton,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: colorWhite))),
+                                            ))
                                       ])),
                             ])),
                         const SizedBox(height: 24),

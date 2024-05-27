@@ -136,6 +136,20 @@ class APIServiceProvider extends GetConnect with CacheManager {
     });
   }
 
+  Future<Response> getCell(String rowId, String columnId) {
+    var token = getToken();
+    return get('$_baseUrl/api/cell/$rowId/$columnId/', headers: {
+    'Authorization': 'Token $token',
+    });
+  }
+
+  Future<Response> updateCell(String cellId, Map map) {
+    var token = getToken();
+    return patch('$_baseUrl/api/cells/$cellId/', map, headers: {
+      'Authorization': 'Token $token',
+    });
+  }
+
   // Post Sign up request
   Future<Response> signupUser(Map data) => post('$_baseUrl/api/users/', data);
 
