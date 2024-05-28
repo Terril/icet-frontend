@@ -75,7 +75,8 @@ class OverviewboardView extends GetView<OverviewboardController>
       padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
       alignment: Alignment.center,
       child: Text(filterNull(column.name?.toUpperCase()),
-          maxLines: 2, textAlign: TextAlign.center,
+          maxLines: 2,
+          textAlign: TextAlign.center,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(fontWeight: FontWeight.bold)),
     );
@@ -132,96 +133,39 @@ class OverviewboardView extends GetView<OverviewboardController>
         }
       } else {
         Widget iconData;
-        if(filterNull(itemColumnWidget[j].cells![index].data).isEmpty) {
+        if (filterNull(itemColumnWidget[j].cells![index].data).isEmpty) {
           iconData = const Icon(Icons.check_circle, color: colorCheckMark);
         } else {
-          Rating rate = Rating.values.byName(
-              filterNull(itemColumnWidget[j].cells![index].data));
+          Rating rate = Rating.values
+              .byName(filterNull(itemColumnWidget[j].cells![index].data));
           iconData = switch (rate) {
-            Rating.great =>
-                ButtonTheme(
-                    minWidth: 24.0,
-                    height: 24.0,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(5),
-                        backgroundColor:
-                        colorCheckMark, // <-- Button color
-                        foregroundColor:
-                        Colors.red, // <-- Splash color
-                      ),
-                      child: const Icon(Icons.check,
-                          color: Colors.white),
-                    )),
-            Rating.failure =>
-                ButtonTheme(
-                    minWidth: 24.0,
-                    height: 24.0,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(5),
-                        backgroundColor: colorClearButton,
-                        // <-- Button color
-                        foregroundColor:
-                        Colors.blue, // <-- Splash color
-                      ),
-                      child: const Icon(Icons.clear,
-                          color: Colors.white),
-                    )),
-            Rating.doubtful =>
-                ButtonTheme(
-                    minWidth: 24.0,
-                    height: 24.0,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(5),
-                        backgroundColor: colorQuestionButton,
-                        // <-- Button color
-                        foregroundColor:
-                        Colors.red, // <-- Splash color
-                      ),
-                      child: const Icon(Icons.question_mark_outlined,
-                          color: Colors.white),
-                    )),
-            Rating.happy =>
-                ButtonTheme(
-                    minWidth: 24.0,
-                    height: 24.0,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(5),
-                        backgroundColor:
-                        colorEmojiButton, // <-- Button color
-                        foregroundColor:
-                        Colors.red, // <-- Splash color
-                      ),
-                      child: const Icon(Icons.emoji_emotions_outlined,
-                          color: Colors.white),
-                    )),
-            Rating.clueless =>
-                ButtonTheme(
-                    minWidth: 24.0,
-                    height: 24.0,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(5),
-                        backgroundColor:
-                        colorGreyField, // <-- Button color
-                        foregroundColor:
-                        Colors.red, // <-- Splash color
-                      ),
-                      child: null,
-                    )),
+            Rating.great => ButtonTheme(
+                minWidth: 24.0,
+                height: 24.0,
+                child: Image.asset(
+                    'assets/images/ok_icon.png'),
+                ),
+            Rating.failure => ButtonTheme(
+                minWidth: 24.0,
+                height: 24.0,
+                child: Image.asset(
+                    'assets/images/failure_icon.png')),
+            Rating.doubtful => ButtonTheme(
+                minWidth: 24.0,
+                height: 24.0,
+                child: Image.asset(
+                    'assets/images/doubtful_icon.png'),
+                ),
+            Rating.moderate => ButtonTheme(
+                minWidth: 24.0,
+                height: 24.0,
+                child: Image.asset(
+                    'assets/images/annoyed_icon.png')),
+            Rating.clueless => ButtonTheme(
+                minWidth: 24.0,
+                height: 24.0,
+                child:Image.asset(
+                    'assets/images/clueless_icon.png')),
             _ => const Icon(Icons.check_circle, color: colorCheckMark),
           };
         }
@@ -233,9 +177,7 @@ class OverviewboardView extends GetView<OverviewboardController>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              iconData
-            ],
+            children: <Widget>[iconData],
           ),
         );
         widget.add(sectionOthers);
@@ -295,7 +237,8 @@ class OverviewboardView extends GetView<OverviewboardController>
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
           alignment: Alignment.center,
           child: Text(filterNull(column.name?.toUpperCase()),
-              maxLines: 2, textAlign: TextAlign.center,
+              maxLines: 2,
+              textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(fontWeight: FontWeight.bold)),
         ),

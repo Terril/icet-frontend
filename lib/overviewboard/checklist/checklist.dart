@@ -164,15 +164,15 @@ class ChecklistView extends GetView<ChecklistController> {
                             )),
                         const SizedBox(height: 24),
                         Container(
-                          padding: const EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(color: colorGreyField)),
                           child: Wrap(
                             children: [
                               ButtonTheme(
-                                  minWidth: 40.0,
-                                  height: 40.0,
+                                  minWidth: 32.0,
+                                  height: 32.0,
                                   child: ElevatedButton(
                                     onPressed: () {
                                       _updateCell(Rating.great.name);
@@ -198,7 +198,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                               MaterialState.pressed)) {
                                             return const BorderSide(
                                               color: Colors.blue,
-                                              width: 2,
+                                              width: 1,
                                             );
                                           } else {
                                             return null;
@@ -207,21 +207,13 @@ class ChecklistView extends GetView<ChecklistController> {
                                         },
                                       ),
                                       padding: MaterialStateProperty.all(
-                                          const EdgeInsets.all(5)),
-                                      backgroundColor:
-                                      MaterialStateProperty.all(
-                                        colorCheckMark),
-                                      // <-- Button color
-                                      foregroundColor:
-                                      MaterialStateProperty.all(
-                                          Colors.red), // <-- Splash color
+                                          const EdgeInsets.all(5)), // <-- Splash color
                                     ),
-                                    child: const Icon(Icons.check,
-                                        color: Colors.white),
+                                    child: Image.asset('assets/images/ok_icon.png'),
                                   )),
                               ButtonTheme(
-                                  minWidth: 40.0,
-                                  height: 40.0,
+                                  minWidth: 32.0,
+                                  height: 32.0,
                                   child: ElevatedButton(
                                     onPressed: () {
                                       _updateCell(Rating.failure.name);
@@ -247,7 +239,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                               MaterialState.pressed)) {
                                             return const BorderSide(
                                               color: Colors.blue,
-                                              width: 2,
+                                              width: 1,
                                             );
                                           } else {
                                             return null;
@@ -257,120 +249,12 @@ class ChecklistView extends GetView<ChecklistController> {
                                       ),
                                       padding: MaterialStateProperty.all(
                                           const EdgeInsets.all(5)),
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              colorClearButton),
-                                      // <-- Button color
-                                      foregroundColor:
-                                          MaterialStateProperty.all(
-                                              Colors.blue), // <-- Splash color
                                     ),
-                                    child: const Icon(Icons.clear,
-                                        color: Colors.white),
+                                      child: Image.asset('assets/images/failure_icon.png'),
                                   )),
                               ButtonTheme(
-                                  minWidth: 40.0,
-                                  height: 40.0,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      _updateCell(Rating.clueless.name);
-                                    },
-                                    style: ButtonStyle(
-                                      shape: MaterialStateProperty.resolveWith(
-                                            (Set<MaterialState> states) {
-                                          if (states.contains(
-                                              MaterialState.pressed)) {
-                                            return const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5)),
-                                            );
-                                          } else {
-                                            return const CircleBorder();
-                                          }
-                                          // Defer to the widget's default.
-                                        },
-                                      ),
-                                      side: MaterialStateProperty.resolveWith(
-                                            (Set<MaterialState> states) {
-                                          if (states.contains(
-                                              MaterialState.pressed)) {
-                                            return const BorderSide(
-                                              color: Colors.blue,
-                                              width: 2,
-                                            );
-                                          } else {
-                                            return null;
-                                          }
-                                          // Defer to the widget's default.
-                                        },
-                                      ),
-                                      padding: MaterialStateProperty.all(
-                                          const EdgeInsets.all(5)),
-                                      backgroundColor:
-                                      MaterialStateProperty.all(
-                                          colorQuestionButton),
-                                      // <-- Button color
-                                      foregroundColor:
-                                      MaterialStateProperty.all(
-                                          Colors.red), // <-- Splash color
-                                    ),
-                                    child: const Icon(
-                                        Icons.question_mark_outlined,
-                                        color: Colors.white),
-                                  )),
-                              ButtonTheme(
-                                  minWidth: 40.0,
-                                  height: 40.0,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      _updateCell(Rating.happy.name);
-                                    },
-                                    style: ButtonStyle(
-                                      shape: MaterialStateProperty.resolveWith(
-                                            (Set<MaterialState> states) {
-                                          if (states.contains(
-                                              MaterialState.pressed)) {
-                                            return const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5)),
-                                            );
-                                          } else {
-                                            return const CircleBorder();
-                                          }
-                                          // Defer to the widget's default.
-                                        },
-                                      ),
-                                      side: MaterialStateProperty.resolveWith(
-                                            (Set<MaterialState> states) {
-                                          if (states.contains(
-                                              MaterialState.pressed)) {
-                                            return const BorderSide(
-                                              color: Colors.blue,
-                                              width: 2,
-                                            );
-                                          } else {
-                                            return null;
-                                          }
-                                          // Defer to the widget's default.
-                                        },
-                                      ),
-                                      padding: MaterialStateProperty.all(
-                                          const EdgeInsets.all(5)),
-                                      backgroundColor:
-                                      MaterialStateProperty.all(
-                                        colorEmojiButton),
-                                      // <-- Button color
-                                      foregroundColor:
-                                      MaterialStateProperty.all(
-                                          Colors.red), // <-- Splash color
-                                    ),
-                                    child: const Icon(
-                                        Icons.emoji_emotions_outlined,
-                                        color: Colors.white),
-                                  )),
-                              ButtonTheme(
-                                  minWidth: 40.0,
-                                  height: 40.0,
+                                  minWidth: 32.0,
+                                  height: 32.0,
                                   child: ElevatedButton(
                                     onPressed: () {
                                       _updateCell(Rating.doubtful.name);
@@ -396,7 +280,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                               MaterialState.pressed)) {
                                             return const BorderSide(
                                               color: Colors.blue,
-                                              width: 2,
+                                              width: 1,
                                             );
                                           } else {
                                             return null;
@@ -405,16 +289,91 @@ class ChecklistView extends GetView<ChecklistController> {
                                         },
                                       ),
                                       padding: MaterialStateProperty.all(
-                                          const EdgeInsets.all(5)),
-                                      backgroundColor:
-                                      MaterialStateProperty.all(
-                                          colorGreyField),
-                                      // <-- Button color
-                                      foregroundColor:
-                                      MaterialStateProperty.all(
-                                          Colors.red), // <-- Splash color
+                                          const EdgeInsets.all(5)), // <-- Splash color
                                     ),
-                                    child: null,
+                                      child: Image.asset('assets/images/doubtful_icon.png'),
+                                  )),
+                              ButtonTheme(
+                                  minWidth: 32.0,
+                                  height: 32.0,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      _updateCell(Rating.moderate.name);
+                                    },
+                                    style: ButtonStyle(
+                                      shape: MaterialStateProperty.resolveWith(
+                                            (Set<MaterialState> states) {
+                                          if (states.contains(
+                                              MaterialState.pressed)) {
+                                            return const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                            );
+                                          } else {
+                                            return const CircleBorder();
+                                          }
+                                          // Defer to the widget's default.
+                                        },
+                                      ),
+                                      side: MaterialStateProperty.resolveWith(
+                                            (Set<MaterialState> states) {
+                                          if (states.contains(
+                                              MaterialState.pressed)) {
+                                            return const BorderSide(
+                                              color: Colors.blue,
+                                              width: 1,
+                                            );
+                                          } else {
+                                            return null;
+                                          }
+                                          // Defer to the widget's default.
+                                        },
+                                      ),
+                                      padding: MaterialStateProperty.all(
+                                          const EdgeInsets.all(5)), // <-- Splash color
+                                    ),
+                                    child: Image.asset('assets/images/annoyed_icon.png'),
+                                  )),
+                              ButtonTheme(
+                                  minWidth: 32.0,
+                                  height: 32.0,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      _updateCell(Rating.clueless.name);
+                                    },
+                                    style: ButtonStyle(
+                                      shape: MaterialStateProperty.resolveWith(
+                                            (Set<MaterialState> states) {
+                                          if (states.contains(
+                                              MaterialState.pressed)) {
+                                            return const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                            );
+                                          } else {
+                                            return const CircleBorder();
+                                          }
+                                          // Defer to the widget's default.
+                                        },
+                                      ),
+                                      side: MaterialStateProperty.resolveWith(
+                                            (Set<MaterialState> states) {
+                                          if (states.contains(
+                                              MaterialState.pressed)) {
+                                            return const BorderSide(
+                                              color: Colors.blue,
+                                              width: 1,
+                                            );
+                                          } else {
+                                            return null;
+                                          }
+                                          // Defer to the widget's default.
+                                        },
+                                      ),
+                                      padding: MaterialStateProperty.all(
+                                          const EdgeInsets.all(5)),// <-- Splash color
+                                    ),
+                                      child: Image.asset('assets/images/clueless_icon.png'),
                                   )),
                             ],
                           ),
