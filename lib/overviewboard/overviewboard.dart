@@ -131,89 +131,100 @@ class OverviewboardView extends GetView<OverviewboardController>
           break;
         }
       } else {
-        Rating rate  = Rating.values.byName(filterNull(itemColumnWidget[j].cells![index].data));
-        Widget iconData = switch (rate) {
-          Rating.great => ButtonTheme(
-              minWidth: 24.0,
-              height: 24.0,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(5),
-                  backgroundColor:
-                  colorCheckMark, // <-- Button color
-                  foregroundColor:
-                  Colors.red, // <-- Splash color
-                ),
-                child: const Icon(Icons.check,
-                    color: Colors.white),
-              )),
-          Rating.failure =>     ButtonTheme(
-              minWidth: 24.0,
-              height: 24.0,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(5),
-                  backgroundColor: colorClearButton,
-                  // <-- Button color
-                  foregroundColor:
-                  Colors.blue, // <-- Splash color
-                ),
-                child: const Icon(Icons.clear,
-                    color: Colors.white),
-              )),
-          Rating.doubtful => ButtonTheme(
-              minWidth: 24.0,
-              height: 24.0,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(5),
-                  backgroundColor: colorQuestionButton,
-                  // <-- Button color
-                  foregroundColor:
-                  Colors.red, // <-- Splash color
-                ),
-                child: const Icon(Icons.question_mark_outlined,
-                    color: Colors.white),
-              )),
-          Rating.happy =>    ButtonTheme(
-              minWidth: 24.0,
-              height: 24.0,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(5),
-                  backgroundColor:
-                  colorEmojiButton, // <-- Button color
-                  foregroundColor:
-                  Colors.red, // <-- Splash color
-                ),
-                child: const Icon(Icons.emoji_emotions_outlined,
-                    color: Colors.white),
-              )),
-          Rating.clueless => ButtonTheme(
-              minWidth: 24.0,
-              height: 24.0,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(5),
-                  backgroundColor:
-                  colorGreyField, // <-- Button color
-                  foregroundColor:
-                  Colors.red, // <-- Splash color
-                ),
-                child: null,
-              )),
-          _ =>  const Icon(Icons.check_circle, color: colorCheckMark),
-       };
+        Widget iconData;
+        if(filterNull(itemColumnWidget[j].cells![index].data).isEmpty) {
+          iconData = const Icon(Icons.check_circle, color: colorCheckMark);
+        } else {
+          Rating rate = Rating.values.byName(
+              filterNull(itemColumnWidget[j].cells![index].data));
+          iconData = switch (rate) {
+            Rating.great =>
+                ButtonTheme(
+                    minWidth: 24.0,
+                    height: 24.0,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(5),
+                        backgroundColor:
+                        colorCheckMark, // <-- Button color
+                        foregroundColor:
+                        Colors.red, // <-- Splash color
+                      ),
+                      child: const Icon(Icons.check,
+                          color: Colors.white),
+                    )),
+            Rating.failure =>
+                ButtonTheme(
+                    minWidth: 24.0,
+                    height: 24.0,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(5),
+                        backgroundColor: colorClearButton,
+                        // <-- Button color
+                        foregroundColor:
+                        Colors.blue, // <-- Splash color
+                      ),
+                      child: const Icon(Icons.clear,
+                          color: Colors.white),
+                    )),
+            Rating.doubtful =>
+                ButtonTheme(
+                    minWidth: 24.0,
+                    height: 24.0,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(5),
+                        backgroundColor: colorQuestionButton,
+                        // <-- Button color
+                        foregroundColor:
+                        Colors.red, // <-- Splash color
+                      ),
+                      child: const Icon(Icons.question_mark_outlined,
+                          color: Colors.white),
+                    )),
+            Rating.happy =>
+                ButtonTheme(
+                    minWidth: 24.0,
+                    height: 24.0,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(5),
+                        backgroundColor:
+                        colorEmojiButton, // <-- Button color
+                        foregroundColor:
+                        Colors.red, // <-- Splash color
+                      ),
+                      child: const Icon(Icons.emoji_emotions_outlined,
+                          color: Colors.white),
+                    )),
+            Rating.clueless =>
+                ButtonTheme(
+                    minWidth: 24.0,
+                    height: 24.0,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(5),
+                        backgroundColor:
+                        colorGreyField, // <-- Button color
+                        foregroundColor:
+                        Colors.red, // <-- Splash color
+                      ),
+                      child: null,
+                    )),
+            _ => const Icon(Icons.check_circle, color: colorCheckMark),
+          };
+        }
         Widget sectionOthers = Container(
           width: widthSize,
           height: 52,
