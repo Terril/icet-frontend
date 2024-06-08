@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:icet/ratings.dart';
 
 import 'const/colors.dart';
+import 'extension/ext.dart';
 
 class UIUtils {
   static void showDeleteDialog(BuildContext context, String text,
@@ -63,5 +65,44 @@ class UIUtils {
         return PopScope(child: alert);
       },
     );
+  }
+
+  static Widget getCell(Rating rate) {
+    Widget iconData = switch (rate) {
+      Rating.great => ButtonTheme(
+        minWidth: 24.0,
+        height: 24.0,
+        child: Image.asset(
+            'assets/images/ok_icon.png'),
+      ),
+      Rating.failure => ButtonTheme(
+          minWidth: 24.0,
+          height: 24.0,
+          child: Image.asset(
+              'assets/images/failure_icon.png')),
+      Rating.doubtful => ButtonTheme(
+        minWidth: 24.0,
+        height: 24.0,
+        child: Image.asset(
+            'assets/images/doubtful_icon.png'),
+      ),
+      Rating.moderate => ButtonTheme(
+          minWidth: 24.0,
+          height: 24.0,
+          child: Image.asset(
+              'assets/images/annoyed_icon.png')),
+      Rating.clueless => ButtonTheme(
+          minWidth: 24.0,
+          height: 24.0,
+          child:Image.asset(
+              'assets/images/clueless_icon.png')),
+      null => ButtonTheme(
+          minWidth: 24.0,
+          height: 24.0,
+          child:Image.asset(
+              'assets/images/doubtful_icon.png')),
+    };
+
+    return iconData;
   }
 }

@@ -74,6 +74,7 @@ class AssetsController extends GetxController with CacheManager {
     List<Columns> responseBoards =
         ColumnList.fromJsonToList(response.body).list;
 
+    Logger.printLog(message: "${response.bodyString}");
     return responseBoards;
   }
 

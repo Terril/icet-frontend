@@ -16,14 +16,17 @@ import 'package:icet/extension/ext.dart';
 import 'package:icet/overviewboard/checklist/checklist.dart';
 import 'package:icet/utils.dart';
 
+import '../../ratings.dart';
 import 'assets_controller.dart';
 
 class AssetsView extends GetView<AssetsController> {
-  AssetsView(this.boardId, this.asset, this.isDeletable, {super.key});
+  AssetsView(this.boardId, this.asset, this.isDeletable, this.posAsset,
+      {super.key});
 
   final String? boardId;
   final Rows? asset;
   final bool isDeletable;
+  final int posAsset;
 
   Future<bool> _saveButtonClicked() {
     return asset?.id != null
@@ -378,6 +381,24 @@ class AssetsView extends GetView<AssetsController> {
                                   scrollDirection: Axis.vertical,
                                   shrinkWrap: true,
                                   itemBuilder: (context, index) {
+                                    Widget iconData;
+                                    if (filterNull(updatedList?[index]
+                                            ?.cells![posAsset]
+                                            .data)
+                                        .isEmpty) {
+                                      iconData = ButtonTheme(
+                                          minWidth: 24.0,
+                                          height: 24.0,
+                                          child: Image.asset(
+                                              'assets/images/doubtful_icon.png'));
+                                    } else {
+                                      Rating rate = Rating.values.byName(
+                                          filterNull(updatedList?[index]
+                                              ?.cells![posAsset]
+                                              .data));
+                                      iconData = UIUtils.getCell(rate);
+                                    }
+
                                     return Column(children: [
                                       ListTile(
                                         onTap: () {
@@ -388,8 +409,7 @@ class AssetsView extends GetView<AssetsController> {
                                           filterNull(updatedList?[index]?.name)
                                               .toUpperCase(),
                                         ),
-                                        trailing: const Icon(Icons.check_circle,
-                                            color: colorCheckMark),
+                                        trailing: Padding(padding: const EdgeInsets.all(8), child: iconData),
                                       ),
                                       const Divider(
                                         color: colorGreyField,

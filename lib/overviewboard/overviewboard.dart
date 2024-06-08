@@ -29,7 +29,7 @@ class OverviewboardView extends GetView<OverviewboardController>
   double widthSize = (Get.width / 6);
 
   void showAssets(
-      BuildContext context, String? boardId, Rows? asset, bool canDelete) {
+      BuildContext context, String? boardId, Rows? asset, bool canDelete, int posAsset) {
     showGeneralDialog<bool>(
       context: context,
       transitionBuilder: (context, a1, a2, widget) {
@@ -45,7 +45,7 @@ class OverviewboardView extends GetView<OverviewboardController>
         Animation<double> animation,
         Animation<double> secondaryAnimation,
       ) {
-        return AssetsView(boardId, asset, canDelete);
+        return AssetsView(boardId, asset, canDelete, posAsset);
       },
     ).then((value) => filterBoolNull(value) ? controller.loadBoard() : null);
   }
@@ -90,7 +90,7 @@ class OverviewboardView extends GetView<OverviewboardController>
       alignment: Alignment.center,
       child: InkWell(
           onTap: () {
-            showAssets(context, board?.id, itemRowWidget[index], true);
+            showAssets(context, board?.id, itemRowWidget[index], true, index);
           },
           child: Text(filterNull(itemRowWidget[index].name))),
     );
@@ -134,40 +134,15 @@ class OverviewboardView extends GetView<OverviewboardController>
       } else {
         Widget iconData;
         if (filterNull(itemColumnWidget[j].cells![index].data).isEmpty) {
-          iconData = const Icon(Icons.check_circle, color: colorCheckMark);
+          iconData =  ButtonTheme(
+              minWidth: 24.0,
+              height: 24.0,
+              child:Image.asset(
+                  'assets/images/doubtful_icon.png'));
         } else {
           Rating rate = Rating.values
               .byName(filterNull(itemColumnWidget[j].cells![index].data));
-          iconData = switch (rate) {
-            Rating.great => ButtonTheme(
-                minWidth: 24.0,
-                height: 24.0,
-                child: Image.asset(
-                    'assets/images/ok_icon.png'),
-                ),
-            Rating.failure => ButtonTheme(
-                minWidth: 24.0,
-                height: 24.0,
-                child: Image.asset(
-                    'assets/images/failure_icon.png')),
-            Rating.doubtful => ButtonTheme(
-                minWidth: 24.0,
-                height: 24.0,
-                child: Image.asset(
-                    'assets/images/doubtful_icon.png'),
-                ),
-            Rating.moderate => ButtonTheme(
-                minWidth: 24.0,
-                height: 24.0,
-                child: Image.asset(
-                    'assets/images/annoyed_icon.png')),
-            Rating.clueless => ButtonTheme(
-                minWidth: 24.0,
-                height: 24.0,
-                child:Image.asset(
-                    'assets/images/clueless_icon.png')),
-            _ => const Icon(Icons.check_circle, color: colorCheckMark),
-          };
+          iconData = UIUtils.getCell(rate);
         }
         Widget sectionOthers = Container(
           width: widthSize,
@@ -203,7 +178,7 @@ class OverviewboardView extends GetView<OverviewboardController>
           ),
           onChanged: (String? value) {
             if (value == list.first) {
-              showAssets(context, boardId, null, false);
+              showAssets(context, boardId, null, false, 0);
             } else {
               showDialog(
                   context: context,

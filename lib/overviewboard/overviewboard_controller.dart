@@ -76,7 +76,6 @@ class OverviewboardController extends GetxController with CacheManager {
     Response response = await overviewboardProvider.getBoard();
     List<Boards> responseBoards = BoardList.fromJsonToList(response.body).list;
 
-    Logger.printLog(message: "${response.bodyString}");
     return responseBoards;
   }
 
