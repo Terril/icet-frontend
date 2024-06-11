@@ -24,9 +24,10 @@ class ChecklistView extends GetView<ChecklistController> {
   final Rows? asset;
   final bool isDeletable;
   late String cellId;
+  late String cellData = "";
 
   Future<bool> _saveButtonClicked() {
-    return controller.updateChecklist(filterNull(column?.id));
+    return controller.updateChecklist(filterNull(column?.id)).then((value) => _updateCell(cellData));
   }
 
   Future<bool> _updateCell(String cellData) {
@@ -175,7 +176,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                   height: 32.0,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      _updateCell(Rating.great.name);
+                                      cellData = (Rating.pass.name);
                                     },
                                     style: ButtonStyle(
                                       shape: MaterialStateProperty.resolveWith(
@@ -216,7 +217,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                   height: 32.0,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      _updateCell(Rating.failure.name);
+                                      cellData = (Rating.fail.name);
                                     },
                                     style: ButtonStyle(
                                       shape: MaterialStateProperty.resolveWith(
@@ -257,7 +258,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                   height: 32.0,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      _updateCell(Rating.doubtful.name);
+                                      cellData = (Rating.unsure.name);
                                     },
                                     style: ButtonStyle(
                                       shape: MaterialStateProperty.resolveWith(
@@ -298,7 +299,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                   height: 32.0,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      _updateCell(Rating.moderate.name);
+                                      cellData = (Rating.mediocre.name);
                                     },
                                     style: ButtonStyle(
                                       shape: MaterialStateProperty.resolveWith(
@@ -339,7 +340,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                   height: 32.0,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      _updateCell(Rating.clueless.name);
+                                      cellData = (Rating.na.name);
                                     },
                                     style: ButtonStyle(
                                       shape: MaterialStateProperty.resolveWith(

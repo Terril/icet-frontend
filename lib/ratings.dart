@@ -1,6 +1,6 @@
 
 enum Rating {
-  great("great"), failure("failure"), doubtful("doubtful"), moderate("moderate"), clueless("clueless");
+  pass("pass"), fail("fail"), unsure("unsure"), mediocre("mediocre"), na("na");
 
   final String name;
   const Rating(this.name);

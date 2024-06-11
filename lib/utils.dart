@@ -69,29 +69,29 @@ class UIUtils {
 
   static Widget getCell(Rating rate) {
     Widget iconData = switch (rate) {
-      Rating.great => ButtonTheme(
+      Rating.pass => ButtonTheme(
         minWidth: 24.0,
         height: 24.0,
         child: Image.asset(
             'assets/images/ok_icon.png'),
       ),
-      Rating.failure => ButtonTheme(
+      Rating.fail => ButtonTheme(
           minWidth: 24.0,
           height: 24.0,
           child: Image.asset(
               'assets/images/failure_icon.png')),
-      Rating.doubtful => ButtonTheme(
+      Rating.unsure => ButtonTheme(
         minWidth: 24.0,
         height: 24.0,
         child: Image.asset(
             'assets/images/doubtful_icon.png'),
       ),
-      Rating.moderate => ButtonTheme(
+      Rating.mediocre => ButtonTheme(
           minWidth: 24.0,
           height: 24.0,
           child: Image.asset(
               'assets/images/annoyed_icon.png')),
-      Rating.clueless => ButtonTheme(
+      Rating.na => ButtonTheme(
           minWidth: 24.0,
           height: 24.0,
           child:Image.asset(
