@@ -96,7 +96,7 @@ class UIUtils {
           height: 24.0,
           child:Image.asset(
               'assets/images/clueless_icon.png')),
-      null => ButtonTheme(
+      _ => ButtonTheme(
           minWidth: 24.0,
           height: 24.0,
           child:Image.asset(

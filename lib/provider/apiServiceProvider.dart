@@ -16,7 +16,8 @@ class APIServiceProvider extends GetConnect with CacheManager {
   final String _baseUrl = "http://127.0.0.1:8000";
   final String _prod_baseUrl = "https://icet-django.fly.dev";
 
-  String _getUrl() => _baseUrl;
+
+  void _getUrl() => _baseUrl;
 
   @override
   Future<Response<T>> patch<T>(

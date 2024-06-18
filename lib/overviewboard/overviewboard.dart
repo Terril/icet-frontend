@@ -28,8 +28,8 @@ class OverviewboardView extends GetView<OverviewboardController>
   List<String> list = <String>['New asset', 'New checklist'];
   double widthSize = (Get.width / 6);
 
-  void showAssets(
-      BuildContext context, String? boardId, Rows? asset, bool canDelete, int posAsset) {
+  void showAssets(BuildContext context, String? boardId, Rows? asset,
+      bool canDelete, int posAsset) {
     showGeneralDialog<bool>(
       context: context,
       transitionBuilder: (context, a1, a2, widget) {
@@ -134,15 +134,21 @@ class OverviewboardView extends GetView<OverviewboardController>
       } else {
         Widget iconData;
         if (filterNull(itemColumnWidget[j].cells![index].data).isEmpty) {
-          iconData =  ButtonTheme(
+          iconData = ButtonTheme(
               minWidth: 24.0,
               height: 24.0,
-              child:Image.asset(
-                  'assets/images/doubtful_icon.png'));
+              child: Image.asset('assets/images/doubtful_icon.png'));
         } else {
-          Rating rate = Rating.values
-              .byName(filterNull(itemColumnWidget[j].cells![index].data));
-          iconData = UIUtils.getCell(rate);
+          try {
+            Rating rate = Rating.values
+                .byName(filterNull(itemColumnWidget[j].cells![index].data));
+            iconData = UIUtils.getCell(rate);
+          } catch (e) {
+            iconData = ButtonTheme(
+                minWidth: 24.0,
+                height: 24.0,
+                child: Image.asset('assets/images/doubtful_icon.png'));
+          }
         }
         Widget sectionOthers = Container(
           width: widthSize,
