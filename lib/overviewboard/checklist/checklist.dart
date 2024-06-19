@@ -17,17 +17,18 @@ import '../../ratings.dart';
 import 'checklist_controller.dart';
 
 class ChecklistView extends GetView<ChecklistController> {
-  ChecklistView(this.column, this.asset, this.isDeletable,
-      {super.key});
+  ChecklistView(this.column, this.asset, this.isDeletable, {super.key});
 
   final Columns? column;
   final Rows? asset;
   final bool isDeletable;
   late String cellId;
-  late String cellData = "";
+  RxString cellData = "".obs;
 
   Future<bool> _saveButtonClicked() {
-    return controller.updateChecklist(filterNull(column?.id)).then((value) => _updateCell(cellData));
+    return controller
+        .updateChecklist(filterNull(column?.id))
+        .then((value) => _updateCell(cellData.value));
   }
 
   Future<bool> _updateCell(String cellData) {
@@ -176,11 +177,11 @@ class ChecklistView extends GetView<ChecklistController> {
                                   height: 32.0,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      cellData = (Rating.pass.name);
+                                      cellData.value = (Rating.pass.name);
                                     },
                                     style: ButtonStyle(
                                       shape: MaterialStateProperty.resolveWith(
-                                            (Set<MaterialState> states) {
+                                        (Set<MaterialState> states) {
                                           if (states.contains(
                                               MaterialState.pressed)) {
                                             return const RoundedRectangleBorder(
@@ -194,7 +195,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                         },
                                       ),
                                       side: MaterialStateProperty.resolveWith(
-                                            (Set<MaterialState> states) {
+                                        (Set<MaterialState> states) {
                                           if (states.contains(
                                               MaterialState.pressed)) {
                                             return const BorderSide(
@@ -208,16 +209,18 @@ class ChecklistView extends GetView<ChecklistController> {
                                         },
                                       ),
                                       padding: MaterialStateProperty.all(
-                                          const EdgeInsets.all(5)), // <-- Splash color
+                                          const EdgeInsets.all(
+                                              5)), // <-- Splash color
                                     ),
-                                    child: Image.asset('assets/images/ok_icon.png'),
+                                    child: Image.asset(
+                                        'assets/images/ok_icon.png'),
                                   )),
                               ButtonTheme(
                                   minWidth: 32.0,
                                   height: 32.0,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      cellData = (Rating.fail.name);
+                                      cellData.value = (Rating.fail.name);
                                     },
                                     style: ButtonStyle(
                                       shape: MaterialStateProperty.resolveWith(
@@ -251,18 +254,19 @@ class ChecklistView extends GetView<ChecklistController> {
                                       padding: MaterialStateProperty.all(
                                           const EdgeInsets.all(5)),
                                     ),
-                                      child: Image.asset('assets/images/failure_icon.png'),
+                                    child: Image.asset(
+                                        'assets/images/failure_icon.png'),
                                   )),
                               ButtonTheme(
                                   minWidth: 32.0,
                                   height: 32.0,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      cellData = (Rating.unsure.name);
+                                      cellData.value = (Rating.unsure.name);
                                     },
                                     style: ButtonStyle(
                                       shape: MaterialStateProperty.resolveWith(
-                                            (Set<MaterialState> states) {
+                                        (Set<MaterialState> states) {
                                           if (states.contains(
                                               MaterialState.pressed)) {
                                             return const RoundedRectangleBorder(
@@ -276,7 +280,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                         },
                                       ),
                                       side: MaterialStateProperty.resolveWith(
-                                            (Set<MaterialState> states) {
+                                        (Set<MaterialState> states) {
                                           if (states.contains(
                                               MaterialState.pressed)) {
                                             return const BorderSide(
@@ -290,20 +294,22 @@ class ChecklistView extends GetView<ChecklistController> {
                                         },
                                       ),
                                       padding: MaterialStateProperty.all(
-                                          const EdgeInsets.all(5)), // <-- Splash color
+                                          const EdgeInsets.all(
+                                              5)), // <-- Splash color
                                     ),
-                                      child: Image.asset('assets/images/doubtful_icon.png'),
+                                    child: Image.asset(
+                                        'assets/images/doubtful_icon.png'),
                                   )),
                               ButtonTheme(
                                   minWidth: 32.0,
                                   height: 32.0,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      cellData = (Rating.mediocre.name);
+                                      cellData.value = (Rating.mediocre.name);
                                     },
                                     style: ButtonStyle(
                                       shape: MaterialStateProperty.resolveWith(
-                                            (Set<MaterialState> states) {
+                                        (Set<MaterialState> states) {
                                           if (states.contains(
                                               MaterialState.pressed)) {
                                             return const RoundedRectangleBorder(
@@ -317,7 +323,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                         },
                                       ),
                                       side: MaterialStateProperty.resolveWith(
-                                            (Set<MaterialState> states) {
+                                        (Set<MaterialState> states) {
                                           if (states.contains(
                                               MaterialState.pressed)) {
                                             return const BorderSide(
@@ -331,20 +337,22 @@ class ChecklistView extends GetView<ChecklistController> {
                                         },
                                       ),
                                       padding: MaterialStateProperty.all(
-                                          const EdgeInsets.all(5)), // <-- Splash color
+                                          const EdgeInsets.all(
+                                              5)), // <-- Splash color
                                     ),
-                                    child: Image.asset('assets/images/annoyed_icon.png'),
+                                    child: Image.asset(
+                                        'assets/images/annoyed_icon.png'),
                                   )),
                               ButtonTheme(
                                   minWidth: 32.0,
                                   height: 32.0,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      cellData = (Rating.na.name);
+                                      cellData.value = (Rating.na.name);
                                     },
                                     style: ButtonStyle(
                                       shape: MaterialStateProperty.resolveWith(
-                                            (Set<MaterialState> states) {
+                                        (Set<MaterialState> states) {
                                           if (states.contains(
                                               MaterialState.pressed)) {
                                             return const RoundedRectangleBorder(
@@ -358,7 +366,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                         },
                                       ),
                                       side: MaterialStateProperty.resolveWith(
-                                            (Set<MaterialState> states) {
+                                        (Set<MaterialState> states) {
                                           if (states.contains(
                                               MaterialState.pressed)) {
                                             return const BorderSide(
@@ -372,10 +380,23 @@ class ChecklistView extends GetView<ChecklistController> {
                                         },
                                       ),
                                       padding: MaterialStateProperty.all(
-                                          const EdgeInsets.all(5)),// <-- Splash color
+                                          const EdgeInsets.all(
+                                              5)), // <-- Splash color
                                     ),
-                                      child: Image.asset('assets/images/clueless_icon.png'),
+                                    child: Image.asset(
+                                        'assets/images/clueless_icon.png'),
                                   )),
+                              const SizedBox(width: 30),
+                              SizedBox(
+                                  width: 70.0,
+                                  height: 32.0,
+                                  child: Obx(() => Center(
+                                      child: Text(
+                                          filterNull(
+                                              cellData.value.capitalizeFirst),
+                                          style: const TextStyle(
+                                              fontSize: 14.0,
+                                              color: colorRatingText)))))
                             ],
                           ),
                         ),

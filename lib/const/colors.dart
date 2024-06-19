@@ -16,11 +16,7 @@ const colorTextUnsetButton = Color(0xff6B7280);
 const colorClearButton = Color(0xffF39090);
 const colorQuestionButton = Color(0xff62AEFF);
 const colorEmojiButton = Color(0xffF8DBAF);
-
-
-
-
-
+const colorRatingText = Color(0xff374151);
 
 
 

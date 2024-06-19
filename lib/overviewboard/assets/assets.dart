@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
@@ -392,11 +391,18 @@ class AssetsView extends GetView<AssetsController> {
                                           child: Image.asset(
                                               'assets/images/doubtful_icon.png'));
                                     } else {
-                                      Rating rate = Rating.values.byName(
-                                          filterNull(updatedList?[index]
-                                              ?.cells![posAsset]
-                                              .data));
-                                      iconData = UIUtils.getCell(rate);
+                                      try {
+                                        Rating rate = Rating.values.byName(
+                                            filterNull(updatedList?[index]
+                                                ?.cells![posAsset]
+                                                .data));
+                                        iconData = UIUtils.getCell(rate);
+                                      } catch (e) {
+                                        iconData = ButtonTheme(
+                                            minWidth: 24.0,
+                                            height: 24.0,
+                                            child: Image.asset('assets/images/doubtful_icon.png'));
+                                      }
                                     }
 
                                     return Column(children: [
