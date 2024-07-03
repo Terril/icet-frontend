@@ -62,14 +62,6 @@ class ChecklistView extends GetView<ChecklistController> {
       controller.quillController.document =
           Document.fromJson(column!.content!.data as List<dynamic>);
     }
-    // String description = column != null
-    //     ? filterNull(column?.descriptionData)
-    //         .replaceAll("\n", "\\n")
-    //         .replaceAll("\"", "\\\"")
-    //     : '';
-    // if (description.isNotEmpty) {
-    //   controller.quillController.document = Document.fromHtml(description);
-    // }
     controller.textController.text = title;
     controller.textColumnNameController.text = filterNull(column?.name);
 
