@@ -57,15 +57,21 @@ class ChecklistView extends GetView<ChecklistController> {
   Widget build(BuildContext context) {
     String title = asset != null ? filterNull(asset?.name) : 'New Asset';
     title = "$title \u{203A}";
-    String description = asset != null
-        ? filterNull(asset?.mdContent)
-            .replaceAll("\n", "\\n")
-            .replaceAll("\"", "\\\"")
-        : '';
-    if (description.isNotEmpty) {
-      controller.quillController.document = Document.fromHtml(description);
+
+    if (column != null && filterNullList(column?.content?.data).isNotEmpty) {
+      controller.quillController.document =
+          Document.fromJson(column!.content!.data as List<dynamic>);
     }
+    // String description = column != null
+    //     ? filterNull(column?.descriptionData)
+    //         .replaceAll("\n", "\\n")
+    //         .replaceAll("\"", "\\\"")
+    //     : '';
+    // if (description.isNotEmpty) {
+    //   controller.quillController.document = Document.fromHtml(description);
+    // }
     controller.textController.text = title;
+    controller.textColumnNameController.text = filterNull(column?.name);
 
     controller
         .getCell(filterNull(column?.id), filterNull(asset?.id))

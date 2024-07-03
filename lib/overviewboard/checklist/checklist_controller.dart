@@ -16,6 +16,8 @@ class ChecklistController extends GetxController with CacheManager {
 
   final QuillController quillController = QuillController.basic();
   TextEditingController textController = TextEditingController();
+  TextEditingController textColumnNameController = TextEditingController();
+
 
   RxBool enableButtons = false.obs;
 
@@ -67,8 +69,7 @@ class ChecklistController extends GetxController with CacheManager {
 
   Future<bool> updateChecklist(String columnId) async {
     Map<String, dynamic> map = HashMap();
-    map["name"] = textController.text;
-    map["data_type"] = {"rating": "2"};
+    map["name"] = textColumnNameController.text;
     map["description_data"] = {"data": quillController.document.toDelta().toJson()};
     Response response = await provider.updateColumns(columnId, map);
 
