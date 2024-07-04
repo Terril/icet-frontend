@@ -20,6 +20,7 @@ class ChecklistController extends GetxController with CacheManager {
 
 
   RxBool enableButtons = false.obs;
+  RxBool showErrorMessage = false.obs;
 
   bool assetsCreated = false;
 
@@ -35,6 +36,14 @@ class ChecklistController extends GetxController with CacheManager {
               ? true
               : false;
       _showSaveAndCancelButtons(state);
+    });
+
+    textColumnNameController.addListener(() {
+      bool state =
+      (textController.text.length >= 50 || textController.text.isEmpty)
+          ? true
+          : false;
+      showErrorMessage.value = state;
     });
   }
 

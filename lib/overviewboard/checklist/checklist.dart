@@ -154,12 +154,40 @@ class ChecklistView extends GetView<ChecklistController> {
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                Text(
-                                  textAlign: TextAlign.start,
-                                  filterNull(column?.name),
-                                  style: const TextStyle(
-                                      color: colorGrey, fontSize: 16),
-                                )
+                                SizedBox(
+                                    width: Get.width / 9,
+                                    height: 48,
+                                    child: Obx(() => TextField(
+                                      maxLength: 51,
+                                      autofocus: true,
+                                      controller: controller.textColumnNameController,
+                                      decoration: InputDecoration(
+                                        floatingLabelBehavior:
+                                        FloatingLabelBehavior.never,
+                                        border: InputBorder.none,
+                                        counterText: "",
+                                        errorText:
+                                        controller.showErrorMessage.value
+                                            ? "Max. character limit is 50"
+                                            : "",
+                                        suffix: const Icon(
+                                          size: 18,
+                                            Icons.drive_file_rename_outline),
+                                        label: Text(filterNull(column?.name),
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600)),
+                                      ),
+                                      style: const TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.w600),
+                                    )))
+                                // Text(
+                                //   textAlign: TextAlign.start,
+                                //   filterNull(column?.name),
+                                //   style: const TextStyle(
+                                //       color: colorGrey, fontSize: 16),
+                                // )
                               ],
                             )),
                         const SizedBox(height: 24),
