@@ -1,4 +1,3 @@
-
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -107,7 +106,8 @@ class AssetsView extends GetView<AssetsController> {
       ) {
         return ChecklistView(columns, asset, canDelete);
       },
-    );
+    ).then((value) =>
+        filterBoolNull(value) ? controller.loadCheckList(boardId) : null);
   }
 
   @override
@@ -122,6 +122,8 @@ class AssetsView extends GetView<AssetsController> {
     if (asset != null && asset?.interestLevel != null) {
       controller.setSelected(asset!.interestLevel.toString());
     }
+
+    controller.loadCheckList(boardId);
 
     return Scaffold(
       backgroundColor: Colors.white.withOpacity(0.5),
@@ -251,10 +253,6 @@ class AssetsView extends GetView<AssetsController> {
                                             iconButtonSelectedData:
                                                 IconButtonData(
                                                     highlightColor: colorBlue),
-                                            iconButtonSelectedStyle: ButtonStyle(
-                                                backgroundColor:
-                                                    MaterialStatePropertyAll<
-                                                        Color>(colorBlue)),
                                           ))),
                                           dialogTheme: const QuillDialogTheme(
                                               buttonStyle: ButtonStyle(
@@ -283,6 +281,9 @@ class AssetsView extends GetView<AssetsController> {
                                           showUndo: false,
                                           showRedo: false,
                                           showSearchButton: false,
+                                          showClipboardCut: false,
+                                          showClipboardCopy: false,
+                                          showClipboardPaste: false,
                                           sectionDividerColor: Colors.black,
                                           controller:
                                               controller.quillController,
@@ -296,7 +297,7 @@ class AssetsView extends GetView<AssetsController> {
                                           padding: const EdgeInsets.all(5),
                                           controller:
                                               controller.quillController,
-                                          readOnly: false,
+                                          checkBoxReadOnly: false,
                                           sharedConfigurations:
                                               const QuillSharedConfigurations(
                                             locale: Locale('en'),
@@ -361,7 +362,7 @@ class AssetsView extends GetView<AssetsController> {
                         ]),
                     Expanded(
                         child: FutureBuilder(
-                      future: controller.fetchColumns(boardId),
+                      future: controller.futureChecklist,
                       builder: (context, snapshot) {
                         List<Columns?>? updatedList = snapshot.data?.sublist(1);
                         if (snapshot.connectionState ==
@@ -401,7 +402,8 @@ class AssetsView extends GetView<AssetsController> {
                                         iconData = ButtonTheme(
                                             minWidth: 24.0,
                                             height: 24.0,
-                                            child: Image.asset('assets/images/doubtful_icon.png'));
+                                            child: Image.asset(
+                                                'assets/images/doubtful_icon.png'));
                                       }
                                     }
 
@@ -415,7 +417,9 @@ class AssetsView extends GetView<AssetsController> {
                                           filterNull(updatedList?[index]?.name)
                                               .toUpperCase(),
                                         ),
-                                        trailing: Padding(padding: const EdgeInsets.all(8), child: iconData),
+                                        trailing: Padding(
+                                            padding: const EdgeInsets.all(8),
+                                            child: iconData),
                                       ),
                                       const Divider(
                                         color: colorGreyField,

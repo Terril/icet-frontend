@@ -55,19 +55,26 @@ class ChecklistView extends GetView<ChecklistController> {
 
   @override
   Widget build(BuildContext context) {
+    // controller.quillController.document = Document();
+    controller
+        .getCell(filterNull(column?.id), filterNull(asset?.id))
+        .then((value) {
+      cellId = filterNull(value);
+      if (column != null && filterNullList(column?.cells).isNotEmpty) {
+        for (var cell in column!.cells!) {
+          if (cell.id == cellId) {
+            controller.quillController.document =
+                Document.fromJson(cell.content?.data as List<dynamic>);
+          }
+        }
+      }
+    });
+
     String title = asset != null ? filterNull(asset?.name) : 'New Asset';
     title = "$title \u{203A}";
 
-    if (column != null && filterNullList(column?.content?.data).isNotEmpty) {
-      controller.quillController.document =
-          Document.fromJson(column!.content!.data as List<dynamic>);
-    }
     controller.textController.text = title;
     controller.textColumnNameController.text = filterNull(column?.name);
-
-    controller
-        .getCell(filterNull(column?.id), filterNull(asset?.id))
-        .then((value) => cellId = filterNull(value));
 
     return Scaffold(
       backgroundColor: Colors.white.withOpacity(0.5),
@@ -96,8 +103,9 @@ class ChecklistView extends GetView<ChecklistController> {
                                             color: colorBlueButton,
                                             fontSize: 12)),
                                     onPressed: () {
-                                      _saveButtonClicked().then(
-                                          (value) => Get.back(result: value));
+                                      _saveButtonClicked().then((value) =>
+                                          Get.back(
+                                              result: controller.cellUpdated));
                                     },
                                   ),
                                   TextButton.icon(
@@ -109,9 +117,8 @@ class ChecklistView extends GetView<ChecklistController> {
                                     onPressed: () {
                                       Logger.printLog(
                                           message:
-                                              "Get Back called  ${controller.assetsCreated}");
-                                      Get.back(
-                                          result: controller.assetsCreated);
+                                              "Get Back called  ${controller.cellUpdated}");
+                                      Get.back(result: controller.cellUpdated);
                                     },
                                   ),
                                 ])),
@@ -155,33 +162,37 @@ class ChecklistView extends GetView<ChecklistController> {
                                   width: 10,
                                 ),
                                 SizedBox(
-                                    width: Get.width / 9,
+                                    width: Get.width / 8,
                                     height: 48,
                                     child: Obx(() => TextField(
-                                      maxLength: 51,
-                                      autofocus: true,
-                                      controller: controller.textColumnNameController,
-                                      decoration: InputDecoration(
-                                        floatingLabelBehavior:
-                                        FloatingLabelBehavior.never,
-                                        border: InputBorder.none,
-                                        counterText: "",
-                                        errorText:
-                                        controller.showErrorMessage.value
-                                            ? "Max. character limit is 50"
-                                            : "",
-                                        suffix: const Icon(
-                                          size: 18,
-                                            Icons.drive_file_rename_outline),
-                                        label: Text(filterNull(column?.name),
-                                            style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600)),
-                                      ),
-                                      style: const TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.w600),
-                                    )))
+                                          maxLength: 51,
+                                          autofocus: true,
+                                          controller: controller
+                                              .textColumnNameController,
+                                          decoration: InputDecoration(
+                                            floatingLabelBehavior:
+                                                FloatingLabelBehavior.never,
+                                            border: InputBorder.none,
+                                            counterText: "",
+                                            errorText: controller
+                                                    .showErrorMessage.value
+                                                ? "Max. character limit is 50"
+                                                : "",
+                                            suffix: const Icon(
+                                                size: 18,
+                                                Icons
+                                                    .drive_file_rename_outline),
+                                            label: Text(
+                                                filterNull(column?.name),
+                                                style: const TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.w600)),
+                                          ),
+                                          style: const TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.w600),
+                                        )))
                                 // Text(
                                 //   textAlign: TextAlign.start,
                                 //   filterNull(column?.name),
@@ -457,12 +468,6 @@ class ChecklistView extends GetView<ChecklistController> {
                                                     IconButtonData(
                                                         highlightColor:
                                                             colorBlue),
-                                                iconButtonSelectedStyle:
-                                                    ButtonStyle(
-                                                        backgroundColor:
-                                                            MaterialStatePropertyAll<
-                                                                    Color>(
-                                                                colorBlue)),
                                               ))),
                                               dialogTheme: const QuillDialogTheme(
                                                   buttonStyle: ButtonStyle(
@@ -491,6 +496,9 @@ class ChecklistView extends GetView<ChecklistController> {
                                               showIndent: false,
                                               showUndo: false,
                                               showRedo: false,
+                                              showClipboardCut: false,
+                                              showClipboardCopy: false,
+                                              showClipboardPaste: false,
                                               showSearchButton: false,
                                               sectionDividerColor: Colors.black,
                                               controller:
@@ -505,7 +513,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                               padding: const EdgeInsets.all(5),
                                               controller:
                                                   controller.quillController,
-                                              readOnly: false,
+                                              checkBoxReadOnly: false,
                                               sharedConfigurations:
                                                   const QuillSharedConfigurations(
                                                 locale: Locale('en'),

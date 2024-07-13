@@ -16,10 +16,13 @@ class AssetsController extends GetxController with CacheManager {
   final QuillController quillController = QuillController.basic();
   TextEditingController textController = TextEditingController();
 
+  String? boardId = "";
   RxBool enableButtons = false.obs;
   RxBool showErrorMessage = false.obs;
 
   bool assetsCreated = false;
+
+  late Future futureChecklist;
 
   List<String> get dropdownItems {
     List<String> menuItems = [
@@ -43,7 +46,6 @@ class AssetsController extends GetxController with CacheManager {
   void onInit() {
     super.onInit();
     provider = APIServiceProvider();
-
     quillController.addListener(() {
       bool state =
           (quillController.plainTextEditingValue.text.length >= 30000)
@@ -69,7 +71,12 @@ class AssetsController extends GetxController with CacheManager {
     enableButtons.value = state;
   }
 
-  Future<List<Columns?>> fetchColumns(String? boardId) async {
+  void loadCheckList(String? boardId) {
+    futureChecklist = _fetchColumns(boardId);
+    update();
+  }
+
+  Future<List<Columns?>> _fetchColumns(String? boardId) async {
     Response response = await provider.getColumnsByBoardId(boardId);
     List<Columns> responseBoards =
         ColumnList.fromJsonToList(response.body).list;

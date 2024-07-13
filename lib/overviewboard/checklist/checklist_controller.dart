@@ -22,7 +22,8 @@ class ChecklistController extends GetxController with CacheManager {
   RxBool enableButtons = false.obs;
   RxBool showErrorMessage = false.obs;
 
-  bool assetsCreated = false;
+  bool checkListCreated = false;
+  bool cellUpdated = false;
 
   @override
   void onInit() {
@@ -79,15 +80,15 @@ class ChecklistController extends GetxController with CacheManager {
   Future<bool> updateChecklist(String columnId) async {
     Map<String, dynamic> map = HashMap();
     map["name"] = textColumnNameController.text;
-    map["description_data"] = {"data": quillController.document.toDelta().toJson()};
+    map["description_data"] = "";
     Response response = await provider.updateColumns(columnId, map);
 
     if (response != null && response.isOk) {
-      assetsCreated = true;
+      checkListCreated = true;
     }
     Logger.printLog(message: "${response.bodyString}");
 
-    return assetsCreated;
+    return checkListCreated;
   }
 
   Future<String?> getCell(String columnId, String rowId) async {
@@ -101,15 +102,15 @@ class ChecklistController extends GetxController with CacheManager {
   Future<bool> updateCell(String cellData, String cellId) async {
     Map<String, dynamic> map = HashMap();
     map["data"] = cellData;
-    map["content_str"] = "empty";
+    map["content"] = {"data": quillController.document.toDelta().toJson()};
     Response response = await provider.updateCell(cellId, map);
 
     if (response != null && response.isOk) {
-      assetsCreated = true;
+      cellUpdated = true;
     }
     Logger.printLog(message: "${response.bodyString}");
 
-    return assetsCreated;
+    return cellUpdated;
   }
 
   Future<bool> deleteChecklist(String columnId) async {
@@ -117,10 +118,10 @@ class ChecklistController extends GetxController with CacheManager {
     Logger.printLog(message: "${response.bodyString}");
     if (response != null && response.isOk) {
       Logger.printLog(message: "This is create Assets");
-      assetsCreated = true;
+      checkListCreated = true;
     }
 
-    return assetsCreated;
+    return checkListCreated;
   }
 
   @override

@@ -1,9 +1,13 @@
+import 'package:get/get_utils/get_utils.dart';
+
+import 'contents.dart';
+
 class Cells {
   String? id;
   String? createdAt;
   String? updatedAt;
   String? data;
-  String? contentStr;
+  Content? content;
   String? row;
   String? column;
 
@@ -12,7 +16,7 @@ class Cells {
         this.createdAt,
         this.updatedAt,
         this.data,
-        this.contentStr,
+        this.content,
         this.row,
         this.column});
 
@@ -24,7 +28,7 @@ class Cells {
     {
       data = json['data'];
     }
-    contentStr = json['content_str'];
+    content = json['content'] != null ? Content.fromJson(json['content']) : null;
     row = json['row'];
     column = json['column'];
   }
@@ -35,9 +39,11 @@ class Cells {
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     data['data'] = this.data;
-    data['content_str'] = this.contentStr;
     data['row'] = this.row;
     data['column'] = this.column;
+    if (this.content != null) {
+      data['content'] = this.content!.toJson();
+    }
     return data;
   }
 }

@@ -38,10 +38,10 @@ dependencies:
   get:
   horizontal_data_table: ^4.3.1
   get_storage: ^2.1.1
-  flutter_quill: ^9.3.1
+  flutter_quill: ^9.5.14
   url_launcher: ^6.2.4
   flutter_keyboard_visibility: ^6.0.0
-  device_info_plus: ^9.1.0
+  device_info_plus: ^10.1.0
   super_clipboard: ^0.8.5
   dropdown_button2: ^2.3.9
 

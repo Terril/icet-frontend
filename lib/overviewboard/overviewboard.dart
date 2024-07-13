@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:icet/extension/ext.dart';
-import 'package:icet/logs.dart';
 import 'package:icet/utils.dart';
 
 import '../const/colors.dart';

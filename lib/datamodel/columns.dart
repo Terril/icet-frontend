@@ -9,7 +9,7 @@ class Columns {
   String? createdAt;
   String? updatedAt;
   String? board;
-  Content? content;
+  // Content? content;
   String? description;
   List<Cells>? cells;
   List<NonGlobalCells>? nonGlobalCells;
@@ -23,7 +23,7 @@ class Columns {
         this.createdAt,
         this.updatedAt,
         this.description,
-        this.content,
+        // this.content,
         this.board});
 
   Columns.fromJson(Map<String, dynamic> json) {
@@ -33,7 +33,7 @@ class Columns {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     description = json['description'];
-    content = json['description_data'] != null ? Content.fromJson(json['description_data']) : null;
+   // content = json['description_data'] != null ? Content.fromJson(json['description_data']) : null;
     board = json['board'];
     if (json['cells'] != null) {
       cells = <Cells>[];
@@ -56,9 +56,9 @@ class Columns {
     data['data_type'] = this.dataType;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
-    if (this.content != null) {
-      data['description_data'] = this.content!.toJson();
-    }
+    // if (this.content != null) {
+    //   data['description_data'] = this.content!.toJson();
+    // }
     data['description'] = this.description;
     data['board'] = this.board;
     if (this.cells != null) {
