@@ -257,7 +257,7 @@ class AssetsView extends GetView<AssetsController> {
                                           dialogTheme: const QuillDialogTheme(
                                               buttonStyle: ButtonStyle(
                                                   backgroundColor:
-                                                      MaterialStatePropertyAll<
+                                                      WidgetStatePropertyAll<
                                                           Color>(colorBlue)),
                                               dialogBackgroundColor:
                                                   colorGreyEditor),
@@ -265,7 +265,7 @@ class AssetsView extends GetView<AssetsController> {
                                               WrapAlignment.start,
                                           toolbarIconCrossAlignment:
                                               WrapCrossAlignment.start,
-                                          showDividers: true,
+                                          showDividers: false,
                                           showColorButton: false,
                                           showFontFamily: false,
                                           showFontSize: false,
@@ -350,8 +350,8 @@ class AssetsView extends GetView<AssetsController> {
                             icon: const Icon(Icons.add_sharp),
                             style: ButtonStyle(
                               foregroundColor:
-                                  MaterialStateProperty.all(Colors.black),
-                              shape: MaterialStateProperty.all(
+                              WidgetStateProperty.all(Colors.black),
+                              shape: WidgetStateProperty.all(
                                   RoundedRectangleBorder(
                                       borderRadius:
                                           BorderRadius.circular(8.0))),

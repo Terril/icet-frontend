@@ -55,7 +55,7 @@ class ChecklistView extends GetView<ChecklistController> {
 
   @override
   Widget build(BuildContext context) {
-    // controller.quillController.document = Document();
+    controller.quillController.document = Document();
     controller
         .getCell(filterNull(column?.id), filterNull(asset?.id))
         .then((value) {
@@ -217,10 +217,10 @@ class ChecklistView extends GetView<ChecklistController> {
                                       cellData.value = (Rating.pass.name);
                                     },
                                     style: ButtonStyle(
-                                      shape: MaterialStateProperty.resolveWith(
-                                        (Set<MaterialState> states) {
+                                      shape: WidgetStateProperty.resolveWith(
+                                        (Set<WidgetState> states) {
                                           if (states.contains(
-                                              MaterialState.pressed)) {
+                                              WidgetState.pressed)) {
                                             return const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(5)),
@@ -231,10 +231,10 @@ class ChecklistView extends GetView<ChecklistController> {
                                           // Defer to the widget's default.
                                         },
                                       ),
-                                      side: MaterialStateProperty.resolveWith(
-                                        (Set<MaterialState> states) {
+                                      side: WidgetStateProperty.resolveWith(
+                                        (Set<WidgetState> states) {
                                           if (states.contains(
-                                              MaterialState.pressed)) {
+                                              WidgetState.pressed)) {
                                             return const BorderSide(
                                               color: Colors.blue,
                                               width: 1,
@@ -260,10 +260,10 @@ class ChecklistView extends GetView<ChecklistController> {
                                       cellData.value = (Rating.fail.name);
                                     },
                                     style: ButtonStyle(
-                                      shape: MaterialStateProperty.resolveWith(
-                                        (Set<MaterialState> states) {
+                                      shape: WidgetStateProperty.resolveWith(
+                                        (Set<WidgetState> states) {
                                           if (states.contains(
-                                              MaterialState.pressed)) {
+                                              WidgetState.pressed)) {
                                             return const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(5)),
@@ -274,10 +274,10 @@ class ChecklistView extends GetView<ChecklistController> {
                                           // Defer to the widget's default.
                                         },
                                       ),
-                                      side: MaterialStateProperty.resolveWith(
-                                        (Set<MaterialState> states) {
+                                      side: WidgetStateProperty.resolveWith(
+                                        (Set<WidgetState> states) {
                                           if (states.contains(
-                                              MaterialState.pressed)) {
+                                              WidgetState.pressed)) {
                                             return const BorderSide(
                                               color: Colors.blue,
                                               width: 1,
@@ -288,7 +288,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                           // Defer to the widget's default.
                                         },
                                       ),
-                                      padding: MaterialStateProperty.all(
+                                      padding: WidgetStateProperty.all(
                                           const EdgeInsets.all(5)),
                                     ),
                                     child: Image.asset(
@@ -302,10 +302,10 @@ class ChecklistView extends GetView<ChecklistController> {
                                       cellData.value = (Rating.unsure.name);
                                     },
                                     style: ButtonStyle(
-                                      shape: MaterialStateProperty.resolveWith(
-                                        (Set<MaterialState> states) {
+                                      shape: WidgetStateProperty.resolveWith(
+                                        (Set<WidgetState> states) {
                                           if (states.contains(
-                                              MaterialState.pressed)) {
+                                              WidgetState.pressed)) {
                                             return const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(5)),
@@ -316,10 +316,10 @@ class ChecklistView extends GetView<ChecklistController> {
                                           // Defer to the widget's default.
                                         },
                                       ),
-                                      side: MaterialStateProperty.resolveWith(
-                                        (Set<MaterialState> states) {
+                                      side: WidgetStateProperty.resolveWith(
+                                        (Set<WidgetState> states) {
                                           if (states.contains(
-                                              MaterialState.pressed)) {
+                                              WidgetState.pressed)) {
                                             return const BorderSide(
                                               color: Colors.blue,
                                               width: 1,
@@ -330,7 +330,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                           // Defer to the widget's default.
                                         },
                                       ),
-                                      padding: MaterialStateProperty.all(
+                                      padding: WidgetStateProperty.all(
                                           const EdgeInsets.all(
                                               5)), // <-- Splash color
                                     ),
@@ -345,10 +345,10 @@ class ChecklistView extends GetView<ChecklistController> {
                                       cellData.value = (Rating.mediocre.name);
                                     },
                                     style: ButtonStyle(
-                                      shape: MaterialStateProperty.resolveWith(
-                                        (Set<MaterialState> states) {
+                                      shape: WidgetStateProperty.resolveWith(
+                                        (Set<WidgetState> states) {
                                           if (states.contains(
-                                              MaterialState.pressed)) {
+                                              WidgetState.pressed)) {
                                             return const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(5)),
@@ -359,10 +359,10 @@ class ChecklistView extends GetView<ChecklistController> {
                                           // Defer to the widget's default.
                                         },
                                       ),
-                                      side: MaterialStateProperty.resolveWith(
-                                        (Set<MaterialState> states) {
+                                      side: WidgetStateProperty.resolveWith(
+                                        (Set<WidgetState> states) {
                                           if (states.contains(
-                                              MaterialState.pressed)) {
+                                              WidgetState.pressed)) {
                                             return const BorderSide(
                                               color: Colors.blue,
                                               width: 1,
@@ -373,7 +373,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                           // Defer to the widget's default.
                                         },
                                       ),
-                                      padding: MaterialStateProperty.all(
+                                      padding: WidgetStateProperty.all(
                                           const EdgeInsets.all(
                                               5)), // <-- Splash color
                                     ),
@@ -388,10 +388,10 @@ class ChecklistView extends GetView<ChecklistController> {
                                       cellData.value = (Rating.na.name);
                                     },
                                     style: ButtonStyle(
-                                      shape: MaterialStateProperty.resolveWith(
-                                        (Set<MaterialState> states) {
+                                      shape: WidgetStateProperty.resolveWith(
+                                        (Set<WidgetState> states) {
                                           if (states.contains(
-                                              MaterialState.pressed)) {
+                                              WidgetState.pressed)) {
                                             return const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(5)),
@@ -402,10 +402,10 @@ class ChecklistView extends GetView<ChecklistController> {
                                           // Defer to the widget's default.
                                         },
                                       ),
-                                      side: MaterialStateProperty.resolveWith(
-                                        (Set<MaterialState> states) {
+                                      side: WidgetStateProperty.resolveWith(
+                                        (Set<WidgetState> states) {
                                           if (states.contains(
-                                              MaterialState.pressed)) {
+                                              WidgetState.pressed)) {
                                             return const BorderSide(
                                               color: Colors.blue,
                                               width: 1,
@@ -416,7 +416,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                           // Defer to the widget's default.
                                         },
                                       ),
-                                      padding: MaterialStateProperty.all(
+                                      padding: WidgetStateProperty.all(
                                           const EdgeInsets.all(
                                               5)), // <-- Splash color
                                     ),
@@ -472,7 +472,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                               dialogTheme: const QuillDialogTheme(
                                                   buttonStyle: ButtonStyle(
                                                       backgroundColor:
-                                                          MaterialStatePropertyAll<
+                                                          WidgetStatePropertyAll<
                                                                   Color>(
                                                               colorBlue)),
                                                   dialogBackgroundColor:
@@ -481,7 +481,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                                   WrapAlignment.start,
                                               toolbarIconCrossAlignment:
                                                   WrapCrossAlignment.start,
-                                              showDividers: true,
+                                              showDividers: false,
                                               showColorButton: false,
                                               showFontFamily: false,
                                               showFontSize: false,
