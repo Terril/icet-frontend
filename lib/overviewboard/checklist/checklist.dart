@@ -6,6 +6,7 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:icet/const/colors.dart';
 import 'package:icet/datamodel/columns.dart';
 import 'package:icet/datamodel/rows.dart';
@@ -59,7 +60,8 @@ class ChecklistView extends GetView<ChecklistController> {
     controller
         .getCell(filterNull(column?.id), filterNull(asset?.id))
         .then((value) {
-      cellId = filterNull(value);
+      cellId = filterNull(value.id);
+      cellData.value = filterNull(value.data);
       if (column != null && filterNullList(column?.cells).isNotEmpty) {
         for (var cell in column!.cells!) {
           if (cell.id == cellId) {

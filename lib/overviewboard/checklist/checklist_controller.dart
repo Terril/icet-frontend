@@ -91,12 +91,12 @@ class ChecklistController extends GetxController with CacheManager {
     return checkListCreated;
   }
 
-  Future<String?> getCell(String columnId, String rowId) async {
+  Future<Cells> getCell(String columnId, String rowId) async {
     Response response = await provider.getCell(rowId, columnId);
     Logger.printLog(message: "${response.bodyString}");
     var cell = Cells.fromJson(response.body);
 
-    return cell.id;
+    return cell;
   }
 
   Future<bool> updateCell(String cellData, String cellId) async {
