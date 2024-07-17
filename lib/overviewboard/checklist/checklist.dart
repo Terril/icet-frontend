@@ -154,24 +154,21 @@ class ChecklistView extends GetView<ChecklistController> {
                                   ))
                             ]),
                         Align(
-                            alignment: Alignment.centerLeft,
-                            child: Wrap(
-                              children: [
-                                const Icon(
-                                  Icons.info_outline,
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
+                            alignment: Alignment.topLeft,
+                            child:
                                 SizedBox(
-                                    width: Get.width / 8,
-                                    height: 48,
+                                    width: Get.width / 6,
                                     child: Obx(() => TextField(
                                           maxLength: 51,
                                           autofocus: true,
                                           controller: controller
                                               .textColumnNameController,
                                           decoration: InputDecoration(
+                                            prefixIcon: Container(
+                                              transform: Matrix4.translationValues(-10.0, 0.0, 0.0),
+                                              child: const Icon(Icons.info_outline, size: 20),
+                                            ),
+                                            contentPadding: const EdgeInsets.symmetric(vertical: -5),
                                             floatingLabelBehavior:
                                                 FloatingLabelBehavior.never,
                                             border: InputBorder.none,
@@ -201,8 +198,7 @@ class ChecklistView extends GetView<ChecklistController> {
                                 //   style: const TextStyle(
                                 //       color: colorGrey, fontSize: 16),
                                 // )
-                              ],
-                            )),
+                             ),
                         const SizedBox(height: 24),
                         Container(
                           padding: const EdgeInsets.all(5),
@@ -221,8 +217,8 @@ class ChecklistView extends GetView<ChecklistController> {
                                     style: ButtonStyle(
                                       shape: WidgetStateProperty.resolveWith(
                                         (Set<WidgetState> states) {
-                                          if (states.contains(
-                                              WidgetState.pressed)) {
+                                          if (states
+                                              .contains(WidgetState.pressed)) {
                                             return const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(5)),
@@ -235,8 +231,8 @@ class ChecklistView extends GetView<ChecklistController> {
                                       ),
                                       side: WidgetStateProperty.resolveWith(
                                         (Set<WidgetState> states) {
-                                          if (states.contains(
-                                              WidgetState.pressed)) {
+                                          if (states
+                                              .contains(WidgetState.pressed)) {
                                             return const BorderSide(
                                               color: Colors.blue,
                                               width: 1,
@@ -264,8 +260,8 @@ class ChecklistView extends GetView<ChecklistController> {
                                     style: ButtonStyle(
                                       shape: WidgetStateProperty.resolveWith(
                                         (Set<WidgetState> states) {
-                                          if (states.contains(
-                                              WidgetState.pressed)) {
+                                          if (states
+                                              .contains(WidgetState.pressed)) {
                                             return const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(5)),
@@ -278,8 +274,8 @@ class ChecklistView extends GetView<ChecklistController> {
                                       ),
                                       side: WidgetStateProperty.resolveWith(
                                         (Set<WidgetState> states) {
-                                          if (states.contains(
-                                              WidgetState.pressed)) {
+                                          if (states
+                                              .contains(WidgetState.pressed)) {
                                             return const BorderSide(
                                               color: Colors.blue,
                                               width: 1,
@@ -306,8 +302,8 @@ class ChecklistView extends GetView<ChecklistController> {
                                     style: ButtonStyle(
                                       shape: WidgetStateProperty.resolveWith(
                                         (Set<WidgetState> states) {
-                                          if (states.contains(
-                                              WidgetState.pressed)) {
+                                          if (states
+                                              .contains(WidgetState.pressed)) {
                                             return const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(5)),
@@ -320,8 +316,8 @@ class ChecklistView extends GetView<ChecklistController> {
                                       ),
                                       side: WidgetStateProperty.resolveWith(
                                         (Set<WidgetState> states) {
-                                          if (states.contains(
-                                              WidgetState.pressed)) {
+                                          if (states
+                                              .contains(WidgetState.pressed)) {
                                             return const BorderSide(
                                               color: Colors.blue,
                                               width: 1,
@@ -349,8 +345,8 @@ class ChecklistView extends GetView<ChecklistController> {
                                     style: ButtonStyle(
                                       shape: WidgetStateProperty.resolveWith(
                                         (Set<WidgetState> states) {
-                                          if (states.contains(
-                                              WidgetState.pressed)) {
+                                          if (states
+                                              .contains(WidgetState.pressed)) {
                                             return const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(5)),
@@ -363,8 +359,8 @@ class ChecklistView extends GetView<ChecklistController> {
                                       ),
                                       side: WidgetStateProperty.resolveWith(
                                         (Set<WidgetState> states) {
-                                          if (states.contains(
-                                              WidgetState.pressed)) {
+                                          if (states
+                                              .contains(WidgetState.pressed)) {
                                             return const BorderSide(
                                               color: Colors.blue,
                                               width: 1,
@@ -392,8 +388,8 @@ class ChecklistView extends GetView<ChecklistController> {
                                     style: ButtonStyle(
                                       shape: WidgetStateProperty.resolveWith(
                                         (Set<WidgetState> states) {
-                                          if (states.contains(
-                                              WidgetState.pressed)) {
+                                          if (states
+                                              .contains(WidgetState.pressed)) {
                                             return const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(5)),
@@ -406,8 +402,8 @@ class ChecklistView extends GetView<ChecklistController> {
                                       ),
                                       side: WidgetStateProperty.resolveWith(
                                         (Set<WidgetState> states) {
-                                          if (states.contains(
-                                              WidgetState.pressed)) {
+                                          if (states
+                                              .contains(WidgetState.pressed)) {
                                             return const BorderSide(
                                               color: Colors.blue,
                                               width: 1,
