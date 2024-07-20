@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
@@ -10,6 +11,11 @@ import 'package:icet/provider/apiServiceProvider.dart';
 
 import '../datamodel/boards.dart';
 import '../extension/ext.dart';
+
+class Filter {
+  String columnName, value;
+  Filter({required this.columnName, required this.value});
+}
 
 class OverviewboardController extends GetxController with CacheManager {
   APIServiceProvider overviewboardProvider = APIServiceProvider();
@@ -23,6 +29,11 @@ class OverviewboardController extends GetxController with CacheManager {
 
   bool isAssetDeleted = false;
   int rowZeroIndex = 0;
+
+  // add listener on obx position and futureboard to clear filters
+  // add state for filters
+  RxList<Filter> selectedFilters =
+      <Filter>[Filter(columnName: "Checklist 1", value: "unsure")].obs;
 
   List<String> get dropdownItems {
     List<String> menuItems = [
@@ -133,7 +144,7 @@ class OverviewboardController extends GetxController with CacheManager {
 
   String getUserEmail() {
     String email = "";
-    if(getLoginEmail() != null) {
+    if (getLoginEmail() != null) {
       email = filterNull(getLoginEmail());
     }
 

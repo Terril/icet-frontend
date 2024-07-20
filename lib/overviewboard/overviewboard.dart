@@ -9,6 +9,7 @@ import '../const/colors.dart';
 import '../datamodel/boards.dart';
 import '../datamodel/columns.dart';
 import '../datamodel/rows.dart';
+import '../datamodel/cell.dart';
 import '../ratings.dart';
 import 'assets/assets.dart';
 import 'overviewboard_controller.dart';
@@ -415,6 +416,63 @@ class OverviewboardView extends GetView<OverviewboardController>
     );
   }
 
+  Boards filterBoardDataWithSelectedFilter(Boards board, List<Filter> filters) {
+    // find rows to remove based on the filters
+    List<String?> rowNamesToRemove = [];
+    List<Columns> newColumns = [];
+
+    board.columns?.forEach((col) {
+      Columns newColumn = Columns(
+          id: col.id,
+          name: col.name,
+          cells: col.cells,
+          nonGlobalCells: col.nonGlobalCells,
+          dataType: col.dataType,
+          createdAt: col.createdAt,
+          description: col.description,
+          board: col.board);
+      Filter? foundFilter = filters.firstWhereOrNull((f) {
+        return col.name == f.columnName;
+      });
+      if (foundFilter == null) {
+        // this column is not filtered on
+        newColumns.add(newColumn);
+        return;
+      }
+
+      Set<Cells> cellsToRemove = {};
+      col.cells?.forEach((cell) {
+        if (cell.data != null && cell.data == foundFilter.value) {
+          rowNamesToRemove.add(cell.row);
+          cellsToRemove.add(cell);
+        }
+      });
+      newColumn.cells = col.cells?.where(
+        (element) {
+          return !cellsToRemove.contains(element);
+        },
+      ).toList();
+
+      newColumns.add(newColumn);
+    });
+
+    board.columns = newColumns;
+    board.columns?.forEach((c) {
+      print("new column name: ${c.name}");
+      c.cells?.forEach((cell) {
+        print("cell data: ${cell.data}");
+      });
+    });
+    board.rows = board.rows?.where((r) {
+      return rowNamesToRemove.firstWhereOrNull((rn) {
+            return rn == r.id;
+          }) ==
+          null;
+    }).toList();
+
+    return board;
+  }
+
   Widget _widgetOptions(BuildContext context, Boards? data) {
     String? title = data?.name;
     itemRowWidget = filterNullList(data?.rows);
@@ -529,8 +587,11 @@ class OverviewboardView extends GetView<OverviewboardController>
                   return Center(child: emptyView(context));
                 } else {
                   return Obx(() => Center(
-                      child: _widgetOptions(context,
-                          snapshot.data?[controller.obxPosition.value])));
+                      child: _widgetOptions(
+                          context,
+                          filterBoardDataWithSelectedFilter(
+                              snapshot.data?[controller.obxPosition.value],
+                              controller.selectedFilters))));
                 }
               }
             }
@@ -634,11 +695,17 @@ class _MenuItem {
 }
 
 abstract class _MenuItems {
-  static const List<_MenuItem> firstItems = [info, delete];
+  static const List<_MenuItem> firstItems = [
+    filters,
+    info,
+    delete,
+  ];
   static const info = _MenuItem(
       text: 'View full info', icon: Icons.info_outline, color: Colors.black38);
   static const delete = _MenuItem(
       text: 'Delete', icon: Icons.delete_outline, color: colorDeleteButton);
+  static const filters =
+      _MenuItem(text: 'Filters', icon: Icons.filter_alt, color: Colors.black);
 
   static Widget buildItem(_MenuItem item) {
     return Row(
@@ -665,6 +732,8 @@ abstract class _MenuItems {
         //Do something
         break;
       case _MenuItems.delete:
+        break;
+      case _MenuItems.filters:
         break;
     }
   }
