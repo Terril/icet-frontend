@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:icet/cache/cachemanager.dart';
 import 'package:icet/logs.dart';
@@ -25,6 +26,7 @@ class OverviewboardController extends GetxController with CacheManager {
 
   RxInt obxPosition = 0.obs;
 
+  RxBool obxCheckBox = false.obs;
   late Future futureBoard;
 
   bool isAssetDeleted = false;
@@ -61,6 +63,11 @@ class OverviewboardController extends GetxController with CacheManager {
   void selectDrawer(int position) {
     rowZeroIndex = 0;
     obxPosition.value = position;
+    setFilterShow(false);
+  }
+
+  void setFilterShow(bool value) {
+    obxCheckBox.value = value;
   }
 
   void setSelected(String value) {
