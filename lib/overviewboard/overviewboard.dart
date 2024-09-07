@@ -297,7 +297,7 @@ class OverviewboardView extends GetView<OverviewboardController>
         value: selectedItems.isEmpty ? null : selectedItems.last,
         onChanged: (value) {
           filterBoardDataWithSelectedFilter(board!, selectedItems);
-          controller.setFilterShow(false);
+          //controller.setFilterShow(false);
         },
         // selectedItemBuilder: (context) {
         //   return Rating.values.map(
