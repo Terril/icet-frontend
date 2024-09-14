@@ -231,14 +231,15 @@ class OverviewboardView extends GetView<OverviewboardController>
                   enabled: false,
                   child: StatefulBuilder(
                     builder: (context, menuSetState) {
-                      var filter = Filter(
-                          columnName: filterNull(column.name),
-                          value: item.name);
+
                       final isSelected = selectedItems.map((item) => item.value).contains(item.name);
 
                       Logger.printLog(message: "Selected : $isSelected");
                       return InkWell(
                         onTap: () {
+                          var filter = Filter(
+                              columnName: filterNull(column.name),
+                              value: item.name);
                           if (isSelected) {
                             selectedItems.removeWhere((v) => v.value == item.name);
                           } else {
@@ -266,56 +267,19 @@ class OverviewboardView extends GetView<OverviewboardController>
           ),
         ],
 
-        // Rating.values.map((item) {
-        //   return DropdownMenuItem(
-        //     value: item.name,
-        //     //disable default onTap to avoid closing menu when selecting an item
-        //     enabled: false,
-        //     child: StatefulBuilder(
-        //       builder: (context, menuSetState) {
-        //         final isSelected = selectedItems.contains(item.name);
-        //         return InkWell(
-        //           onTap: () {
-        //             isSelected
-        //                 ? selectedItems.remove(item.name)
-        //                 : selectedItems.add(item.name);
-        //             //This rebuilds the StatefulWidget to update the button's text
-        //             // setState(() {});
-        //             //This rebuilds the dropdownMenu Widget to update the check mark
-        //             menuSetState(() {
-        //             });
-        //           },
-        //           child: _MenuItems.buildCheckItem(filterNull(item.name.capitalizeFirst), isSelected),
-        //
-        //         );
-        //       },
-        //     ),
-        //   );
-        // }).toList(),
-
         //Use last selected item as the current value so if we've limited menu height, it scroll to last item.
         value: selectedItems.isEmpty ? null : selectedItems.last,
         onChanged: (value) {
-          filterBoardDataWithSelectedFilter(board!, selectedItems);
+          Logger.printLog(message: "Length of Array created : ${selectedItems.length}");
+          // if((value as _MenuItem).text == _MenuItems.apply.text) {
+            for (var i = 0; i < selectedItems.length; i += 1) {
+              controller.selectedFilters.insert(i, selectedItems[i]);
+            }
+            filterBoardDataWithSelectedFilter(
+                board!, controller.selectedFilters);
+          // }
           //controller.setFilterShow(false);
         },
-        // selectedItemBuilder: (context) {
-        //   return Rating.values.map(
-        //         (item) {
-        //       return Container(
-        //         alignment: AlignmentDirectional.center,
-        //         child: Text(
-        //           selectedItems.join(', '),
-        //           style: const TextStyle(
-        //             fontSize: 14,
-        //             overflow: TextOverflow.ellipsis,
-        //           ),
-        //           maxLines: 1,
-        //         ),
-        //       );
-        //     },
-        //   ).toList();
-        // },
         buttonStyleData: const ButtonStyleData(
           padding: EdgeInsets.only(left: 16, right: 8),
           height: 30,
@@ -552,8 +516,11 @@ class OverviewboardView extends GetView<OverviewboardController>
 
   // PLTR, SNW, NVDA
   Boards filterBoardDataWithSelectedFilter(Boards board, List<Filter> filters) {
-    Logger.printLog(message: "Filter selected : ${filters[0].value}");
-    Logger.printLog(message: filters[0].columnName);
+    filters.forEach((value) {
+      Logger.printLog(message: "Column Name : ${value.columnName}");
+    });
+    Logger.printLog(message: "Filter selected : ${filters.length}");
+
     // find rows to remove based on the filters
     List<String?> rowNamesToRemove = [];
     List<Columns> newColumns = [];

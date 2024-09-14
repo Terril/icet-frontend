@@ -35,7 +35,7 @@ class OverviewboardController extends GetxController with CacheManager {
   // add listener on obx position and futureboard to clear filters
   // add state for filters
   RxList<Filter> selectedFilters =
-      <Filter>[Filter(columnName: "Checklist 1", value: "unsure")].obs;
+      <Filter>[].obs;
 
   List<String> get dropdownItems {
     List<String> menuItems = [
