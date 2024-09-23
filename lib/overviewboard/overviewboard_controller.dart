@@ -1,8 +1,10 @@
 import 'dart:collection';
 
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:icet/cache/cachemanager.dart';
 import 'package:icet/logs.dart';
@@ -10,6 +12,11 @@ import 'package:icet/provider/apiServiceProvider.dart';
 
 import '../datamodel/boards.dart';
 import '../extension/ext.dart';
+
+class Filter {
+  String columnName, value;
+  Filter({required this.columnName, required this.value});
+}
 
 class OverviewboardController extends GetxController with CacheManager {
   APIServiceProvider overviewboardProvider = APIServiceProvider();
@@ -19,10 +26,16 @@ class OverviewboardController extends GetxController with CacheManager {
 
   RxInt obxPosition = 0.obs;
 
+  RxBool obxCheckBox = false.obs;
   late Future futureBoard;
 
   bool isAssetDeleted = false;
   int rowZeroIndex = 0;
+
+  // add listener on obx position and futureboard to clear filters
+  // add state for filters
+  RxList<Filter> selectedFilters =
+      <Filter>[].obs;
 
   List<String> get dropdownItems {
     List<String> menuItems = [
@@ -50,6 +63,11 @@ class OverviewboardController extends GetxController with CacheManager {
   void selectDrawer(int position) {
     rowZeroIndex = 0;
     obxPosition.value = position;
+    setFilterShow(false);
+  }
+
+  void setFilterShow(bool value) {
+    obxCheckBox.value = value;
   }
 
   void setSelected(String value) {
@@ -133,7 +151,7 @@ class OverviewboardController extends GetxController with CacheManager {
 
   String getUserEmail() {
     String email = "";
-    if(getLoginEmail() != null) {
+    if (getLoginEmail() != null) {
       email = filterNull(getLoginEmail());
     }
 
