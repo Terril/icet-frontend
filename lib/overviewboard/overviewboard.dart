@@ -9,6 +9,8 @@ import '../const/colors.dart';
 import '../datamodel/boards.dart';
 import '../datamodel/columns.dart';
 import '../datamodel/rows.dart';
+import '../datamodel/cell.dart';
+import '../logs.dart';
 import '../ratings.dart';
 import 'assets/assets.dart';
 import 'overviewboard_controller.dart';
@@ -26,6 +28,7 @@ class OverviewboardView extends GetView<OverviewboardController>
   Boards? board = null;
   List<String> list = <String>['New asset', 'New checklist'];
   double widthSize = (Get.width / 6);
+  List<Filter> selectedItems = [];
 
   void showAssets(BuildContext context, String? boardId, Rows? asset,
       bool canDelete, int posAsset) {
@@ -39,11 +42,9 @@ class OverviewboardView extends GetView<OverviewboardController>
         );
       },
       transitionDuration: const Duration(milliseconds: 500),
-      pageBuilder: (
-        BuildContext context,
-        Animation<double> animation,
-        Animation<double> secondaryAnimation,
-      ) {
+      pageBuilder: (BuildContext context,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,) {
         return AssetsView(boardId, asset, canDelete, posAsset);
       },
     ).then((value) => filterBoolNull(value) ? controller.loadBoard() : null);
@@ -51,7 +52,7 @@ class OverviewboardView extends GetView<OverviewboardController>
 
   List<Widget> _getTitleWidget(BuildContext context, List<Columns> items) {
     double widthSize =
-        (Get.width / (items.length + 2)); // Earlier items.length + 2
+    (Get.width / (items.length + 2)); // Earlier items.length + 2
     List<Widget> widget = <Widget>[];
     widget.add(_columWidgetWithoutDropDown(Columns(name: 'ASSET'), widthSize));
     widget.add(_columWidgetWithoutDropDown(items[0], widthSize));
@@ -108,23 +109,23 @@ class OverviewboardView extends GetView<OverviewboardController>
             alignment: Alignment.center,
             child: Text(
                 itemRowWidget[controller.rowZeroIndex].interestLevel.toString())
-            // Obx(() => DropdownButton(
-            //       underline: const SizedBox(),
-            //       iconSize: 0.0,
-            //       onChanged: (newValue) {
-            //         controller.setSelected(newValue!);
-            //       },
-            //       value: controller.selected.value,
-            //       items: controller.dropdownItems.map((selectedType) {
-            //         return DropdownMenuItem(
-            //           value: selectedType,
-            //           child: Text(
-            //             selectedType,
-            //           ),
-            //         );
-            //       }).toList(),
-            //     )), //([index]),
-            );
+          // Obx(() => DropdownButton(
+          //       underline: const SizedBox(),
+          //       iconSize: 0.0,
+          //       onChanged: (newValue) {
+          //         controller.setSelected(newValue!);
+          //       },
+          //       value: controller.selected.value,
+          //       items: controller.dropdownItems.map((selectedType) {
+          //         return DropdownMenuItem(
+          //           value: selectedType,
+          //           child: Text(
+          //             selectedType,
+          //           ),
+          //         );
+          //       }).toList(),
+          //     )), //([index]),
+        );
         widget.add(sectionOne);
         while (controller.rowZeroIndex <= itemRowWidget.length) {
           controller.rowZeroIndex++;
@@ -187,13 +188,14 @@ class OverviewboardView extends GetView<OverviewboardController>
             } else {
               showDialog(
                   context: context,
-                  builder: (BuildContext context) => newChecklistDialog(
+                  builder: (BuildContext context) =>
+                      newChecklistDialog(
                           onTapCreate: (String title, String desc) {
-                        controller
-                            .addColumns(filterNull(boardId), title, desc)
-                            .then((value) =>
-                                value ? controller.loadBoard() : null);
-                      }));
+                            controller
+                                .addColumns(filterNull(boardId), title, desc)
+                                .then((value) =>
+                            value ? controller.loadBoard() : null);
+                          }));
             }
           },
           items: list.map<DropdownMenuItem<String>>((String value) {
@@ -206,60 +208,155 @@ class OverviewboardView extends GetView<OverviewboardController>
         ));
   }
 
-  Widget _addColumnDropDown(
-      BuildContext context, Columns column, double width) {
+  Widget _dropdownCheckbox(BuildContext context, double width, Columns column) {
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
+        isExpanded: true,
         customButton: Container(
-          color: const Color.fromARGB(249, 250, 251, 255),
-          width: width,
-          height: 56,
-          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.center,
-          child: Text(filterNull(column.name?.toUpperCase()),
-              maxLines: 2,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontWeight: FontWeight.bold)),
-        ),
+            color: const Color.fromARGB(249, 250, 251, 255),
+            width: width,
+            height: 56,
+            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+            alignment: Alignment.center,
+            child: Text(filterNull(column.name?.toUpperCase()),
+                maxLines: 2,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontWeight: FontWeight.bold))),
         items: [
-          ..._MenuItems.firstItems.map(
-            (item) => DropdownMenuItem<_MenuItem>(
-              value: item,
-              child: _MenuItems.buildItem(item),
-            ),
+          ...Rating.values.map(
+                (item) =>
+                DropdownMenuItem(
+                  value: item.name,
+                  enabled: false,
+                  child: StatefulBuilder(
+                    builder: (context, menuSetState) {
+
+                      final isSelected = selectedItems.map((item) => item.value).contains(item.name);
+
+                      Logger.printLog(message: "Selected : $isSelected");
+                      return InkWell(
+                        onTap: () {
+                          var filter = Filter(
+                              columnName: filterNull(column.name),
+                              value: item.name);
+                          if (isSelected) {
+                            selectedItems.removeWhere((v) => v.value == item.name);
+                          } else {
+                            selectedItems.add(filter);
+                          }
+                          //This rebuilds the StatefulWidget to update the button's text
+                          // setState(() {});
+                          //This rebuilds the dropdownMenu Widget to update the check mark
+                          menuSetState(() {});
+                        },
+                        child: _MenuItems.buildCheckItem(
+                            filterNull(item.name.capitalizeFirst), isSelected),
+                      );
+                    },
+                  ),
+                ),
+          ),
+          const DropdownMenuItem<Divider>(enabled: false, child: Divider()),
+          ..._MenuItems.secondItems.map(
+                (item) =>
+                DropdownMenuItem<_MenuItem>(
+                  value: item,
+                  child: _MenuItems.buildItem(item),
+                ),
           ),
         ],
+
+        //Use last selected item as the current value so if we've limited menu height, it scroll to last item.
+        value: selectedItems.isEmpty ? null : selectedItems.last,
         onChanged: (value) {
-          if (value?.text == _MenuItems.delete.text) {
-            UIUtils.showDeleteDialog(
-                context,
-                "Are you sure you want to delete this checklist? \n"
-                "All notes within will be deleted and cannot be \nretrieved.",
-                onCloseClicked: () {
-              Get.back(closeOverlays: true);
-            }, onDeleteClicked: () {
-              controller.deleteColumn(filterNull(column.id)).then((value) => {
-                    value ? controller.loadBoard() : null,
-                    Get.back(closeOverlays: true)
-                  });
-            });
-          }
-          _MenuItems.onChanged(context, value!);
+          Logger.printLog(message: "Length of Array created : ${selectedItems.length}");
+          // if((value as _MenuItem).text == _MenuItems.apply.text) {
+            for (var i = 0; i < selectedItems.length; i += 1) {
+              controller.selectedFilters.insert(i, selectedItems[i]);
+            }
+            filterBoardDataWithSelectedFilter(
+                board!, controller.selectedFilters);
+          // }
+          //controller.setFilterShow(false);
         },
-        dropdownStyleData: DropdownStyleData(
-          width: 160,
-          padding: const EdgeInsets.symmetric(vertical: 6),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-          ),
-          offset: const Offset(0, 8),
+        buttonStyleData: const ButtonStyleData(
+          padding: EdgeInsets.only(left: 16, right: 8),
+          height: 30,
+          width: 100,
         ),
         menuItemStyleData: const MenuItemStyleData(
-          padding: EdgeInsets.only(left: 16, right: 16),
+          height: 40,
+          padding: EdgeInsets.zero,
         ),
       ),
     );
+  }
+
+  Widget _addColumnDropDown(BuildContext context, Columns column,
+      double width) {
+    return Obx(() {
+      if (controller.obxCheckBox.value) {
+        return _dropdownCheckbox(context, width, column);
+      } else {
+        return DropdownButtonHideUnderline(
+          child: DropdownButton2(
+            customButton: Container(
+                color: const Color.fromARGB(249, 250, 251, 255),
+                width: width,
+                height: 56,
+                padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                alignment: Alignment.center,
+                child: Text(filterNull(column.name?.toUpperCase()),
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.bold))),
+            items: [
+              ..._MenuItems.firstItems.map(
+                    (item) =>
+                    DropdownMenuItem<_MenuItem>(
+                      value: item,
+                      child: _MenuItems.buildItem(item),
+                    ),
+                // _dropdownCheckbox(context)
+              ),
+            ],
+            onChanged: (value) {
+              if (value?.text == _MenuItems.delete.text) {
+                UIUtils.showDeleteDialog(
+                    context,
+                    "Are you sure you want to delete this checklist? \n"
+                        "All notes within will be deleted and cannot be \nretrieved.",
+                    onCloseClicked: () {
+                      Get.back(closeOverlays: true);
+                    }, onDeleteClicked: () {
+                  controller.deleteColumn(filterNull(column.id)).then((value) =>
+                  {
+                    value ? controller.loadBoard() : null,
+                    Get.back(closeOverlays: true)
+                  });
+                });
+              } else if (value?.text == _MenuItems.filters.text) {
+                controller.setFilterShow(true);
+              }
+              _MenuItems.onChanged(context, value!);
+            },
+            dropdownStyleData: DropdownStyleData(
+              width: 160,
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+              ),
+              offset: const Offset(0, 8),
+            ),
+            menuItemStyleData: const MenuItemStyleData(
+              padding: EdgeInsets.only(left: 16, right: 16),
+            ),
+          ),
+        );
+      }
+    });
   }
 
   Widget _addProfile() {
@@ -281,10 +378,11 @@ class OverviewboardView extends GetView<OverviewboardController>
               scale: 1.0),
         ),
         items: profileValues
-            .map((item) => DropdownMenuItem<_MenuItem>(
-                  value: item,
-                  child: _MenuItems.buildItem(item),
-                ))
+            .map((item) =>
+            DropdownMenuItem<_MenuItem>(
+              value: item,
+              child: _MenuItems.buildItem(item),
+            ))
             .toList(),
         onChanged: (value) {
           if (value?.icon != null) {
@@ -315,7 +413,7 @@ class OverviewboardView extends GetView<OverviewboardController>
           height: Get.width / 4.5,
           width: Get.height / 1.7,
           margin:
-              const EdgeInsets.only(top: 20, left: 32, right: 32, bottom: 32),
+          const EdgeInsets.only(top: 20, left: 32, right: 32, bottom: 32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -389,11 +487,12 @@ class OverviewboardView extends GetView<OverviewboardController>
         OutlinedButton.icon(
           icon: const Icon(Icons.add_sharp),
           style: ButtonStyle(
-            foregroundColor: MaterialStateProperty.all(Colors.black),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            foregroundColor: WidgetStateProperty.all(Colors.black),
+            shape: WidgetStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0))),
           ),
-          onPressed: () => {
+          onPressed: () =>
+          {
             showDialog(
                 context: context,
                 builder: (BuildContext context) =>
@@ -413,6 +512,69 @@ class OverviewboardView extends GetView<OverviewboardController>
         )
       ],
     );
+  }
+
+  // PLTR, SNW, NVDA
+  Boards filterBoardDataWithSelectedFilter(Boards board, List<Filter> filters) {
+    filters.forEach((value) {
+      Logger.printLog(message: "Column Name : ${value.columnName}");
+    });
+    Logger.printLog(message: "Filter selected : ${filters.length}");
+
+    // find rows to remove based on the filters
+    List<String?> rowNamesToRemove = [];
+    List<Columns> newColumns = [];
+
+    board.columns?.forEach((col) {
+      Columns newColumn = Columns(
+          id: col.id,
+          name: col.name,
+          cells: col.cells,
+          nonGlobalCells: col.nonGlobalCells,
+          dataType: col.dataType,
+          createdAt: col.createdAt,
+          description: col.description,
+          board: col.board);
+      Filter? foundFilter = filters.firstWhereOrNull((f) {
+        return col.name == f.columnName;
+      });
+      if (foundFilter == null) {
+        // this column is not filtered on
+        newColumns.add(newColumn);
+        return;
+      }
+
+      Set<Cells> cellsToRemove = {};
+      col.cells?.forEach((cell) {
+        if (cell.data != null && cell.data == foundFilter.value) {
+          rowNamesToRemove.add(cell.row);
+          cellsToRemove.add(cell);
+        }
+      });
+      newColumn.cells = col.cells?.where(
+            (element) {
+          return !cellsToRemove.contains(element);
+        },
+      ).toList();
+
+      newColumns.add(newColumn);
+    });
+
+    board.columns = newColumns;
+    board.columns?.forEach((c) {
+      print("new column name: ${c.name}");
+      c.cells?.forEach((cell) {
+        print("cell data: ${cell.data}");
+      });
+    });
+    board.rows = board.rows?.where((r) {
+      return rowNamesToRemove.firstWhereOrNull((rn) {
+        return rn == r.id;
+      }) ==
+          null;
+    }).toList();
+
+    return board;
   }
 
   Widget _widgetOptions(BuildContext context, Boards? data) {
@@ -449,7 +611,8 @@ class OverviewboardView extends GetView<OverviewboardController>
                   onPressed: () async {
                     showDialog(
                         context: context,
-                        builder: (BuildContext context) => showRenameDialog(
+                        builder: (BuildContext context) =>
+                            showRenameDialog(
                                 filterNull(title), onTapCreate: (String title) {
                               controller
                                   .updateBoard(filterNull(data?.id), title)
@@ -470,26 +633,26 @@ class OverviewboardView extends GetView<OverviewboardController>
           const SizedBox(height: 24),
           Expanded(
               child: HorizontalDataTable(
-            leftHandSideColumnWidth: 100,
-            rightHandSideColumnWidth: Get.width,
-            isFixedHeader: true,
-            headerWidgets:
+                leftHandSideColumnWidth: 100,
+                rightHandSideColumnWidth: Get.width,
+                isFixedHeader: true,
+                headerWidgets:
                 _getTitleWidget(context, filterNullList(data?.columns)),
-            isFixedFooter: false,
-            leftSideItemBuilder: _generateFirstColumnRow,
-            rightSideItemBuilder: _generateRightHandSideColumnRow,
-            // rightSideChildren:
-            //     _generateRightViewRows(filterNullList(data?.rows)),
-            itemCount: filterNullInt(data?.rows?.length),
-            rowSeparatorWidget: const Divider(
-              color: Colors.black38,
-              height: 1.0,
-              thickness: 0.0,
-            ),
-            leftHandSideColBackgroundColor: colorWhite,
-            rightHandSideColBackgroundColor: colorWhite,
-            itemExtent: 55,
-          ))
+                isFixedFooter: false,
+                leftSideItemBuilder: _generateFirstColumnRow,
+                rightSideItemBuilder: _generateRightHandSideColumnRow,
+                // rightSideChildren:
+                //     _generateRightViewRows(filterNullList(data?.rows)),
+                itemCount: filterNullInt(data?.rows?.length),
+                rowSeparatorWidget: const Divider(
+                  color: Colors.black38,
+                  height: 1.0,
+                  thickness: 0.0,
+                ),
+                leftHandSideColBackgroundColor: colorWhite,
+                rightHandSideColBackgroundColor: colorWhite,
+                itemExtent: 55,
+              ))
         ]));
   }
 
@@ -499,7 +662,7 @@ class OverviewboardView extends GetView<OverviewboardController>
       appBar: AppBar(
           centerTitle: false,
           title:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -528,9 +691,13 @@ class OverviewboardView extends GetView<OverviewboardController>
                 if (snapshot.data!.isEmpty) {
                   return Center(child: emptyView(context));
                 } else {
-                  return Obx(() => Center(
-                      child: _widgetOptions(context,
-                          snapshot.data?[controller.obxPosition.value])));
+                  return Obx(() =>
+                      Center(
+                          child: _widgetOptions(
+                              context,
+                              filterBoardDataWithSelectedFilter(
+                                  snapshot.data?[controller.obxPosition.value],
+                                  controller.selectedFilters))));
                 }
               }
             }
@@ -539,84 +706,88 @@ class OverviewboardView extends GetView<OverviewboardController>
       }),
       drawer: Drawer(
           child: GetBuilder<OverviewboardController>(builder: (controller) {
-        return FutureBuilder(
-          future: controller.futureBoard,
-          builder: (context, snapshot) {
-            return Column(children: [
-              Padding(
-                padding: const EdgeInsets.all(24),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Image.asset("assets/images/logo.png"),
-                    const Text(
-                      'Ice T',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                          fontSize: 21.0, fontWeight: FontWeight.bold),
+            return FutureBuilder(
+              future: controller.futureBoard,
+              builder: (context, snapshot) {
+                return Column(children: [
+                  Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Image.asset("assets/images/logo.png"),
+                        const Text(
+                          'Ice T',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              fontSize: 21.0, fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              Expanded(
-                  child: ListView.builder(
-                itemCount: controller.getItemCount(snapshot.data?.length),
-                itemBuilder: (BuildContext context, int index) {
-                  if (snapshot.data?.length == null ||
-                      index > snapshot.data?.length - 1) {
-                    return Container(
-                        margin: const EdgeInsets.all(12),
-                        child: OutlinedButton.icon(
-                          icon: const Icon(Icons.add_sharp),
-                          style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStateProperty.all(Colors.black),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0))),
-                          ),
-                          onPressed: () => {
-                            Get.back(),
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) =>
-                                    newBoardDialog(onTapBoardSelection:
-                                        (SelectedBoard board) {
-                                      switch (board) {
-                                        case SelectedBoard.STOCK:
-                                          break;
-                                        case SelectedBoard.CUSTOM:
-                                          {
-                                            controller.callCustomBoard();
-                                            break;
-                                          }
-                                      }
-                                    }))
-                          },
-                          label: const Text("Add board"),
-                        ));
-                  } else {
-                    return ListTile(
-                      title: Row(children: [
-                        const Icon(Icons.content_paste),
-                        const SizedBox(width: 12),
-                        Text(filterNull(
-                          snapshot.data?[index]?.name,
-                        ))
-                      ]),
-                      onTap: () {
-                        controller.selectDrawer(index);
-                        // _widgetOptions(context, snapshot.data?[index]);
-                        Get.back();
-                      },
-                    );
-                  }
-                },
-              ))
-            ]);
-          },
-        );
-      })),
+                  ),
+                  Expanded(
+                      child: ListView.builder(
+                        itemCount: controller.getItemCount(snapshot.data
+                            ?.length),
+                        itemBuilder: (BuildContext context, int index) {
+                          if (snapshot.data?.length == null ||
+                              index > snapshot.data?.length - 1) {
+                            return Container(
+                                margin: const EdgeInsets.all(12),
+                                child: OutlinedButton.icon(
+                                  icon: const Icon(Icons.add_sharp),
+                                  style: ButtonStyle(
+                                    foregroundColor:
+                                    WidgetStateProperty.all(Colors.black),
+                                    shape: WidgetStateProperty.all(
+                                        RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                8.0))),
+                                  ),
+                                  onPressed: () =>
+                                  {
+                                    Get.back(),
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            newBoardDialog(onTapBoardSelection:
+                                                (SelectedBoard board) {
+                                              switch (board) {
+                                                case SelectedBoard.STOCK:
+                                                  break;
+                                                case SelectedBoard.CUSTOM:
+                                                  {
+                                                    controller
+                                                        .callCustomBoard();
+                                                    break;
+                                                  }
+                                              }
+                                            }))
+                                  },
+                                  label: const Text("Add board"),
+                                ));
+                          } else {
+                            return ListTile(
+                              title: Row(children: [
+                                const Icon(Icons.content_paste),
+                                const SizedBox(width: 12),
+                                Text(filterNull(
+                                  snapshot.data?[index]?.name,
+                                ))
+                              ]),
+                              onTap: () {
+                                controller.selectDrawer(index);
+                                // _widgetOptions(context, snapshot.data?[index]);
+                                Get.back();
+                              },
+                            );
+                          }
+                        },
+                      ))
+                ]);
+              },
+            );
+          })),
     );
   }
 }
@@ -634,11 +805,20 @@ class _MenuItem {
 }
 
 abstract class _MenuItems {
-  static const List<_MenuItem> firstItems = [info, delete];
+  static const List<_MenuItem> firstItems = [
+    filters,
+    info,
+    delete,
+  ];
+  static const List<_MenuItem> secondItems = [apply];
   static const info = _MenuItem(
       text: 'View full info', icon: Icons.info_outline, color: Colors.black38);
   static const delete = _MenuItem(
       text: 'Delete', icon: Icons.delete_outline, color: colorDeleteButton);
+  static const filters =
+  _MenuItem(text: 'Filters', icon: Icons.filter_alt, color: Colors.black);
+
+  static const apply = _MenuItem(text: 'Apply', icon: null, color: Colors.red);
 
   static Widget buildItem(_MenuItem item) {
     return Row(
@@ -659,12 +839,36 @@ abstract class _MenuItems {
     );
   }
 
+  static Widget buildCheckItem(String item, bool isSelected) {
+    return Container(
+      height: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: Row(children: [
+        if (isSelected)
+          const Icon(Icons.check_box_outlined)
+        else
+          const Icon(Icons.check_box_outline_blank),
+        const SizedBox(width: 10),
+        Text(
+          item,
+          style: const TextStyle(
+            fontSize: 14,
+          ),
+        ),
+      ]),
+    );
+  }
+
   static void onChanged(BuildContext context, _MenuItem item) {
     switch (item) {
       case _MenuItems.info:
-        //Do something
+      //Do something
         break;
       case _MenuItems.delete:
+        break;
+      case _MenuItems.filters:
+        break;
+      case _MenuItems.apply:
         break;
     }
   }

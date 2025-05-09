@@ -424,7 +424,7 @@ class ChecklistView extends GetView<ChecklistController> {
                               const SizedBox(width: 30),
                               SizedBox(
                                   width: 70.0,
-                                  height: 32.0,
+                                  height: 45.0,
                                   child: Obx(() => Center(
                                       child: Text(
                                           filterNull(
